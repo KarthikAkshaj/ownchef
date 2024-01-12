@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #b0adad;
+  --text-color: #222121;
+  --softBg: #f0f0f0;
+  --softTextColor: #494848;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 100vw;
+  overflow: hidden;
+  /* background-color: var(--bg); */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 2px #4c9ae3c8;
+}
+
+.container {
+  min-height: 100vh;
+  min-width: 1920px;
+  background-color: var(--bg);
+  color: var(--text-color);
+}
+
+.wrapper {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 80px;
+  padding-right: 80px;
+  /* background-color: aqua; */
+}
+
