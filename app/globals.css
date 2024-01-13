@@ -4,7 +4,7 @@
 
 :root {
   --bg: #b0adad;
-  --text-color: #222121;
+  --textColor: #222121;
   --softBg: #f0f0f0;
   --softTextColor: #494848;
 }
@@ -31,7 +31,7 @@ a {
   min-height: 100vh;
   min-width: 1920px;
   background-color: var(--bg);
-  color: var(--text-color);
+  color: var(--textColor);
 }
 
 .wrapper {
@@ -43,3 +43,10 @@ a {
   /* background-color: aqua; */
 }
 
+.dark {
+  /* dark mode */
+  --bg: #1c1c1ce7;
+  --textColor: #d9dcd9;
+  --softBg: #15213dea;
+  --softTextColor: #edf6f9;
+}
