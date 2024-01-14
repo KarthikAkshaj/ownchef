@@ -12,7 +12,13 @@ const ThemeToggle = () => {
   return (
     <>
       <div className={style.container} onClick={toggle}>
-        <Image src="/Moon.png" alt="" width={16} height={16} />
+        <Image
+          src="/Moon.png"
+          alt=""
+          width={16}
+          height={16}
+          className={style.Image_Moon}
+        />
         <div
           className={style.ball}
           style={
@@ -21,7 +27,13 @@ const ThemeToggle = () => {
               : { right: 1, backgroundColor: "#e9ecef" }
           }
         ></div>
-        <Image src="/Sun.png" alt="" width={16} height={16} />
+        <Image
+          src="/Sun.png"
+          alt=""
+          width={16}
+          height={16}
+          className={style.Image_Sun}
+        />
       </div>
     </>
   );

@@ -1,0 +1,54 @@
+.title {
+    margin: 3rem 0rem;
+    font-size: xx-large;
+    font-weight: 500;
+
+}
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+}
+
+.category {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    text-transform: capitalize;
+    width: 15%;
+    height: 4rem;
+    justify-content: center;
+    border-radius: 1rem;
+
+}
+
+.category.indian {
+    background-color: #f088009f;
+}
+
+.category.italian {
+    background-color: #008c46c1;
+}
+
+.category.chinese {
+    background-color: #ee1c279c;
+}
+
+.category.thai {
+    background-color: #00237da3;
+}
+
+.category.japanese {
+    background-color: #ffffffa1;
+}
+
+.category.spanish {
+    background-color: #f1c1009e;
+}
+
+.utxt{
+    border-bottom: 3px solid #000;
+    padding-bottom: 5px;
+}

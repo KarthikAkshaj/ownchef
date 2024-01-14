@@ -6,6 +6,7 @@ const CardList = () => {
   return (
     <>
       <div className={style.container}>
+        cardlist
         < Pagination />
       </div>
     </>
