@@ -38,10 +38,12 @@
 
 .category.thai {
     background-color: #00237da3;
+    color: aliceblue;
 }
 
 .category.japanese {
     background-color: #ffffffa1;
+    color: #000;
 }
 
 .category.spanish {
@@ -49,6 +51,7 @@
 }
 
 .utxt{
-    border-bottom: 3px solid #000;
+    border-bottom: 3px solid ;
     padding-bottom: 5px;
+    /* background-color: var(--bg); */
 }

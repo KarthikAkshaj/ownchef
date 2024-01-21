@@ -1,0 +1,53 @@
+.container {
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.imageContainer {
+    flex: 1;
+    height: 21rem;
+    /* width: auto; */
+    position: relative;
+}
+
+.image {
+    object-fit: cover;
+}
+
+.textContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.date {
+    color: var(--softTextColor);
+    margin: 1rem;
+    font-weight: 700;
+    
+}
+
+.category {
+    color: crimson;
+    font-weight: 500;
+}
+
+.desc {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--softTextColor);
+}
+
+.link {
+    border-bottom: 4px solid #14a3dc;
+    width: max-content;
+    padding: 2px 0px;
+}
+
+.title{
+    font-size: xx-large;
+    font-weight: 600;
+}
