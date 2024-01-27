@@ -58,3 +58,11 @@ a {
   --softBg: #f0f0f0;
   --softTextColor: #494848;
 }
+
+.ql-container {
+  font-size: 28px !important;
+}
+
+.quill>.ql-container>.ql-editor.ql-blank::before {
+  color: var(--softTextColor);
+}
