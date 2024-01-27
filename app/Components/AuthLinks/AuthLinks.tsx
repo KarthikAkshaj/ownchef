@@ -3,10 +3,10 @@ import style from "./AuthLinks.module.css";
 import Link from "next/link";
 
 const AuthLinks = () => {
-  const status = "notauthenticated";
+  const status = true;
   return (
     <>
-      {status === "notauthenticated" ? (
+      {status != true  ? (
         <Link href="/Login"> Login</Link>
       ) : (
         <>
