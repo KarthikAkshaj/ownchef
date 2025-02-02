@@ -1,0 +1,63 @@
+:root {
+	/* Main Brand Colors */
+	--brand-primary: #ff4b6e; /* Vibrant Coral - for main actions & emphasis */
+	--brand-secondary: #ffb156; /* Warm Orange - for secondary elements */
+	--brand-accent: #41e9c3; /* Fresh Mint - for accents & highlights */
+
+	/* Background Colors */
+	--bg-primary: #ffffff; /* Main background */
+	--bg-secondary: #f8f9fc; /* Secondary background */
+	--bg-tertiary: #f1f4f9; /* Tertiary background */
+
+	/* Text Colors */
+	--text-primary: #1a1f36; /* Main text */
+	--text-secondary: #4f566b; /* Secondary text */
+	--text-tertiary: #8792a2; /* Tertiary text */
+
+	/* Gradients */
+	--gradient-primary: linear-gradient(135deg, #ff4b6e, #ffb156);
+	--gradient-hover: linear-gradient(135deg, #ff6b85, #ffc278);
+
+	/* Shadows */
+	--shadow-sm: 0 2px 8px rgba(26, 31, 54, 0.06);
+	--shadow-md: 0 4px 16px rgba(26, 31, 54, 0.08);
+	--shadow-lg: 0 8px 24px rgba(26, 31, 54, 0.12);
+}
+
+.dark {
+	/* Dark mode colors */
+	--bg-primary: #131620;
+	--bg-secondary: #1c1f2e;
+	--bg-tertiary: #252a3d;
+
+	--text-primary: #f1f4f9;
+	--text-secondary: #b4bcd0;
+	--text-tertiary: #8792a2;
+
+	--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.24);
+	--shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.32);
+}
+
+/* Common Component Styles */
+.card {
+	background-color: var(--bg-primary);
+	box-shadow: var(--shadow-sm);
+	transition: all 0.3s ease;
+}
+
+.card:hover {
+	box-shadow: var(--shadow-md);
+	transform: translateY(-2px);
+}
+
+.button-primary {
+	background: var(--gradient-primary);
+	color: white;
+	transition: all 0.3s ease;
+}
+
+.button-primary:hover {
+	background: var(--gradient-hover);
+	box-shadow: 0 4px 12px rgba(255, 75, 110, 0.3);
+}

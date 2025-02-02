@@ -1,0 +1,3426 @@
+# Project Code Extract
+# Generated on Sat, Feb  1, 2025  3:03:38 PM
+
+
+============================================================
+File: ./drizzle.config.ts
+Type: .ts
+============================================================
+
+import { defineConfig } from 'drizzle-kit';
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+
+export default defineConfig({
+	schema: './src/lib/server/db/schema.ts',
+
+	dbCredentials: {
+		url: process.env.DATABASE_URL
+	},
+
+	verbose: true,
+	strict: true,
+	dialect: 'postgresql'
+});
+
+
+
+============================================================
+File: ./eslint.config.js
+Type: .js
+============================================================
+
+import prettier from 'eslint-config-prettier';
+import js from '@eslint/js';
+import { includeIgnoreFile } from '@eslint/compat';
+import svelte from 'eslint-plugin-svelte';
+import globals from 'globals';
+import { fileURLToPath } from 'node:url';
+import ts from 'typescript-eslint';
+const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
+
+export default ts.config(
+	includeIgnoreFile(gitignorePath),
+	js.configs.recommended,
+	...ts.configs.recommended,
+	...svelte.configs['flat/recommended'],
+	prettier,
+	...svelte.configs['flat/prettier'],
+	{
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				...globals.node
+			}
+		}
+	},
+	{
+		files: ['**/*.svelte'],
+
+		languageOptions: {
+			parserOptions: {
+				parser: ts.parser
+			}
+		}
+	}
+);
+
+
+
+============================================================
+File: ./package.json
+Type: .json
+============================================================
+
+{
+	"name": "ownchef",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint .",
+		"db:start": "docker compose up",
+		"db:push": "drizzle-kit push",
+		"db:migrate": "drizzle-kit migrate",
+		"db:studio": "drizzle-kit studio"
+	},
+	"devDependencies": {
+		"@eslint/compat": "^1.2.5",
+		"@eslint/js": "^9.18.0",
+		"@sveltejs/adapter-auto": "^4.0.0",
+		"@sveltejs/kit": "^2.16.0",
+		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"@tailwindcss/forms": "^0.5.10",
+		"@tailwindcss/typography": "^0.5.16",
+		"@types/node": "^22.12.0",
+		"autoprefixer": "^10.4.20",
+		"drizzle-kit": "^0.30.2",
+		"eslint": "^9.18.0",
+		"eslint-config-prettier": "^10.0.1",
+		"eslint-plugin-svelte": "^2.46.1",
+		"globals": "^15.14.0",
+		"prettier": "^3.4.2",
+		"prettier-plugin-svelte": "^3.3.3",
+		"prettier-plugin-tailwindcss": "^0.6.10",
+		"svelte": "^5.0.0",
+		"svelte-check": "^4.0.0",
+		"tailwindcss": "^3.4.17",
+		"typescript": "^5.0.0",
+		"typescript-eslint": "^8.20.0",
+		"vite": "^6.0.0"
+	},
+	"dependencies": {
+		"@auth/sveltekit": "^1.7.4",
+		"@node-rs/argon2": "^2.0.2",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
+		"drizzle-orm": "^0.38.4",
+		"lucide-svelte": "^0.474.0",
+		"postgres": "^3.4.5",
+		"quill": "^2.0.3"
+	}
+}
+
+
+
+============================================================
+File: ./postcss.config.js
+Type: .js
+============================================================
+
+export default {
+	plugins: {
+		tailwindcss: {},
+		autoprefixer: {}
+	}
+};
+
+
+
+============================================================
+File: ./README.md
+Type: .md
+============================================================
+
+# sv
+
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+
+## Creating a project
+
+If you're seeing this, you've probably already done this step. Congrats!
+
+```bash
+# create a new project in the current directory
+npx sv create
+
+# create a new project in my-app
+npx sv create my-app
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+
+
+============================================================
+File: ./src/app.css
+Type: .css
+============================================================
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '$lib/styles/themes.css'; 
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--background: #fff;
+	--foreground: #000;
+}
+
+[data-theme='dark'] {
+	--background: #1a1a1a;
+	--foreground: #fff;
+}
+
+body {
+	background-color: var(--background);
+	color: var(--foreground);
+}
+
+
+
+============================================================
+File: ./src/app.d.ts
+Type: .ts
+============================================================
+
+// See https://svelte.dev/docs/kit/types#app.d.ts
+// for information about these interfaces
+declare global {
+	namespace App {
+		interface Locals {
+			user: import('$lib/server/auth').SessionValidationResult['user'];
+			session: import('$lib/server/auth').SessionValidationResult['session'];
+		}
+	}
+}
+
+export {};
+
+
+
+============================================================
+File: ./src/app.html
+Type: .html
+============================================================
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
+
+
+
+============================================================
+File: ./src/components/AuthLinks/AuthLinks.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/AuthLinks/AuthLinks.svelte -->
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { signOut } from '$lib/auth';
+</script>
+
+{#if !$page.data.session}
+	<a href="/login" class="login-btn">
+		<span>Login</span>
+		<div class="shine"></div>
+	</a>
+{:else}
+	<a href="/write" class="auth-link"> Add Recipe </a>
+	<button class="auth-link" on:click={signOut}> Logout </button>
+{/if}
+
+<style lang="postcss">
+	.login-btn {
+		@apply relative flex items-center justify-center overflow-hidden rounded-full px-6 py-2;
+		@apply bg-gradient-to-r from-orange-500 via-red-500 to-orange-500 bg-[length:200%_100%];
+		@apply text-sm font-semibold text-white;
+		@apply transition-all duration-300;
+		@apply hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25;
+		animation: gradient 3s linear infinite;
+	}
+
+	.login-btn .shine {
+		@apply absolute inset-0 block;
+		background: linear-gradient(
+			45deg,
+			transparent 0%,
+			rgba(255, 255, 255, 0.25) 25%,
+			transparent 50%
+		);
+		animation: shine 3s linear infinite;
+	}
+
+	@keyframes gradient {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	@keyframes shine {
+		0% {
+			transform: translateX(-100%);
+		}
+		100% {
+			transform: translateX(200%);
+		}
+	}
+
+	.auth-link {
+		@apply rounded-md bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-600;
+	}
+
+	button.auth-link {
+		@apply cursor-pointer border-0;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/Card/Card.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/Card/Card.svelte -->
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+	import { Clock, Star } from 'lucide-svelte';
+
+	export let recipe: {
+		title: string;
+		description: string;
+		image: string;
+		cookTime: number;
+		category: string;
+		difficulty: string;
+		author: {
+			name: string;
+			avatar: string;
+		};
+		rating: number;
+	};
+
+	// Create an array for star rating
+	$: stars = Array(5)
+		.fill(null)
+		.map((_, i) => i < Math.floor(recipe.rating));
+</script>
+
+<article
+	class="recipe-card"
+	class:dark={$theme === 'dark'}
+	on:mousemove={(e) => {
+		const { currentTarget: card } = e;
+		const rect = card.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+
+		const centerX = rect.width / 2;
+		const centerY = rect.height / 2;
+
+		const rotateX = (y - centerY) / 20;
+		const rotateY = (centerX - x) / 20;
+
+		card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+	}}
+	on:mouseleave={(e) => {
+		e.currentTarget.style.transform =
+			'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+	}}
+>
+	<!-- Image Section -->
+	<div class="image-wrapper">
+		<img src={recipe.image} alt={recipe.title} class="recipe-image" loading="lazy" />
+		<div class="badges">
+			<span class="category-badge">{recipe.category}</span>
+			<span
+				class="difficulty-badge"
+				class:easy={recipe.difficulty === 'Easy'}
+				class:medium={recipe.difficulty === 'Medium'}
+				class:hard={recipe.difficulty === 'Hard'}
+			>
+				{recipe.difficulty}
+			</span>
+		</div>
+	</div>
+
+	<!-- Content Section -->
+	<div class="content">
+		<h3 class="title">{recipe.title}</h3>
+		<p class="description">{recipe.description}</p>
+
+		<!-- Meta Information -->
+		<div class="meta">
+			<div class="cook-time">
+				<Clock size={16} strokeWidth={2.5} />
+				<span>{recipe.cookTime} mins</span>
+			</div>
+			<div class="rating" title={`Rating: ${recipe.rating} out of 5`}>
+				{#each stars as filled}
+					<Star
+						size={16}
+						fill={filled ? 'currentColor' : 'none'}
+						class={filled ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}
+					/>
+				{/each}
+			</div>
+		</div>
+
+		<!-- Author Info -->
+		<div class="author">
+			<img src={recipe.author.avatar} alt={`Chef ${recipe.author.name}`} class="author-avatar" />
+			<span class="author-name">by {recipe.author.name}</span>
+		</div>
+
+		<!-- Action Button -->
+		<button class="view-recipe" aria-label={`View recipe for ${recipe.title}`}>
+			<span>View Recipe</span>
+			<div class="button-shine" aria-hidden="true" />
+		</button>
+	</div>
+</article>
+
+<style lang="postcss">
+	.recipe-card {
+		@apply relative overflow-hidden rounded-2xl bg-white;
+		@apply transform transition-all duration-500 ease-out;
+		@apply hover:shadow-xl dark:bg-gray-800;
+		@apply border border-gray-100 dark:border-gray-700;
+		@apply will-change-transform;
+		max-width: 380px;
+		height: fit-content;
+	}
+
+	.image-wrapper {
+		@apply relative aspect-[16/9] w-full overflow-hidden;
+	}
+
+	.recipe-image {
+		@apply h-full w-full object-cover;
+		@apply transition-transform duration-700 ease-out;
+	}
+
+	.recipe-card:hover .recipe-image {
+		@apply scale-110;
+	}
+
+	.badges {
+		@apply absolute inset-x-0 top-0 flex items-center justify-between p-4;
+	}
+
+	.category-badge {
+		@apply rounded-full px-3 py-1 text-xs font-semibold;
+		@apply bg-white/90 text-gray-800 backdrop-blur-sm;
+		@apply dark:bg-gray-800/90 dark:text-white;
+		@apply transition-transform duration-300;
+	}
+
+	.recipe-card:hover .category-badge {
+		@apply -translate-y-0.5;
+	}
+
+	.difficulty-badge {
+		@apply rounded-full px-3 py-1 text-xs font-semibold backdrop-blur-sm;
+		@apply transition-transform duration-300;
+	}
+
+	.recipe-card:hover .difficulty-badge {
+		@apply translate-y-0.5;
+	}
+
+	.difficulty-badge.easy {
+		@apply bg-emerald-500/90 text-white;
+	}
+
+	.difficulty-badge.medium {
+		@apply bg-amber-500/90 text-white;
+	}
+
+	.difficulty-badge.hard {
+		@apply bg-rose-500/90 text-white;
+	}
+
+	.content {
+		@apply flex flex-col gap-4 p-6;
+	}
+
+	.title {
+		@apply text-lg font-bold leading-tight tracking-tight;
+		@apply text-gray-800 dark:text-white;
+		@apply line-clamp-1;
+	}
+
+	.description {
+		@apply text-sm leading-relaxed;
+		@apply text-gray-600 dark:text-gray-300;
+		@apply line-clamp-2;
+	}
+
+	.meta {
+		@apply flex items-center justify-between;
+	}
+
+	.cook-time {
+		@apply flex items-center gap-1.5 text-sm;
+		@apply text-gray-600 dark:text-gray-400;
+	}
+
+	.rating {
+		@apply flex gap-0.5;
+	}
+
+	.author {
+		@apply flex items-center gap-3 border-t border-gray-100 pt-4 dark:border-gray-700;
+	}
+
+	.author-avatar {
+		@apply h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-gray-700;
+	}
+
+	.author-name {
+		@apply text-sm font-medium;
+		@apply text-gray-600 dark:text-gray-400;
+	}
+
+	.view-recipe {
+		@apply relative mt-2 w-full overflow-hidden rounded-lg px-6 py-2.5;
+		@apply text-sm font-semibold tracking-wide;
+		@apply bg-gradient-to-r from-orange-500 to-red-500;
+		@apply text-white transition-all duration-300;
+	}
+
+	.view-recipe:hover {
+		@apply -translate-y-0.5 shadow-lg shadow-orange-500/25;
+	}
+
+	.view-recipe:active {
+		@apply translate-y-0;
+	}
+
+	.button-shine {
+		@apply absolute inset-0;
+		background: linear-gradient(
+			45deg,
+			transparent 0%,
+			rgba(255, 255, 255, 0.25) 50%,
+			transparent 100%
+		);
+		transform: translateX(-100%) skewX(-15deg);
+		transition: transform 0.75s ease;
+	}
+
+	.view-recipe:hover .button-shine {
+		transform: translateX(100%) skewX(-15deg);
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/CardList/CardList.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/CardList/CardList.svelte -->
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+	import { onMount } from 'svelte';
+	import Card from '../Card/Card.svelte';
+	import Pagination from '../Pagination/Pagination.svelte';
+
+	export let page = 1;
+	export let hasMore = true;
+
+	// Sample data - later we can fetch this from an API
+	const recipes = [
+		{
+			title: 'Homemade Margherita Pizza',
+			description: 'Classic Italian pizza with fresh basil, mozzarella, and tomato sauce',
+			image: '/images/margherita-pizza.jpg',
+			cookTime: 45,
+			category: 'Italian',
+			difficulty: 'Medium',
+			author: {
+				name: 'Chef Maria',
+				avatar: '/images/chef-maria.jpg'
+			},
+			rating: 4.5
+		},
+		{
+			title: 'Spicy Thai Green Curry',
+			description:
+				'Authentic Thai green curry with coconut milk, vegetables, and your choice of protein',
+			image: '/images/thai-curry.jpg',
+			cookTime: 35,
+			category: 'Thai',
+			difficulty: 'Easy',
+			author: {
+				name: 'Chef Sorn',
+				avatar: '/images/chef-sorn.jpg'
+			},
+			rating: 4.8
+		},
+		{
+			title: 'Classic Beef Burger',
+			description: 'Juicy homemade beef burger with special sauce and fresh toppings',
+			image: '/images/beef-burger.jpg',
+			cookTime: 25,
+			category: 'American',
+			difficulty: 'Easy',
+			author: {
+				name: 'Chef John',
+				avatar: '/images/chef-john.jpg'
+			},
+			rating: 4.7
+		}
+	];
+
+	let isLoading = true;
+
+	onMount(() => {
+		setTimeout(() => {
+			isLoading = false;
+		}, 1500);
+	});
+</script>
+
+<section class="recipe-section">
+	<div class="section-header">
+		<h1 class="title">
+			<span class="highlight">Featured Re</span><span
+				class="regular-text"
+				class:dark={$theme === 'dark'}>cipes</span
+			>
+		</h1>
+		<p class="subtitle">Discover delicious recipes from around the world</p>
+	</div>
+
+	<div class="recipe-grid">
+		{#each recipes as recipe (recipe.title)}
+			<Card {recipe} />
+		{/each}
+	</div>
+
+	<div class="pagination-wrapper">
+		<Pagination {page} {hasMore} />
+	</div>
+</section>
+
+<style lang="postcss">
+	.recipe-section {
+		@apply mx-auto w-full max-w-7xl px-4;
+	}
+
+	.section-header {
+		@apply mb-12 text-center;
+	}
+
+	.title {
+		@apply mb-4 text-4xl font-bold;
+	}
+
+	.highlight {
+		@apply text-orange-500;
+	}
+
+	.regular-text {
+		@apply text-gray-900;
+	}
+
+	.regular-text.dark {
+		@apply text-white;
+	}
+
+	.subtitle {
+		@apply text-lg text-gray-600 dark:text-gray-400;
+	}
+
+	.recipe-grid {
+		@apply grid gap-8;
+		@apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+	}
+
+	.pagination-wrapper {
+		@apply mt-12;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/CategoryList/CategoryList.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/CategoryList/CategoryList.svelte -->
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+	import {
+		Utensils,
+		Coffee,
+		Pizza,
+		Soup,
+		Beef,
+		Sandwich,
+		ChevronLeft,
+		ChevronRight
+	} from 'lucide-svelte';
+
+	const categories = [
+		{
+			name: 'Indian',
+			icon: Soup,
+			color: 'bg-orange-500',
+			bgLight: 'bg-orange-50',
+			bgDark: 'dark:bg-orange-500/10'
+		},
+		{
+			name: 'Chinese',
+			icon: Utensils,
+			color: 'bg-red-500',
+			bgLight: 'bg-red-50',
+			bgDark: 'dark:bg-red-500/10'
+		},
+		{
+			name: 'Italian',
+			icon: Pizza,
+			color: 'bg-emerald-500',
+			bgLight: 'bg-emerald-50',
+			bgDark: 'dark:bg-emerald-500/10'
+		},
+		{
+			name: 'Spanish',
+			icon: Coffee,
+			color: 'bg-amber-500',
+			bgLight: 'bg-amber-50',
+			bgDark: 'dark:bg-amber-500/10'
+		},
+		{
+			name: 'Thai',
+			icon: Soup,
+			color: 'bg-purple-500',
+			bgLight: 'bg-purple-50',
+			bgDark: 'dark:bg-purple-500/10'
+		},
+		{
+			name: 'Japanese',
+			icon: Beef,
+			color: 'bg-rose-500',
+			bgLight: 'bg-rose-50',
+			bgDark: 'dark:bg-rose-500/10'
+		}
+	];
+</script>
+
+<section class="categories-section" class:dark={$theme === 'dark'}>
+	<div class="header">
+		<h2 class="title">
+			<span class="highlight">Categories</span>
+		</h2>
+		<p class="subtitle">Explore recipes by cuisine type</p>
+	</div>
+
+	<div class="categories-container">
+		<div class="scroll-area" class:dark={$theme === 'dark'}>
+			{#each categories as category}
+				<a
+					href="/category/{category.name.toLowerCase()}"
+					class="category-card {category.bgLight} {category.bgDark}"
+					data-sveltekit-noscroll
+					on:click|preventDefault
+				>
+					<div class="icon-wrapper {category.color}">
+						<svelte:component this={category.icon} size={20} class="text-white" />
+					</div>
+					<span class="category-name">{category.name}</span>
+				</a>
+			{/each}
+		</div>
+
+		<!-- Navigation Arrows -->
+		<button class="nav-button left">
+			<ChevronLeft size={20} />
+		</button>
+		<button class="nav-button right">
+			<ChevronRight size={20} />
+		</button>
+	</div>
+</section>
+
+<style lang="postcss">
+	.categories-section {
+		@apply py-8;
+	}
+
+	.header {
+		@apply mb-8 text-center;
+	}
+
+	.title {
+		@apply text-3xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.highlight {
+		@apply text-orange-500;
+	}
+
+	.subtitle {
+		@apply mt-2 text-gray-600 dark:text-gray-400;
+	}
+
+	.categories-container {
+		@apply relative mx-auto max-w-7xl px-8;
+	}
+
+	.scroll-area {
+		@apply flex gap-6 overflow-x-auto py-4;
+		/* Hide scrollbar */
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.scroll-area::-webkit-scrollbar {
+		display: none;
+	}
+
+	.category-card {
+		@apply flex min-w-[160px] flex-col items-center gap-4 rounded-xl p-6;
+		@apply transform transition-all duration-300;
+		@apply will-change-transform;
+		@apply border border-gray-100 dark:border-gray-700;
+	}
+
+	/* Prevent jumping by setting explicit height */
+	.category-card::before {
+		content: '';
+		@apply block;
+		padding-bottom: 100%;
+	}
+
+	.icon-wrapper {
+		@apply flex h-12 w-12 items-center justify-center rounded-full;
+		@apply shadow-lg;
+	}
+
+	.category-name {
+		@apply text-base font-medium text-gray-800 dark:text-gray-200;
+	}
+
+	.nav-button {
+		@apply absolute top-1/2 hidden -translate-y-1/2 items-center justify-center;
+		@apply h-10 w-10 rounded-full bg-white shadow-lg dark:bg-gray-800;
+		@apply text-gray-600 dark:text-gray-300;
+		@apply transition-all duration-300;
+		@apply hover:bg-gray-50 hover:text-gray-900;
+		@apply dark:hover:bg-gray-700 dark:hover:text-white;
+		@apply lg:flex;
+	}
+
+	.nav-button.left {
+		@apply -left-5;
+	}
+
+	.nav-button.right {
+		@apply -right-5;
+	}
+
+	/* Add smooth hover effect */
+	.category-card {
+		@apply hover:-translate-y-1 hover:shadow-lg;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/Comments/Comments.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	let status = true; 
+</script>
+
+<div class="container">
+	<h1 class="title">Comments</h1>
+	{#if status}
+		<div class="write">
+			<textarea placeholder="Write a Comment..." class="input" ></textarea>
+			<button class="button">Send</button>
+		</div>
+	{:else}
+		<a href="/login">Please Login to Write a comment</a>
+	{/if}
+
+	<div class="comments">
+		{#each Array(3) as _}
+			<div class="comment">
+				<div class="user">
+					<div class="userImageContainer">
+						<img src="/Food.jpg" alt="user Image" class="image" />
+					</div>
+					<div class="userInfo">
+						<span class="username">Megumi Fushiguro</span>
+						<span class="date">10.02.2023</span>
+					</div>
+				</div>
+				<p class="desc">
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, molestiae optio odio
+					dolorum recusandae perspiciatis.
+				</p>
+			</div>
+		{/each}
+	</div>
+</div>
+
+<style lang="postcss">
+	.container {
+		@apply mt-12;
+	}
+
+	.title {
+		@apply mb-6 text-2xl font-bold text-gray-800;
+	}
+
+	.write {
+		@apply flex flex-col gap-4;
+	}
+
+	.input {
+		@apply w-full rounded-md border p-5;
+	}
+
+	.button {
+		@apply w-max rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600;
+	}
+
+	.comments {
+		@apply mt-8;
+	}
+
+	.comment {
+		@apply mb-8;
+	}
+
+	.user {
+		@apply mb-4 flex items-center gap-4;
+	}
+
+	.userImageContainer {
+		@apply relative h-12 w-12;
+	}
+
+	.image {
+		@apply h-full w-full rounded-full object-cover;
+	}
+
+	.userInfo {
+		@apply flex flex-col;
+	}
+
+	.username {
+		@apply font-medium;
+	}
+
+	.date {
+		@apply text-sm text-gray-500;
+	}
+
+	.desc {
+		@apply leading-6 text-gray-700;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/Featured/Featured.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { fade, scale, fly } from 'svelte/transition';
+	import { ChevronLeft, ChevronRight, Clock, User } from 'lucide-svelte';
+
+	// Sample data - later we can fetch this from an API
+	const featuredPosts = [
+		{
+			id: 1,
+			title: 'Classic Italian Pasta Carbonara',
+			description:
+				'Learn the authentic way to make this creamy Roman pasta dish with eggs, cheese, and pancetta.',
+			image: '/images/carbonara.jpg',
+			category: 'Italian',
+			author: 'Chef Maria',
+			readTime: '15 min'
+		},
+		{
+			id: 2,
+			title: 'Perfect Butter Chicken',
+			description:
+				'Discover the secrets to making the most tender and flavorful butter chicken at home.',
+			image: '/images/butter-chicken.jpg',
+			category: 'Indian',
+			author: 'Chef Raj',
+			readTime: '25 min'
+		},
+		{
+			id: 3,
+			title: 'Sushi Rolling Masterclass',
+			description:
+				'Master the art of sushi rolling with our step-by-step guide to perfect rolls every time.',
+			image: '/images/sushi.jpg',
+			category: 'Japanese',
+			author: 'Chef Yuki',
+			readTime: '30 min'
+		}
+	];
+
+	let currentIndex = 0;
+	let intervalId: NodeJS.Timeout;
+	let isHovered = false;
+
+	function nextSlide() {
+		currentIndex = (currentIndex + 1) % featuredPosts.length;
+	}
+
+	function prevSlide() {
+		currentIndex = (currentIndex - 1 + featuredPosts.length) % featuredPosts.length;
+	}
+
+	function startAutoPlay() {
+		intervalId = setInterval(nextSlide, 5000);
+		isHovered = false;
+	}
+
+	function stopAutoPlay() {
+		if (intervalId) clearInterval(intervalId);
+		isHovered = true;
+	}
+
+	onMount(() => {
+		startAutoPlay();
+		return () => stopAutoPlay();
+	});
+</script>
+
+<div
+	class="featured-section"
+	role="region"
+	aria-label="Featured Recipes Carousel"
+	on:mouseenter={stopAutoPlay}
+	on:mouseleave={startAutoPlay}
+>
+	<div class="featured-content" role="group">
+		{#key currentIndex}
+			<div
+				class="slide"
+				role="group"
+				aria-roledescription="slide"
+				aria-label={`Slide ${currentIndex + 1} of ${featuredPosts.length}`}
+				in:fade={{ duration: 400 }}
+				out:fade={{ duration: 400 }}
+			>
+				<div class="image-wrapper">
+					<img
+						src={featuredPosts[currentIndex].image}
+						alt={featuredPosts[currentIndex].title}
+						class="slide-image"
+					/>
+					<div class="overlay" aria-hidden="true" ></div>
+				</div>
+
+				<div class="text-content" in:fly={{ x: 50, duration: 500, delay: 200 }}>
+					<span class="category" in:scale={{ duration: 300, delay: 300 }}>
+						{featuredPosts[currentIndex].category}
+					</span>
+					<h1 class="title">{featuredPosts[currentIndex].title}</h1>
+					<p class="description">{featuredPosts[currentIndex].description}</p>
+					<div class="meta" role="contentinfo">
+						<div class="meta-item">
+							<User size={16} aria-hidden="true" />
+							<span>{featuredPosts[currentIndex].author}</span>
+						</div>
+						<div class="divider" aria-hidden="true"></div>
+						<div class="meta-item">
+							<Clock size={16} aria-hidden="true" />
+							<span>{featuredPosts[currentIndex].readTime} read</span>
+						</div>
+					</div>
+					<button class="read-more" aria-label={`Read ${featuredPosts[currentIndex].title}`}>
+						Read Recipe
+						<div class="btn-shine" aria-hidden="true"></div>
+					</button>
+				</div>
+			</div>
+		{/key}
+
+		<!-- Navigation -->
+		<div
+			class="navigation-wrapper"
+			class:show={isHovered}
+			role="group"
+			aria-label="Carousel Navigation"
+		>
+			<button class="nav-button prev" on:click={prevSlide} aria-label="Previous slide">
+				<ChevronLeft size={24} aria-hidden="true" />
+			</button>
+
+			<button class="nav-button next" on:click={nextSlide} aria-label="Next slide">
+				<ChevronRight size={24} aria-hidden="true" />
+			</button>
+		</div>
+
+		<div class="dots" role="tablist" aria-label="Slide dots">
+			{#each featuredPosts as _, index}
+				<button
+					class="dot"
+					role="tab"
+					aria-selected={currentIndex === index}
+					aria-label={`Go to slide ${index + 1}`}
+					class:active={currentIndex === index}
+					on:click={() => (currentIndex = index)}
+				></button>
+			{/each}
+		</div>
+	</div>
+</div>
+
+<style lang="postcss">
+	.featured-section {
+		@apply relative mx-auto mt-8 overflow-hidden rounded-3xl;
+		@apply z-[1];
+		height: min(70vh, 600px);
+	}
+
+	.featured-content {
+		@apply relative h-full w-full;
+	}
+
+	.slide {
+		@apply relative flex h-full w-full items-center;
+	}
+
+	.image-wrapper {
+		@apply absolute inset-0 overflow-hidden;
+	}
+
+	.slide-image {
+		@apply h-full w-full object-cover;
+		transform: scale(1);
+		transition: transform 6s ease;
+	}
+
+	.slide:hover .slide-image {
+		transform: scale(1.1);
+	}
+
+	.overlay {
+		@apply absolute inset-0;
+		background: linear-gradient(
+			90deg,
+			rgba(0, 0, 0, 0.8) 0%,
+			rgba(0, 0, 0, 0.6) 50%,
+			rgba(0, 0, 0, 0.2) 100%
+		);
+	}
+
+	.text-content {
+		@apply relative z-[2] ml-16 max-w-2xl text-white;
+	}
+
+	.category {
+		@apply mb-4 inline-block rounded-full px-4 py-1 text-sm font-semibold;
+		background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+	}
+
+	.title {
+		@apply mb-4 text-5xl font-bold leading-tight;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	}
+
+	.description {
+		@apply mb-6 text-lg text-gray-200;
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+	}
+
+	.meta {
+		@apply mb-8 flex items-center space-x-4 text-sm text-gray-300;
+	}
+
+	.meta-item {
+		@apply flex items-center gap-2;
+	}
+
+	.divider {
+		@apply h-4 w-px bg-gray-400/30;
+	}
+
+	.read-more {
+		@apply relative overflow-hidden rounded-lg px-6 py-3 text-sm font-semibold;
+		background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+		transition: all 0.3s ease;
+	}
+
+	.read-more:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
+	}
+
+	.btn-shine {
+		@apply absolute inset-0;
+		background: linear-gradient(
+			45deg,
+			transparent 0%,
+			rgba(255, 255, 255, 0.2) 50%,
+			transparent 100%
+		);
+		transform: translateX(-100%);
+		transition: transform 0.5s ease;
+	}
+
+	.read-more:hover .btn-shine {
+		transform: translateX(100%);
+	}
+
+	.navigation-wrapper {
+		@apply absolute inset-y-0 left-0 right-0 z-[3] flex items-center justify-between px-4;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.navigation-wrapper.show {
+		opacity: 1;
+	}
+
+	.nav-button {
+		@apply flex h-12 w-12 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm;
+		@apply transition-all duration-300;
+		@apply hover:scale-110 hover:bg-black/50;
+	}
+
+	.dots {
+		@apply absolute bottom-6 left-1/2 z-[3] flex -translate-x-1/2 space-x-2;
+	}
+
+	.dot {
+		@apply h-2 w-2 rounded-full transition-all duration-300;
+		background: rgba(255, 255, 255, 0.3);
+	}
+
+	.dot.active {
+		@apply w-8;
+		background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/Footer/Footer.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/Footer/Footer.svelte -->
+<script lang="ts">
+	import { Facebook, Instagram, Twitter, Youtube } from 'lucide-svelte';
+	import { theme } from '$lib/stores/theme';
+</script>
+
+<footer class="footer" class:dark={$theme === 'dark'}>
+	<div class="footer-container">
+		<!-- Logo Section -->
+		<div class="info">
+			<div class="logo-section">
+				<div class="logo-text">
+					<span class="own">Own</span>
+					<span class="chef" class:dark={$theme === 'dark'}>CHEF</span>
+				</div>
+			</div>
+			<p class="desc">
+				Discover, create, and share delicious recipes from around the world. Join our community of
+				food lovers and culinary enthusiasts.
+			</p>
+			<div class="social-links">
+				<a href="/" class="social-icon facebook">
+					<Facebook size={20} />
+				</a>
+				<a href="/" class="social-icon instagram">
+					<Instagram size={20} />
+				</a>
+				<a href="/" class="social-icon twitter">
+					<Twitter size={20} />
+				</a>
+				<a href="/" class="social-icon youtube">
+					<Youtube size={20} />
+				</a>
+			</div>
+		</div>
+
+		<!-- Links Section -->
+		<div class="links">
+			<div class="link-group">
+				<h3 class="group-title">Quick Links</h3>
+				<a href="/">Home</a>
+				<a href="/blog">Recipes</a>
+				<a href="/about">About</a>
+				<a href="/contact">Contact</a>
+			</div>
+
+			<div class="link-group">
+				<h3 class="group-title">Categories</h3>
+				<a href="/category/indian">Indian</a>
+				<a href="/category/chinese">Chinese</a>
+				<a href="/category/italian">Italian</a>
+				<a href="/category/spanish">Spanish</a>
+			</div>
+
+			<div class="link-group">
+				<h3 class="group-title">Follow Us</h3>
+				<a href="/">Facebook</a>
+				<a href="/">Instagram</a>
+				<a href="/">Twitter</a>
+				<a href="/">Youtube</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="copyright">
+		<p>© {new Date().getFullYear()} OwnChef. All rights reserved.</p>
+	</div>
+</footer>
+
+<style lang="postcss">
+	.footer {
+		@apply mt-24 border-t transition-colors duration-300;
+		@apply border-gray-200 bg-white;
+	}
+
+	.footer.dark {
+		@apply border-gray-800 bg-gray-900;
+	}
+
+	.footer-container {
+		@apply mx-auto max-w-7xl px-6 py-12;
+		@apply grid grid-cols-1 gap-8 lg:grid-cols-3;
+	}
+
+	.info {
+		@apply lg:col-span-1;
+	}
+
+	.logo-text {
+		@apply flex items-baseline gap-1 text-2xl font-bold;
+	}
+
+	.own {
+		@apply bg-gradient-to-br from-red-500 via-orange-400 to-yellow-500 bg-clip-text font-black text-transparent;
+	}
+
+	.chef {
+		@apply font-bold tracking-wider text-gray-800 transition-colors duration-300;
+	}
+
+	.chef.dark {
+		@apply text-white;
+	}
+
+	.desc {
+		@apply mt-6 text-gray-600 transition-colors duration-300;
+	}
+
+	.footer.dark .desc {
+		@apply text-gray-300;
+	}
+
+	.social-links {
+		@apply mt-8 flex space-x-6;
+	}
+
+	.social-icon {
+		@apply flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300;
+	}
+
+	.facebook {
+		@apply text-[#316FF6] hover:bg-[#316FF6]/10;
+	}
+
+	.instagram {
+		@apply text-[#d62976] hover:bg-[#d62976]/10;
+	}
+
+	.twitter {
+		@apply text-[#1DA1F2] hover:bg-[#1DA1F2]/10;
+	}
+
+	.youtube {
+		@apply text-[#FF0000] hover:bg-[#FF0000]/10;
+	}
+
+	.links {
+		@apply grid grid-cols-1 gap-8 sm:grid-cols-3 lg:col-span-2;
+	}
+
+	.link-group {
+		@apply flex flex-col space-y-4;
+	}
+
+	.group-title {
+		@apply text-sm font-semibold uppercase tracking-wider;
+		@apply text-gray-400 transition-colors duration-300;
+	}
+
+	.footer.dark .group-title {
+		@apply text-gray-300;
+	}
+
+	.link-group a {
+		@apply text-base transition-colors duration-300;
+		@apply text-gray-600 hover:text-gray-900;
+	}
+
+	.footer.dark .link-group a {
+		@apply text-gray-300 hover:text-white;
+	}
+
+	.copyright {
+		@apply border-t transition-colors duration-300;
+		@apply border-gray-200 bg-gray-50 py-4 text-center;
+	}
+
+	.footer.dark .copyright {
+		@apply border-gray-800 bg-gray-900;
+	}
+
+	.copyright p {
+		@apply text-sm transition-colors duration-300;
+		@apply text-gray-500;
+	}
+
+	.footer.dark .copyright p {
+		@apply text-gray-400;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/Menu/Menu.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import MenuPosts from '../MenuPosts/MenuPosts.svelte';
+	import MenuCategories from '../MenuCategories/MenuCategories.svelte';
+</script>
+
+<div class="container">
+	<h1 class="title">Most Popular</h1>
+	<MenuPosts withImage={false} />
+	<h2 class="subtitle">Discover by Cuisine</h2>
+	<h1 class="title">Categories</h1>
+	<MenuCategories />
+	<h2 class="subtitle">Chosen by the editor</h2>
+	<h1 class="title">Editors Pick</h1>
+	<MenuPosts withImage={true} />
+</div>
+
+<style lang="postcss">
+	.container {
+		@apply mt-8 flex-[2];
+	}
+
+	.title {
+		@apply mb-6 text-2xl font-bold;
+	}
+
+	.subtitle {
+		@apply mb-4 mt-8 text-gray-500;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/MenuCategories/MenuCategories.svelte
+Type: .svelte
+============================================================
+
+<div class="categoryList">
+	<a href="/blog?cat=thai" class="categoryItem style">Thai</a>
+	<a href="/blog?cat=japanese" class="categoryItem fashion">Japanese</a>
+	<a href="/blog?cat=italian" class="categoryItem food">Italian</a>
+	<a href="/blog?cat=indian" class="categoryItem travel">Indian</a>
+	<a href="/blog?cat=spanish" class="categoryItem culture">Spanish</a>
+	<a href="/blog?cat=chinese" class="categoryItem coding">Chinese</a>
+</div>
+
+<style lang="postcss">
+	.categoryList {
+		@apply flex flex-wrap gap-3;
+	}
+
+	.categoryItem {
+		@apply rounded-lg px-4 py-2 text-sm;
+	}
+
+	.style {
+		@apply bg-blue-100 text-blue-600;
+	}
+
+	.fashion {
+		@apply bg-rose-100 text-rose-600;
+	}
+
+	.food {
+		@apply bg-green-100 text-green-600;
+	}
+
+	.travel {
+		@apply bg-orange-100 text-orange-600;
+	}
+
+	.culture {
+		@apply bg-purple-100 text-purple-600;
+	}
+
+	.coding {
+		@apply bg-indigo-100 text-indigo-600;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/MenuPosts/MenuPosts.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	export let withImage: boolean;
+</script>
+
+<div class="items">
+	{#each Array(4) as _, i}
+		<a href="/" class="item">
+			{#if withImage}
+				<div class="imageContainer">
+					<img src="/Food.jpg" alt="" class="image" />
+				</div>
+			{/if}
+			<div class="textContainer">
+				<span class="category travel">Indian</span>
+				<h3 class="postTitle">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
+				<div class="detail">
+					<span class="username">John Doe</span>
+					<span class="date"> - 10.03.2023</span>
+				</div>
+			</div>
+		</a>
+	{/each}
+</div>
+
+<style lang="postcss">
+	.items {
+		@apply mt-5 flex flex-col gap-8;
+	}
+
+	.item {
+		@apply flex gap-5;
+	}
+
+	.imageContainer {
+		@apply relative aspect-square flex-1;
+	}
+
+	.image {
+		@apply rounded-full border object-cover;
+	}
+
+	.textContainer {
+		@apply flex flex-[4] flex-col gap-1;
+	}
+
+	.category {
+		@apply w-max rounded-2xl px-2 py-1 text-sm;
+	}
+
+	.travel {
+		@apply bg-orange-100 text-orange-600;
+	}
+
+	.postTitle {
+		@apply text-base font-medium leading-5;
+	}
+
+	.detail {
+		@apply text-sm;
+	}
+
+	.username {
+		@apply font-medium;
+	}
+
+	.date {
+		@apply text-gray-500;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/Navbar/Navbar.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/Navbar/Navbar.svelte -->
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { theme } from '$lib/stores/theme';
+	import { browser } from '$app/environment';
+	import { slide } from 'svelte/transition';
+	import { clickOutside } from '$lib/utils/clickOutside';
+	import {
+		Menu,
+		X,
+		Search,
+		ChevronDown,
+		Facebook,
+		Instagram,
+		Twitter,
+		Youtube
+	} from 'lucide-svelte';
+	import ThemeToggle from '../ThemeToggle/ThemeToggle.svelte';
+	import AuthLinks from '../AuthLinks/AuthLinks.svelte';
+
+	let isScrolled = false;
+	let isMobileMenuOpen = false;
+	let isDropdownOpen = false;
+	let isSearchOpen = false;
+	let searchQuery = '';
+	let suppressHover = false;
+
+	// Handle scroll effect
+	if (browser) {
+		window.addEventListener('scroll', () => {
+			isScrolled = window.scrollY > 20;
+		});
+	}
+
+	const categories = [
+		{ id: 'indian', name: 'Indian', path: '/category/indian' },
+		{ id: 'chinese', name: 'Chinese', path: '/category/chinese' },
+		{ id: 'italian', name: 'Italian', path: '/category/italian' },
+		{ id: 'spanish', name: 'Spanish', path: '/category/spanish' },
+		{ id: 'thai', name: 'Thai', path: '/category/thai' },
+		{ id: 'japanese', name: 'Japanese', path: '/category/japanese' }
+	];
+
+	function closeMenu() {
+		isMobileMenuOpen = false;
+		isDropdownOpen = false;
+	}
+
+	function handleKeydown(event: KeyboardEvent) {
+		if (isDropdownOpen && event.key === 'Escape') {
+			isDropdownOpen = false;
+		}
+	}
+
+	function handleSearch() {
+		if (searchQuery.trim()) {
+			console.log('Searching for:', searchQuery);
+		}
+	}
+
+	function toggleDropdown() {
+		isDropdownOpen = !isDropdownOpen;
+		// Temporarily suppress hover interactions
+		suppressHover = true;
+		setTimeout(() => (suppressHover = false), 300);
+	}
+
+	function handleMouseEnter() {
+		if (!suppressHover) isDropdownOpen = true;
+	}
+
+	function handleMouseLeave() {
+		if (!suppressHover) isDropdownOpen = false;
+	}
+</script>
+
+<svelte:window on:keydown={handleKeydown} />
+
+<nav
+	class="fixed z-[100] left-0 right-0 mx-auto mt-4 max-w-[calc(100%-2rem)] rounded-2xl transition-all duration-300"
+	class:scrolled={isScrolled}
+	class:dark={$theme === 'dark'}
+>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<div class="flex h-16 items-center justify-between">
+			<!-- Logo -->
+			<a href="/" class="logo" on:click={closeMenu}>
+				<div class="logo-wrapper">
+					<span class="own">Own</span>
+					<div class="chef-wrapper">
+						<span class="chef" class:dark={$theme === 'dark'}>CHEF</span>
+						<div class="utensils">
+							<span class="knife">🔪</span>
+							<span class="fork">🍴</span>
+						</div>
+					</div>
+				</div>
+			</a>
+
+			<!-- Desktop Navigation -->
+			<div
+				class="group relative"
+				role="navigation"
+				on:mouseenter={handleMouseEnter}
+				on:mouseleave={handleMouseLeave}
+				class:dark={$theme === 'dark'}
+			>
+				<button
+					class="nav-link flex items-center gap-1"
+					class:dark={$theme === 'dark'}
+					aria-expanded={isDropdownOpen}
+					aria-controls="categories-menu"
+					aria-haspopup="true"
+					on:click={toggleDropdown}
+				>
+					<span>Recipes</span>
+					<ChevronDown
+						size={16}
+						class={`transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+					/>
+				</button>
+
+				{#if isDropdownOpen}
+					<div
+						id="categories-menu"
+						class="dropdown-menu"
+						role="menu"
+						tabindex="0"
+						on:mouseenter={handleMouseEnter}
+						on:mouseleave={handleMouseLeave}
+						transition:slide={{ duration: 200 }}
+						use:clickOutside={() => {
+							if (!suppressHover) isDropdownOpen = false;
+						}}
+					>
+						{#each categories as category (category.id)}
+							<a
+								href={category.path}
+								class="dropdown-item"
+								class:active={$page.url.pathname === category.path}
+								role="menuitem"
+								tabindex="0"
+								on:click={() => (isDropdownOpen = false)}
+							>
+								{category.name}
+							</a>
+						{/each}
+					</div>
+				{/if}
+			</div>
+
+			<a
+				href="/blog"
+				class="nav-link"
+				class:dark={$theme === 'dark'}
+				class:active={$page.url.pathname === '/blog'}
+			>
+				Blog
+			</a>
+			<a
+				href="/about"
+				class="nav-link"
+				class:dark={$theme === 'dark'}
+				class:active={$page.url.pathname === '/about'}
+			>
+				About
+			</a>
+
+			<!-- Search Bar -->
+			<div class="search-container" class:open={isSearchOpen}>
+				<input
+					type="text"
+					bind:value={searchQuery}
+					placeholder="Search recipes..."
+					class="search-input"
+					on:keydown={(e) => e.key === 'Enter' && handleSearch()}
+				/>
+				<button
+					class="search-toggle"
+					aria-label={isSearchOpen ? 'Close search' : 'Open search'}
+					on:click={() => (isSearchOpen = !isSearchOpen)}
+				>
+					{#if isSearchOpen}
+						<X size={20} />
+					{:else}
+						<Search size={20} />
+					{/if}
+				</button>
+			</div>
+
+			<!-- Social Links -->
+			<div class="social-links">
+				<a href="/" class="social-icon facebook" aria-label="Facebook">
+					<Facebook size={18} />
+				</a>
+				<a href="/" class="social-icon instagram" aria-label="Instagram">
+					<Instagram size={18} />
+				</a>
+				<a href="/" class="social-icon twitter" aria-label="Twitter">
+					<Twitter size={18} />
+				</a>
+				<a href="/" class="social-icon youtube" aria-label="YouTube">
+					<Youtube size={18} />
+				</a>
+			</div>
+
+			<!-- Theme Toggle and Auth -->
+			<div class="flex items-center space-x-4">
+				<ThemeToggle />
+				<AuthLinks />
+			</div>
+		</div>
+
+		<!-- Mobile Menu Button -->
+		<button
+			class="mobile-menu-button"
+			on:click={() => (isMobileMenuOpen = !isMobileMenuOpen)}
+			aria-expanded={isMobileMenuOpen}
+			aria-controls="mobile-menu"
+			aria-label="Toggle menu"
+		>
+			{#if isMobileMenuOpen}
+				<X size={24} />
+			{:else}
+				<Menu size={24} />
+			{/if}
+		</button>
+	</div>
+
+	<!-- Mobile Menu -->
+	{#if isMobileMenuOpen}
+		<div
+			class="mobile-menu"
+			id="mobile-menu"
+			role="navigation"
+			transition:slide={{ duration: 200 }}
+		>
+			<div class="mobile-search">
+				<input
+					type="text"
+					bind:value={searchQuery}
+					placeholder="Search recipes..."
+					class="mobile-search-input"
+				/>
+			</div>
+			{#each categories as category (category.id)}
+				<a
+					href={category.path}
+					class="mobile-nav-item"
+					class:active={$page.url.pathname === category.path}
+					on:click={closeMenu}
+				>
+					{category.name}
+				</a>
+			{/each}
+			<!-- Mobile Social Links -->
+			<div class="mobile-social-links">
+				<a href="/" class="social-icon facebook" aria-label="Facebook">
+					<Facebook size={20} />
+				</a>
+				<a href="/" class="social-icon instagram" aria-label="Instagram">
+					<Instagram size={20} />
+				</a>
+				<a href="/" class="social-icon twitter" aria-label="Twitter">
+					<Twitter size={20} />
+				</a>
+				<a href="/" class="social-icon youtube" aria-label="YouTube">
+					<Youtube size={20} />
+				</a>
+			</div>
+			<!-- Mobile Auth Links -->
+			<div class="mobile-auth-wrapper">
+				<AuthLinks />
+			</div>
+		</div>
+	{/if}
+</nav>
+
+<style lang="postcss">
+	nav {
+		@apply shadow-sm backdrop-blur-md;
+		background: rgba(255, 255, 255, 0.8);
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	nav.scrolled {
+		@apply shadow-xl;
+	}
+
+	nav.dark {
+		background: rgba(17, 17, 17, 0.8);
+	}
+
+	.logo {
+		@apply relative z-50 transition-all duration-300 hover:-translate-y-0.5;
+	}
+
+	.logo-wrapper {
+		@apply flex flex-col items-start;
+	}
+
+	.own {
+		@apply bg-gradient-to-br from-red-500 via-orange-400 to-yellow-500 bg-clip-text text-3xl font-black text-transparent;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.chef-wrapper {
+		@apply relative flex items-center;
+	}
+
+	.chef {
+		@apply -mt-2 text-xl font-bold tracking-widest text-gray-800 transition-colors duration-300;
+	}
+
+	.chef.dark {
+		@apply text-gray-100;
+	}
+
+	.utensils {
+		@apply absolute -right-10 -top-1 flex space-x-2;
+	}
+
+	.knife,
+	.fork {
+		@apply text-lg transition-transform duration-300;
+	}
+
+	.logo:hover .knife {
+		transform: rotate(-15deg) translateX(-2px);
+	}
+
+	.logo:hover .fork {
+		transform: rotate(15deg) translateX(2px);
+	}
+
+	.nav-link {
+		@apply relative px-3 py-2 text-sm font-medium;
+		@apply text-gray-900 hover:text-orange-500 dark:text-gray-900 dark:hover:text-orange-400;
+	}
+
+	.nav-link.active {
+		@apply text-orange-500 dark:text-orange-400;
+	}
+
+	.nav-link.dark {
+		@apply text-gray-100;
+		@apply hover:text-orange-400;
+	}
+
+	.dropdown-menu {
+		@apply absolute left-0 top-full z-[101] mt-1 w-48 rounded-lg py-1 shadow-lg;
+		@apply bg-white dark:bg-gray-800;
+		@apply border border-gray-100 dark:border-gray-700;
+		margin-top: 2px;
+	}
+
+	.dropdown-menu::before {
+		content: '';
+		@apply absolute -top-2 left-0 h-2 w-full;
+	}
+
+	.group:hover .dropdown-menu {
+		display: block;
+	}
+
+	.relative {
+		@apply z-40;
+	}
+
+	.dropdown-item {
+		@apply block w-full px-4 py-2 text-left text-sm transition-colors duration-200;
+		@apply text-gray-900 hover:bg-gray-100 hover:text-orange-500;
+		@apply dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-orange-400;
+	}
+
+	.dropdown-item:focus {
+		@apply outline-none ring-2 ring-orange-500 dark:ring-orange-400;
+	}
+
+	.search-container {
+		@apply relative flex items-center;
+		width: 40px;
+		transition: width 0.3s ease;
+	}
+
+	.search-container.open {
+		width: 220px;
+	}
+
+	.search-input {
+		@apply h-8 w-full rounded-full pl-4 pr-10 text-sm outline-none transition-all duration-300;
+		@apply bg-gray-100 dark:bg-gray-800;
+		@apply text-gray-900 dark:text-gray-100;
+		@apply placeholder-gray-500 dark:placeholder-gray-400;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.search-container.open .search-input {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.search-toggle {
+		@apply absolute right-0 flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300;
+		@apply text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+	}
+
+	.social-links {
+		@apply hidden items-center space-x-6 md:flex;
+	}
+
+	.social-icon {
+		@apply flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300;
+	}
+
+	.facebook {
+		@apply text-[#316FF6] hover:bg-[#316FF6]/10;
+	}
+
+	.instagram {
+		@apply text-[#d62976] hover:bg-[#d62976]/10;
+	}
+
+	.twitter {
+		@apply text-[#1DA1F2] hover:bg-[#1DA1F2]/10;
+	}
+
+	.youtube {
+		@apply text-[#FF0000] hover:bg-[#FF0000]/10;
+	}
+
+	.mobile-menu-button {
+		@apply flex items-center rounded-lg p-2 transition-colors duration-300 lg:hidden;
+		@apply text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+	}
+
+	.mobile-menu {
+		@apply px-4 pb-3 pt-2 shadow-lg lg:hidden;
+		@apply bg-white dark:bg-gray-900;
+	}
+
+	.mobile-search {
+		@apply px-3 py-2;
+	}
+
+	.mobile-search-input {
+		@apply w-full rounded-full px-4 py-2;
+		@apply bg-gray-100 dark:bg-gray-800;
+		@apply text-gray-900 dark:text-gray-100;
+		@apply placeholder-gray-500 dark:placeholder-gray-400;
+	}
+
+	.mobile-nav-item {
+		@apply block px-3 py-2 text-base font-medium transition-colors duration-200;
+		@apply text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800;
+	}
+
+	.mobile-social-links {
+		@apply flex justify-center space-x-6 px-3 py-4;
+		@apply border-t border-gray-200 dark:border-gray-700;
+	}
+
+	.mobile-auth-wrapper {
+		@apply px-3 py-4;
+		@apply border-t border-gray-200 dark:border-gray-700;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/Pagination/Pagination.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/Pagination/Pagination.svelte -->
+<script lang="ts">
+	export let page: number;
+	export let hasMore: boolean;
+
+	function handlePageChange(newPage: number) {
+		if ((newPage > page && hasMore) || (newPage < page && page > 1)) {
+			window.history.pushState({}, '', `?page=${newPage}`);
+		}
+	}
+</script>
+
+<div class="pagination">
+	<button
+		class="page-button"
+		class:disabled={page <= 1}
+		on:click={() => handlePageChange(page - 1)}
+	>
+		Previous
+	</button>
+	<button class="page-button" class:disabled={!hasMore} on:click={() => handlePageChange(page + 1)}>
+		Next
+	</button>
+</div>
+
+<style lang="postcss">
+	.pagination {
+		@apply flex items-center justify-between;
+	}
+
+	.page-button {
+		@apply rounded-lg px-6 py-2 text-sm font-semibold transition-all duration-200;
+		@apply bg-orange-500 text-white hover:bg-orange-600;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	.disabled {
+		@apply pointer-events-none opacity-50;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/components/ThemeToggle/ThemeToggle.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+	import { Moon, Sun } from 'lucide-svelte';
+</script>
+
+<button type="button" class="container" on:click={() => ($theme = $theme === 'dark' ? 'light' : 'dark')} aria-label="Toggle Theme">
+	<Moon class="icon moon" size={16} />
+	<div class="ball" class:dark={$theme === 'dark'}></div>
+	<Sun class="icon sun" size={16} />
+</button>
+
+<style lang="postcss">	
+	.container {
+		@apply relative flex h-[24px] w-[42px] cursor-pointer items-center justify-between rounded-full border border-gray-300 bg-white p-1 dark:bg-gray-800;
+	}
+
+	.ball {
+		@apply absolute right-1 h-[15px] w-[15px] rounded-full bg-gray-200 transition-all duration-300;
+	}
+
+	.ball.dark {
+		@apply left-1 bg-gray-700;
+	}
+
+	/* .icon {
+		@apply text-gray-700 dark:text-gray-300;
+	} */
+
+	/* .moon {
+		@apply text-gray-400;
+	}
+
+	.sun {
+		@apply text-yellow-500;
+	} */
+</style>
+
+
+
+============================================================
+File: ./src/hooks.server.ts
+Type: .ts
+============================================================
+
+import type { Handle } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
+
+export const handle: Handle = async ({ event, resolve }) => {
+	event.locals.session = null; 
+	event.locals.user = null; 
+
+	const protectedRoutes = ['/write'];
+	const isProtectedRoute = protectedRoutes.some((route) => event.url.pathname.startsWith(route));
+
+	if (isProtectedRoute && !event.locals.session) {
+		throw redirect(303, '/login');
+	}
+
+	const response = await resolve(event);
+	return response;
+};
+
+
+
+============================================================
+File: ./src/lib/auth/index.ts
+Type: .ts
+============================================================
+
+import { goto } from '$app/navigation';
+import { page } from '$app/stores';
+
+export async function signIn(provider: string) {
+
+	try {
+		await fetch(`/api/auth/${provider}`, {
+			method: 'POST'
+		});
+		goto('/');
+	} catch (error) {
+		console.error('Sign in error:', error);
+	}
+}
+
+export async function signOut() {
+	try {
+		await fetch('/api/auth/signout', {
+			method: 'POST'
+		});
+		goto('/login');
+	} catch (error) {
+		console.error('Sign out error:', error);
+	}
+}
+
+export function requireAuth() {
+	if (!page.data?.session) {
+		goto('/login');
+	}
+}
+
+
+
+============================================================
+File: ./src/lib/components/RichTextEditor.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import 'quill/dist/quill.bubble.css';
+
+	export let value = '';
+	let element: HTMLDivElement;
+	let quill: any;
+
+	onMount(async () => {
+		const Quill = (await import('quill')).default;
+		quill = new Quill(element, {
+			theme: 'bubble',
+			placeholder: 'Share Your Recipe....'
+		});
+
+		quill.on('text-change', () => {
+			value = quill.root.innerHTML;
+		});
+	});
+</script>
+
+<div bind:this={element} class="editor"/>
+
+<style lang="postcss">
+	.editor {
+		@apply min-h-[400px] text-lg;
+	}
+
+	:global(.ql-editor.ql-blank::before) {
+		@apply font-normal text-gray-400;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/lib/index.ts
+Type: .ts
+============================================================
+
+// place files you want to import through the `$lib` alias in this folder.
+
+
+
+============================================================
+File: ./src/lib/server/auth.ts
+Type: .ts
+============================================================
+
+import type { RequestEvent } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
+import { sha256 } from '@oslojs/crypto/sha2';
+import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
+import { db } from '$lib/server/db';
+import * as table from '$lib/server/db/schema';
+
+const DAY_IN_MS = 1000 * 60 * 60 * 24;
+
+export const sessionCookieName = 'auth-session';
+
+export function generateSessionToken() {
+	const bytes = crypto.getRandomValues(new Uint8Array(18));
+	const token = encodeBase64url(bytes);
+	return token;
+}
+
+export async function createSession(token: string, userId: string) {
+	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const session: table.Session = {
+		id: sessionId,
+		userId,
+		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
+	};
+	await db.insert(table.session).values(session);
+	return session;
+}
+
+export async function validateSessionToken(token: string) {
+	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const [result] = await db
+		.select({
+			// Adjust user table here to tweak returned data
+			user: { id: table.user.id, username: table.user.username },
+			session: table.session
+		})
+		.from(table.session)
+		.innerJoin(table.user, eq(table.session.userId, table.user.id))
+		.where(eq(table.session.id, sessionId));
+
+	if (!result) {
+		return { session: null, user: null };
+	}
+	const { session, user } = result;
+
+	const sessionExpired = Date.now() >= session.expiresAt.getTime();
+	if (sessionExpired) {
+		await db.delete(table.session).where(eq(table.session.id, session.id));
+		return { session: null, user: null };
+	}
+
+	const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
+	if (renewSession) {
+		session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+		await db
+			.update(table.session)
+			.set({ expiresAt: session.expiresAt })
+			.where(eq(table.session.id, session.id));
+	}
+
+	return { session, user };
+}
+
+export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;
+
+export async function invalidateSession(sessionId: string) {
+	await db.delete(table.session).where(eq(table.session.id, sessionId));
+}
+
+export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
+	event.cookies.set(sessionCookieName, token, {
+		expires: expiresAt,
+		path: '/'
+	});
+}
+
+export function deleteSessionTokenCookie(event: RequestEvent) {
+	event.cookies.delete(sessionCookieName, {
+		path: '/'
+	});
+}
+
+
+
+============================================================
+File: ./src/lib/server/db/index.ts
+Type: .ts
+============================================================
+
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { env } from '$env/dynamic/private';
+if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+const client = postgres(env.DATABASE_URL);
+export const db = drizzle(client);
+
+
+
+============================================================
+File: ./src/lib/server/db/schema.ts
+Type: .ts
+============================================================
+
+import { pgTable, serial, text, integer, timestamp } from 'drizzle-orm/pg-core';
+
+export const user = pgTable('user', {
+	id: text('id').primaryKey(),
+	age: integer('age'),
+	username: text('username').notNull().unique(),
+	passwordHash: text('password_hash').notNull()
+});
+
+export const session = pgTable('session', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id),
+	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+});
+
+export type Session = typeof session.$inferSelect;
+
+export type User = typeof user.$inferSelect;
+
+
+
+============================================================
+File: ./src/lib/stores/theme.ts
+Type: .ts
+============================================================
+
+// src/lib/stores/theme.ts
+import { browser } from '$app/environment';
+import { writable } from 'svelte/store';
+
+const defaultValue = 'light';
+const initialValue = browser
+	? (window.localStorage.getItem('theme') ?? defaultValue)
+	: defaultValue;
+
+export const theme = writable<string>(initialValue);
+
+if (browser) {
+	theme.subscribe((value) => {
+		window.localStorage.setItem('theme', value);
+		document.documentElement.setAttribute('data-theme', value);
+		document.documentElement.classList.toggle('dark', value === 'dark');
+	});
+}
+
+
+
+============================================================
+File: ./src/lib/styles/components.css
+Type: .css
+============================================================
+
+
+
+
+============================================================
+File: ./src/lib/styles/themes.css
+Type: .css
+============================================================
+
+:root {
+	/* Main Brand Colors */
+	--brand-primary: #ff4b6e; /* Vibrant Coral - for main actions & emphasis */
+	--brand-secondary: #ffb156; /* Warm Orange - for secondary elements */
+	--brand-accent: #41e9c3; /* Fresh Mint - for accents & highlights */
+
+	/* Background Colors */
+	--bg-primary: #ffffff; /* Main background */
+	--bg-secondary: #f8f9fc; /* Secondary background */
+	--bg-tertiary: #f1f4f9; /* Tertiary background */
+
+	/* Text Colors */
+	--text-primary: #1a1f36; /* Main text */
+	--text-secondary: #4f566b; /* Secondary text */
+	--text-tertiary: #8792a2; /* Tertiary text */
+
+	/* Gradients */
+	--gradient-primary: linear-gradient(135deg, #ff4b6e, #ffb156);
+	--gradient-hover: linear-gradient(135deg, #ff6b85, #ffc278);
+
+	/* Shadows */
+	--shadow-sm: 0 2px 8px rgba(26, 31, 54, 0.06);
+	--shadow-md: 0 4px 16px rgba(26, 31, 54, 0.08);
+	--shadow-lg: 0 8px 24px rgba(26, 31, 54, 0.12);
+}
+
+.dark {
+	/* Dark mode colors */
+	--bg-primary: #131620;
+	--bg-secondary: #1c1f2e;
+	--bg-tertiary: #252a3d;
+
+	--text-primary: #f1f4f9;
+	--text-secondary: #b4bcd0;
+	--text-tertiary: #8792a2;
+
+	--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.24);
+	--shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.32);
+}
+
+/* Common Component Styles */
+.card {
+	background-color: var(--bg-primary);
+	box-shadow: var(--shadow-sm);
+	transition: all 0.3s ease;
+}
+
+.card:hover {
+	box-shadow: var(--shadow-md);
+	transform: translateY(-2px);
+}
+
+.button-primary {
+	background: var(--gradient-primary);
+	color: white;
+	transition: all 0.3s ease;
+}
+
+.button-primary:hover {
+	background: var(--gradient-hover);
+	box-shadow: 0 4px 12px rgba(255, 75, 110, 0.3);
+}
+
+
+
+============================================================
+File: ./src/lib/utils/clickOutside.ts
+Type: .ts
+============================================================
+
+// src/lib/utils/clickOutside.ts
+export function clickOutside(node: HTMLElement, callback: () => void) {
+	const handleClick = (event: MouseEvent) => {
+		if (node && !node.contains(event.target as Node)) {
+			callback();
+		}
+	};
+
+	document.addEventListener('click', handleClick, true);
+
+	return {
+		destroy() {
+			document.removeEventListener('click', handleClick, true);
+		},
+		update(newCallback: () => void) {
+			callback = newCallback;
+		}
+	};
+}
+
+
+
+============================================================
+File: ./src/routes/+layout.server.ts
+Type: .ts
+============================================================
+
+import type { LayoutServerLoad } from './$types';
+
+export const load: LayoutServerLoad = async ({ locals }) => {
+	return {
+		session: locals.session ?? null, // Ensures a value is always returned
+		user: locals.user ?? null
+	} satisfies LayoutServerLoad;
+};
+
+
+
+============================================================
+File: ./src/routes/+layout.svelte
+Type: .svelte
+============================================================
+
+<!-- src/routes/+layout.svelte -->
+<script lang="ts">
+	import '../app.css';
+	import Navbar from '../components/Navbar/Navbar.svelte';
+	import Footer from '../components/Footer/Footer.svelte';
+	import { theme } from '$lib/stores/theme';
+
+	export let data;
+</script>
+
+<div data-theme={$theme}>
+	<Navbar />
+	<main class="pt-20">
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<slot />
+		</div>
+	</main>
+	<Footer />
+</div>
+
+
+
+============================================================
+File: ./src/routes/+layout.ts
+Type: .ts
+============================================================
+
+export const load = () => {
+	return {
+		title: 'Own Chef - Share Your Recipes',
+		description: 'A community for sharing and discovering amazing recipes'
+	};
+};
+
+
+
+============================================================
+File: ./src/routes/+page.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import Featured from '../components/Featured/Featured.svelte';
+	import CardList from '../components/CardList/CardList.svelte';
+	import CategoryList from '../components/CategoryList/CategoryList.svelte';
+	import Menu from '../components/Menu/Menu.svelte';
+</script>
+
+<!-- This should be the first section -->
+<Featured />
+
+<div class="home-content">
+	<!-- Popular Categories -->
+	<CategoryList />
+
+	<!-- Main Grid Layout -->
+	<div class="content-grid">
+		<!-- Card List Section -->
+		<div class="main-content">
+			<CardList />
+		</div>
+
+		<!-- Sidebar/Menu Section -->
+		<aside class="sidebar">
+			<Menu />
+		</aside>
+	</div>
+</div>
+
+<style lang="postcss">
+	.home-content {
+		@apply mx-auto max-w-7xl px-4 py-8;
+	}
+
+	.content-grid {
+		@apply mt-8 grid gap-8;
+		@apply lg:grid-cols-[1fr_300px];
+	}
+
+	.main-content {
+		@apply w-full;
+	}
+
+	.sidebar {
+		@apply w-full lg:w-[300px];
+	}
+</style>
+
+
+
+============================================================
+File: ./src/routes/about/+page.svelte
+Type: .svelte
+============================================================
+
+<div class="container mx-auto px-4 py-8">
+	<h1 class="mb-6 text-4xl font-bold">About Own Chef</h1>
+	<div class="prose max-w-none">
+		<p>
+			Welcome to Own Chef, your ultimate destination for sharing and discovering amazing recipes...
+		</p>
+	</div>
+</div>
+
+
+
+============================================================
+File: ./src/routes/api/auth/+server.ts
+Type: .ts
+============================================================
+
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+
+export const POST: RequestHandler = async ({ request }) => {
+	return json({ success: true });
+};
+
+
+
+============================================================
+File: ./src/routes/api/posts/+server.ts
+Type: .ts
+============================================================
+
+
+
+
+============================================================
+File: ./src/routes/api/posts/categories/+server.ts
+Type: .ts
+============================================================
+
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+
+export const GET: RequestHandler = async () => {
+	return json({
+		categories: [
+			{ id: 1, name: 'Indian', slug: 'indian' },
+			{ id: 2, name: 'Chinese', slug: 'chinese' },
+			{ id: 3, name: 'Italian', slug: 'italian' },
+			{ id: 4, name: 'Spanish', slug: 'spanish' },
+			{ id: 5, name: 'Thai', slug: 'thai' },
+			{ id: 6, name: 'Japanese', slug: 'japanese' }
+		]
+	});
+};
+
+
+
+============================================================
+File: ./src/routes/blog/+layout.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import CategoryList from '$components/CategoryList/CategoryList.svelte';
+</script>
+
+<div class="container mx-auto px-4 py-8">
+	<CategoryList />
+	<slot />
+</div>
+
+
+
+============================================================
+File: ./src/routes/blog/+page.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import CardList from '../../components/CardList/CardList.svelte';
+	import Menu from '../../components/Menu/Menu.svelte';
+</script>
+
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+	<div class="lg:col-span-2">
+		<CardList />
+	</div>
+	<div>
+		<Menu />
+	</div>
+</div>
+
+
+
+============================================================
+File: ./src/routes/blog/[slug]/+page.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import Comments from '$components/Comments/Comments.svelte';
+	export let data;
+</script>
+
+<div class="mx-auto max-w-4xl">
+	<h1 class="mb-4 text-4xl font-bold">{data.post.title}</h1>
+	<div class="prose max-w-none">
+		{@html data.post.content}
+	</div>
+	<Comments />
+</div>
+
+
+
+============================================================
+File: ./src/routes/category/+page.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import CategoryList from '../../components/CategoryList/CategoryList.svelte';
+</script>
+
+<div class="container mx-auto px-4 py-8">
+	<h1 class="mb-8 text-4xl font-bold">Browse By Category</h1>
+	<CategoryList />
+</div>
+
+
+
+============================================================
+File: ./src/routes/category/[slug]/+page.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import CardList from '$components/CardList/CardList.svelte';
+	export let data;
+</script>
+
+<div class="container mx-auto px-4 py-8">
+	<h1 class="mb-6 text-4xl font-bold">
+		{data.category.name} Recipes
+	</h1>
+	<CardList posts={data.posts} />
+</div>
+
+
+
+============================================================
+File: ./src/routes/demo/+page.svelte
+Type: .svelte
+============================================================
+
+<a href="/demo/lucia">lucia</a>
+
+
+
+============================================================
+File: ./src/routes/demo/lucia/+page.server.ts
+Type: .ts
+============================================================
+
+import * as auth from '$lib/server/auth';
+import { fail, redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async (event) => {
+	if (!event.locals.user) {
+		return redirect(302, '/demo/lucia/login');
+	}
+	return { user: event.locals.user };
+};
+
+export const actions: Actions = {
+	logout: async (event) => {
+		if (!event.locals.session) {
+			return fail(401);
+		}
+		await auth.invalidateSession(event.locals.session.id);
+		auth.deleteSessionTokenCookie(event);
+
+		return redirect(302, '/demo/lucia/login');
+	}
+};
+
+
+
+============================================================
+File: ./src/routes/demo/lucia/+page.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { PageServerData } from './$types';
+
+	let { data }: { data: PageServerData } = $props();
+</script>
+
+<h1>Hi, {data.user.username}!</h1>
+<p>Your user ID is {data.user.id}.</p>
+<form method="post" action="?/logout" use:enhance>
+	<button>Sign out</button>
+</form>
+
+
+
+============================================================
+File: ./src/routes/demo/lucia/login/+page.server.ts
+Type: .ts
+============================================================
+
+import { hash, verify } from '@node-rs/argon2';
+import { encodeBase32LowerCase } from '@oslojs/encoding';
+import { fail, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
+import * as auth from '$lib/server/auth';
+import { db } from '$lib/server/db';
+import * as table from '$lib/server/db/schema';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async (event) => {
+	if (event.locals.user) {
+		return redirect(302, '/demo/lucia');
+	}
+	return {};
+};
+
+export const actions: Actions = {
+	login: async (event) => {
+		const formData = await event.request.formData();
+		const username = formData.get('username');
+		const password = formData.get('password');
+
+		if (!validateUsername(username)) {
+			return fail(400, {
+				message: 'Invalid username (min 3, max 31 characters, alphanumeric only)'
+			});
+		}
+		if (!validatePassword(password)) {
+			return fail(400, { message: 'Invalid password (min 6, max 255 characters)' });
+		}
+
+		const results = await db.select().from(table.user).where(eq(table.user.username, username));
+
+		const existingUser = results.at(0);
+		if (!existingUser) {
+			return fail(400, { message: 'Incorrect username or password' });
+		}
+
+		const validPassword = await verify(existingUser.passwordHash, password, {
+			memoryCost: 19456,
+			timeCost: 2,
+			outputLen: 32,
+			parallelism: 1
+		});
+		if (!validPassword) {
+			return fail(400, { message: 'Incorrect username or password' });
+		}
+
+		const sessionToken = auth.generateSessionToken();
+		const session = await auth.createSession(sessionToken, existingUser.id);
+		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+
+		return redirect(302, '/demo/lucia');
+	},
+	register: async (event) => {
+		const formData = await event.request.formData();
+		const username = formData.get('username');
+		const password = formData.get('password');
+
+		if (!validateUsername(username)) {
+			return fail(400, { message: 'Invalid username' });
+		}
+		if (!validatePassword(password)) {
+			return fail(400, { message: 'Invalid password' });
+		}
+
+		const userId = generateUserId();
+		const passwordHash = await hash(password, {
+			// recommended minimum parameters
+			memoryCost: 19456,
+			timeCost: 2,
+			outputLen: 32,
+			parallelism: 1
+		});
+
+		try {
+			await db.insert(table.user).values({ id: userId, username, passwordHash });
+
+			const sessionToken = auth.generateSessionToken();
+			const session = await auth.createSession(sessionToken, userId);
+			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+		} catch (e) {
+			return fail(500, { message: 'An error has occurred' });
+		}
+		return redirect(302, '/demo/lucia');
+	}
+};
+
+function generateUserId() {
+	// ID with 120 bits of entropy, or about the same as UUID v4.
+	const bytes = crypto.getRandomValues(new Uint8Array(15));
+	const id = encodeBase32LowerCase(bytes);
+	return id;
+}
+
+function validateUsername(username: unknown): username is string {
+	return (
+		typeof username === 'string' &&
+		username.length >= 3 &&
+		username.length <= 31 &&
+		/^[a-z0-9_-]+$/.test(username)
+	);
+}
+
+function validatePassword(password: unknown): password is string {
+	return typeof password === 'string' && password.length >= 6 && password.length <= 255;
+}
+
+
+
+============================================================
+File: ./src/routes/demo/lucia/login/+page.svelte
+Type: .svelte
+============================================================
+
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+
+	let { form }: { form: ActionData } = $props();
+</script>
+
+<h1>Login/Register</h1>
+<form method="post" action="?/login" use:enhance>
+	<label>
+		Username
+		<input name="username" />
+	</label>
+	<label>
+		Password
+		<input type="password" name="password" />
+	</label>
+	<button>Login</button>
+	<button formaction="?/register">Register</button>
+</form>
+<p style="color: red">{form?.message ?? ''}</p>
+
+
+
+============================================================
+File: ./src/routes/login/+page.svelte
+Type: .svelte
+============================================================
+
+<!-- src/routes/login/+page.svelte -->
+
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+	import { enhance } from '$app/forms';
+	import { Github, Mail, Facebook } from 'lucide-svelte';
+</script>
+
+<div class="login-container" class:dark={$theme === 'dark'}>
+	<div class="login-content">
+		<!-- Logo Section -->
+		<div class="logo-section">
+			<span class="own">Own</span>
+			<span class="chef">CHEF</span>
+		</div>
+
+		<h1 class="title">Welcome Back!</h1>
+		<p class="subtitle">Sign in to create, discover and share amazing recipes</p>
+
+		<!-- Social Login Buttons -->
+		<div class="social-buttons">
+			<button class="social-btn google">
+				<img src="/google.svg" alt="Google" class="h-5 w-5" />
+				<span>Continue with Google</span>
+			</button>
+
+			<button class="social-btn github">
+				<Github class="h-5 w-5" />
+				<span>Continue with Github</span>
+			</button>
+
+			<button class="social-btn facebook">
+				<Facebook class="h-5 w-5" />
+				<span>Continue with Facebook</span>
+			</button>
+		</div>
+
+		<div class="divider">
+			<span>or</span>
+		</div>
+
+		<button class="email-btn">
+			<Mail class="h-5 w-5" />
+			<span>Continue with Email</span>
+		</button>
+
+		<p class="terms">
+			By continuing, you agree to our
+			<a href="/terms" class="link">Terms of Service</a> and
+			<a href="/privacy" class="link">Privacy Policy</a>
+		</p>
+	</div>
+</div>
+
+<style lang="postcss">
+	.login-container {
+		@apply flex min-h-screen items-center justify-center shadow-xl;
+		background-image: radial-gradient(
+				circle at 10% 20%,
+				rgba(255, 107, 107, 0.05) 0%,
+				transparent 50%
+			),
+			radial-gradient(circle at 90% 80%, rgba(255, 179, 107, 0.05) 0%, transparent 50%);
+	}
+
+	.login-container.dark .login-content {
+		@apply shadow-slate-700/50;
+	}
+	
+	.login-content {
+		@apply w-full max-w-md rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800;
+		@apply transform transition-all duration-300;
+	}
+
+	.logo-section {
+		@apply mb-8 flex items-baseline justify-center;
+	}
+
+	.own {
+		@apply bg-gradient-to-br from-red-500 via-orange-400 to-yellow-500 bg-clip-text text-3xl font-black text-transparent;
+	}
+
+	.chef {
+		@apply ml-1 text-2xl font-bold tracking-wider text-gray-800 dark:text-white;
+	}
+
+	.title {
+		@apply mb-2 text-center text-2xl font-bold text-gray-800 dark:text-white;
+	}
+
+	.subtitle {
+		@apply mb-8 text-center text-gray-600 dark:text-gray-300;
+	}
+
+	.social-buttons {
+		@apply mb-6 flex flex-col gap-3;
+	}
+
+	.social-btn {
+		@apply flex w-full items-center justify-center gap-3 rounded-lg border px-4 py-3 text-sm font-medium;
+		@apply transition-all duration-300;
+	}
+
+	.social-btn.google {
+		@apply border-gray-200 bg-white text-gray-700 hover:bg-gray-50;
+		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600;
+	}
+
+	.social-btn.github {
+		@apply bg-[#24292F] text-white hover:bg-[#24292F]/90;
+	}
+
+	.social-btn.facebook {
+		@apply bg-[#1877F2] text-white hover:bg-[#1877F2]/90;
+	}
+
+	.divider {
+		@apply my-6 flex items-center;
+	}
+
+	.divider::before,
+	.divider::after {
+		content: '';
+		@apply flex-1 border-t border-gray-200 dark:border-gray-700;
+	}
+
+	.divider span {
+		@apply px-3 text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.email-btn {
+		@apply flex w-full items-center justify-center gap-3 rounded-lg px-4 py-3 text-sm font-medium;
+		@apply bg-gradient-to-r from-orange-500 to-red-500 text-white;
+		@apply hover:from-orange-600 hover:to-red-600;
+		@apply transition-all duration-300;
+	}
+
+	.terms {
+		@apply mt-6 text-center text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.link {
+		@apply text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+	}
+
+	/* Hover effects */
+	.login-content:hover {
+		@apply shadow-2xl;
+	}
+
+	.social-btn:hover {
+		@apply -translate-y-0.5 transform;
+	}
+
+	.email-btn:hover {
+		@apply -translate-y-0.5 transform shadow-lg shadow-orange-500/25;
+	}
+</style>
+
+
+
+============================================================
+File: ./src/routes/write/+page.server.ts
+Type: .ts
+============================================================
+
+// src/routes/write/+page.server.ts
+import { redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.session) {
+		throw redirect(303, '/login');
+	}
+	return {};
+};
+
+
+
+============================================================
+File: ./src/routes/write/+page.svelte
+Type: .svelte
+============================================================
+
+<!-- src/routes/write/+page.svelte -->
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import { Image as ImageIcon, Plus, ExternalLink, Video } from 'lucide-svelte';
+	import { page } from '$app/stores';
+	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
+
+	let open = false;
+	let content = '';
+	let title = '';
+
+	// Client-side redirect if no session
+	$: if (!$page.data.session) {
+		goto('/login');
+	}
+
+	// Handle form submission
+	async function handleSubmit() {
+		if (!title || !content) return;
+
+		const response = await fetch('/api/posts', {
+			method: 'POST',
+			body: JSON.stringify({
+				title,
+				content
+			})
+		});
+
+		if (response.ok) {
+			goto('/blog');
+		}
+	}
+</script>
+
+<div class="container">
+	<form on:submit|preventDefault={handleSubmit} class="relative">
+		<input type="text" placeholder="T I T L E" class="input" bind:value={title} required />
+
+		<div class="editor">
+			<button type="button" class="button" on:click={() => (open = !open)}>
+				<Plus size={24} />
+			</button>
+
+			{#if open}
+				<div class="add">
+					<button type="button" class="addButton">
+						<ImageIcon size={24} />
+					</button>
+					<button type="button" class="addButton">
+						<ExternalLink size={24} />
+					</button>
+					<button type="button" class="addButton">
+						<Video size={24} />
+					</button>
+				</div>
+			{/if}
+
+			<RichTextEditor bind:value={content} />
+		</div>
+
+		<button type="submit" class="publish"> Publish </button>
+	</form>
+</div>
+
+<style lang="postcss">
+	.container {
+		@apply flex flex-col gap-5 p-8;
+	}
+
+	.input {
+		@apply border-none bg-transparent p-12 text-3xl outline-none placeholder:text-gray-400;
+	}
+
+	.editor {
+		@apply relative flex flex-col gap-5;
+	}
+
+	.button {
+		@apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-gray-50;
+	}
+
+	.add {
+		@apply absolute left-12 top-0 z-10 flex gap-5;
+	}
+
+	.addButton {
+		@apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-gray-50;
+	}
+
+	.publish {
+		@apply absolute right-8 top-8 cursor-pointer rounded-md border-none bg-green-500 px-5 py-2 text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50;
+	}
+</style>
+
+
+
+============================================================
+File: ./svelte.config.js
+Type: .js
+============================================================
+
+import adapter from '@sveltejs/adapter-auto';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	// Consult https://svelte.dev/docs/kit/integrations
+	// for more information about preprocessors
+	preprocess: vitePreprocess(),
+
+	kit: {
+		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
+		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
+		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
+		adapter: adapter()
+	}
+};
+
+export default config;
+
+
+
+============================================================
+File: ./tailwind.config.ts
+Type: .ts
+============================================================
+
+import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography';
+import type { Config } from 'tailwindcss';
+
+export default {
+	content: ['./src/**/*.{html,js,svelte,ts}'],
+
+	theme: {
+		extend: {}
+	},
+
+	plugins: [typography, forms]
+} satisfies Config;
+
+
+
+============================================================
+File: ./tsconfig.json
+Type: .json
+============================================================
+
+{
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler",
+		"types": [
+			"node"
+		],
+		"paths": {
+			"$lib/*": [
+				"./src/lib/*"
+			],
+			"$components/*": [
+				"./src/components/*"
+			]
+		}
+	}
+}
+
+
+============================================================
+File: ./vite.config.ts
+Type: .ts
+============================================================
+
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+import * as path from 'path';
+
+export default defineConfig({
+	plugins: [sveltekit()],
+	resolve: {
+		alias: [
+			{ find: '$components', replacement: path.resolve('src/components') },
+			{ find: '$lib', replacement: path.resolve('src/lib') }
+		]
+	}
+});
+
+
