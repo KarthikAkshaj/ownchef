@@ -1,5 +1,5 @@
 # Project Code Extract
-# Generated on Sat, Feb  1, 2025  3:03:38 PM
+# Generated on Mon, Apr 14, 2025  2:53:31 PM
 
 
 ============================================================
@@ -589,7 +589,7 @@ Type: .svelte
 	export let page = 1;
 	export let hasMore = true;
 
-	// Sample data - later we can fetch this from an API
+	// Extended sample data with more recipes
 	const recipes = [
 		{
 			title: 'Homemade Margherita Pizza',
@@ -630,6 +630,45 @@ Type: .svelte
 				avatar: '/images/chef-john.jpg'
 			},
 			rating: 4.7
+		},
+		{
+			title: 'Sushi Roll Platter',
+			description: 'Assorted fresh sushi rolls with premium grade fish and seasonal ingredients',
+			image: '/images/sushi.jpg',
+			cookTime: 60,
+			category: 'Japanese',
+			difficulty: 'Hard',
+			author: {
+				name: 'Chef Yuki',
+				avatar: '/images/chef-yuki.jpg'
+			},
+			rating: 4.9
+		},
+		{
+			title: 'Mediterranean Mezze',
+			description: 'A vibrant platter of hummus, falafel, baba ganoush, and fresh pita bread',
+			image: '/images/mezze.jpg',
+			cookTime: 40,
+			category: 'Mediterranean',
+			difficulty: 'Medium',
+			author: {
+				name: 'Chef Hassan',
+				avatar: '/images/chef-hassan.jpg'
+			},
+			rating: 4.6
+		},
+		{
+			title: 'French Onion Soup',
+			description: 'Rich beef broth with caramelized onions and melted Gruyère cheese',
+			image: '/images/onion-soup.jpg',
+			cookTime: 55,
+			category: 'French',
+			difficulty: 'Medium',
+			author: {
+				name: 'Chef Pierre',
+				avatar: '/images/chef-pierre.jpg'
+			},
+			rating: 4.7
 		}
 	];
 
@@ -645,10 +684,8 @@ Type: .svelte
 <section class="recipe-section">
 	<div class="section-header">
 		<h1 class="title">
-			<span class="highlight">Featured Re</span><span
-				class="regular-text"
-				class:dark={$theme === 'dark'}>cipes</span
-			>
+			<span class="highlight">Featured Re</span>
+			<span class="regular-text" class:dark={$theme === 'dark'}>cipes</span>
 		</h1>
 		<p class="subtitle">Discover delicious recipes from around the world</p>
 	</div>
@@ -1468,33 +1505,259 @@ File: ./src/components/Menu/Menu.svelte
 Type: .svelte
 ============================================================
 
+<!-- src/components/Menu/Menu.svelte -->
 <script lang="ts">
-	import MenuPosts from '../MenuPosts/MenuPosts.svelte';
-	import MenuCategories from '../MenuCategories/MenuCategories.svelte';
+	import { theme } from '$lib/stores/theme';
+	import { Flame, Award, Hash } from 'lucide-svelte';
+
+	// Sample data - replace with actual data later
+	const popularPosts = [
+		{
+			id: 1,
+			title: 'Classic Italian Pasta Carbonara',
+			views: 12543,
+			image: '/images/carbonara.jpg',
+			author: 'Chef Maria',
+			date: '2024-01-15'
+		},
+		{
+			id: 2,
+			title: 'Authentic Thai Green Curry',
+			views: 10234,
+			image: '/images/curry.jpg',
+			author: 'Chef Sorn',
+			date: '2024-01-18'
+		},
+		{
+			id: 3,
+			title: 'Perfect Homemade Pizza',
+			views: 9876,
+			image: '/images/pizza.jpg',
+			author: 'Chef Marco',
+			date: '2024-01-20'
+		}
+	];
+
+	const editorsPicks = [
+		{
+			id: 1,
+			title: 'Japanese Ramen from Scratch',
+			rating: 4.9,
+			image: '/images/ramen.jpg',
+			author: 'Chef Yuki',
+			date: '2024-01-22'
+		},
+		{
+			id: 2,
+			title: 'French Croissants Masterclass',
+			rating: 4.8,
+			image: '/images/croissant.jpg',
+			author: 'Chef Pierre',
+			date: '2024-01-25'
+		}
+	];
+
+	const categories = [
+		{ name: 'Indian', count: 128, color: 'bg-orange-500' },
+		{ name: 'Italian', count: 156, color: 'bg-green-500' },
+		{ name: 'Chinese', count: 142, color: 'bg-red-500' },
+		{ name: 'Japanese', count: 98, color: 'bg-blue-500' },
+		{ name: 'Mexican', count: 87, color: 'bg-yellow-500' },
+		{ name: 'Thai', count: 76, color: 'bg-purple-500' }
+	];
+
+	function formatNumber(num: number): string {
+		return num > 999 ? (num / 1000).toFixed(1) + 'k' : num.toString();
+	}
+
+	function formatDate(dateStr: string): string {
+		const date = new Date(dateStr);
+		return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+	}
 </script>
 
-<div class="container">
-	<h1 class="title">Most Popular</h1>
-	<MenuPosts withImage={false} />
-	<h2 class="subtitle">Discover by Cuisine</h2>
-	<h1 class="title">Categories</h1>
-	<MenuCategories />
-	<h2 class="subtitle">Chosen by the editor</h2>
-	<h1 class="title">Editors Pick</h1>
-	<MenuPosts withImage={true} />
-</div>
+<aside class="sidebar" class:dark={$theme === 'dark'}>
+	<!-- Most Popular Section -->
+	<section class="section">
+		<div class="section-header">
+			<Flame class="icon text-orange-500" size={20} />
+			<h2 class="section-title">Most Popular</h2>
+		</div>
+		<div class="posts-grid">
+			{#each popularPosts as post}
+				<article class="post-card">
+					<div class="post-image-wrapper">
+						<img src={post.image} alt={post.title} class="post-image" />
+						<span class="views-badge">{formatNumber(post.views)} views</span>
+					</div>
+					<div class="post-content">
+						<h3 class="post-title">{post.title}</h3>
+						<div class="post-meta">
+							<span class="author">{post.author}</span>
+							<span class="date">{formatDate(post.date)}</span>
+						</div>
+					</div>
+				</article>
+			{/each}
+		</div>
+	</section>
+
+	<!-- Categories Section -->
+	<section class="section">
+		<div class="section-header">
+			<Hash class="icon text-blue-500" size={20} />
+			<h2 class="section-title">Categories</h2>
+		</div>
+		<div class="categories-grid">
+			{#each categories as category}
+				<a href="/category/{category.name.toLowerCase()}" class="category-card">
+					<div class="category-info">
+						<span class="category-name">{category.name}</span>
+						<span class="category-count">{category.count} recipes</span>
+					</div>
+					<div class="category-indicator {category.color}"></div>
+				</a>
+			{/each}
+		</div>
+	</section>
+
+	<!-- Editor's Picks Section -->
+	<section class="section">
+		<div class="section-header">
+			<Award class="icon text-yellow-500" size={20} />
+			<h2 class="section-title">Editor's Picks</h2>
+		</div>
+		<div class="picks-grid">
+			{#each editorsPicks as pick}
+				<article class="pick-card">
+					<div class="pick-image-wrapper">
+						<img src={pick.image} alt={pick.title} class="pick-image" />
+						<span class="rating-badge">⭐ {pick.rating}</span>
+					</div>
+					<div class="pick-content">
+						<h3 class="pick-title">{pick.title}</h3>
+						<div class="pick-meta">
+							<span class="author">{pick.author}</span>
+							<span class="date">{formatDate(pick.date)}</span>
+						</div>
+					</div>
+				</article>
+			{/each}
+		</div>
+	</section>
+</aside>
 
 <style lang="postcss">
-	.container {
-		@apply mt-8 flex-[2];
+	.sidebar {
+		@apply flex flex-col gap-8 rounded-2xl bg-white p-6 shadow-sm dark:bg-gray-800;
 	}
 
-	.title {
-		@apply mb-6 text-2xl font-bold;
+	.section {
+		@apply flex flex-col gap-6;
 	}
 
-	.subtitle {
-		@apply mb-4 mt-8 text-gray-500;
+	.section-header {
+		@apply flex items-center gap-3;
+	}
+
+	.section-title {
+		@apply text-xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.posts-grid {
+		@apply flex flex-col gap-6;
+	}
+
+	.post-card {
+		@apply flex gap-4 rounded-lg p-2 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700;
+	}
+
+	.post-image-wrapper {
+		@apply relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg;
+	}
+
+	.post-image {
+		@apply h-full w-full object-cover;
+	}
+
+	.views-badge {
+		@apply absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-xs font-medium text-white;
+	}
+
+	.post-content {
+		@apply flex flex-col justify-center;
+	}
+
+	.post-title {
+		@apply mb-1 line-clamp-2 text-sm font-medium text-gray-900 dark:text-white;
+	}
+
+	.post-meta {
+		@apply flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400;
+	}
+
+	.categories-grid {
+		@apply grid gap-3 sm:grid-cols-2;
+	}
+
+	.category-card {
+		@apply flex items-center justify-between rounded-lg border p-3 transition-all duration-300 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600;
+	}
+
+	.category-info {
+		@apply flex flex-col;
+	}
+
+	.category-name {
+		@apply text-sm font-medium text-gray-900 dark:text-white;
+	}
+
+	.category-count {
+		@apply text-xs text-gray-500 dark:text-gray-400;
+	}
+
+	.category-indicator {
+		@apply h-2 w-2 rounded-full;
+	}
+
+	.picks-grid {
+		@apply flex flex-col gap-6;
+	}
+
+	.pick-card {
+		@apply flex gap-4 rounded-lg p-2 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700;
+	}
+
+	.pick-image-wrapper {
+		@apply relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg;
+	}
+
+	.pick-image {
+		@apply h-full w-full object-cover;
+	}
+
+	.rating-badge {
+		@apply absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-xs font-medium text-white;
+	}
+
+	.pick-content {
+		@apply flex flex-col justify-center;
+	}
+
+	.pick-title {
+		@apply mb-1 line-clamp-2 text-sm font-medium text-gray-900 dark:text-white;
+	}
+
+	.pick-meta {
+		@apply flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400;
+	}
+
+	.author {
+		@apply font-medium;
+	}
+
+	.date {
+		@apply before:mx-1 before:content-['•'];
 	}
 </style>
 
@@ -2153,6 +2416,192 @@ Type: .svelte
 
 
 ============================================================
+File: ./src/components/QuickCategories/QuickCategories.svelte
+Type: .svelte
+============================================================
+
+<!-- src/components/QuickCategories/QuickCategories.svelte -->
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+	import { Clock, Leaf, Coffee, Cake, Heart, Users } from 'lucide-svelte';
+
+	const categories = [
+		{
+			id: 'quick',
+			title: 'Quick & Easy',
+			description: 'Ready in 30 minutes or less',
+			icon: Clock,
+			color: 'bg-orange-500',
+			gradient: 'from-orange-500 to-red-500',
+			count: 245
+		},
+		{
+			id: 'vegetarian',
+			title: 'Vegetarian',
+			description: 'Plant-based delights',
+			icon: Leaf,
+			color: 'bg-green-500',
+			gradient: 'from-green-500 to-emerald-500',
+			count: 189
+		},
+		{
+			id: 'breakfast',
+			title: 'Breakfast',
+			description: 'Start your day right',
+			icon: Coffee,
+			color: 'bg-blue-500',
+			gradient: 'from-blue-500 to-indigo-500',
+			count: 167
+		},
+		{
+			id: 'desserts',
+			title: 'Desserts',
+			description: 'Sweet treats & bakes',
+			icon: Cake,
+			color: 'bg-pink-500',
+			gradient: 'from-pink-500 to-rose-500',
+			count: 203
+		},
+		{
+			id: 'healthy',
+			title: 'Healthy',
+			description: 'Nutritious & delicious',
+			icon: Heart,
+			color: 'bg-purple-500',
+			gradient: 'from-purple-500 to-violet-500',
+			count: 178
+		},
+		{
+			id: 'party',
+			title: 'Party Food',
+			description: 'Crowd-pleasing favorites',
+			icon: Users,
+			color: 'bg-yellow-500',
+			gradient: 'from-yellow-500 to-amber-500',
+			count: 156
+		}
+	];
+</script>
+
+<section class="quick-categories" class:dark={$theme === 'dark'}>
+	<div class="section-header">
+		<h2 class="title">Quick Recipe Categories</h2>
+		<p class="subtitle">Find recipes by meal type</p>
+	</div>
+
+	<div class="categories-grid">
+		{#each categories as category}
+			<a href="/category/{category.id}" class="category-card" class:dark={$theme === 'dark'}>
+				<div class="card-content bg-gradient-to-r {category.gradient}">
+					<div class="icon-wrapper">
+						<svelte:component this={category.icon} size={24} class="text-white" />
+					</div>
+					<div class="text-content">
+						<h3 class="card-title">{category.title}</h3>
+						<p class="card-description">{category.description}</p>
+					</div>
+					<div class="recipe-count">
+						<span class="count">{category.count}</span>
+						<span class="label">Recipes</span>
+					</div>
+					<div class="shine-effect"></div>
+				</div>
+			</a>
+		{/each}
+	</div>
+</section>
+
+<style lang="postcss">
+	.quick-categories {
+		@apply mx-auto my-16 max-w-7xl px-4;
+	}
+
+	.section-header {
+		@apply mb-8 text-center;
+	}
+
+	.title {
+		@apply mb-2 text-3xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.subtitle {
+		@apply text-gray-600 dark:text-gray-400;
+	}
+
+	.categories-grid {
+		@apply grid gap-6;
+		@apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+	}
+
+	.category-card {
+		@apply block overflow-hidden rounded-2xl;
+		@apply transform transition-all duration-500;
+		@apply hover:shadow-xl hover:shadow-black/5;
+		@apply dark:hover:shadow-white/5;
+	}
+
+	.category-card:hover {
+		transform: translateY(-4px) scale(1.01);
+	}
+
+	.category-card:hover .shine-effect {
+		transform: translateX(100%);
+	}
+
+	.card-content {
+		@apply relative flex items-center gap-4 p-6;
+		@apply overflow-hidden;
+	}
+
+	.icon-wrapper {
+		@apply flex h-12 w-12 items-center justify-center rounded-lg;
+		@apply bg-white/20 backdrop-blur-sm;
+	}
+
+	.text-content {
+		@apply flex-1;
+	}
+
+	.card-title {
+		@apply text-lg font-semibold text-white;
+	}
+
+	.card-description {
+		@apply text-sm text-white/90;
+	}
+
+	.recipe-count {
+		@apply flex flex-col items-end text-white;
+	}
+
+	.count {
+		@apply text-2xl font-bold;
+	}
+
+	.label {
+		@apply text-xs text-white/90;
+	}
+
+	.shine-effect {
+		@apply absolute inset-0;
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+		transform: translateX(-100%);
+		transition: transform 0.8s;
+	}
+
+	/* Dark mode specific styles */
+	.category-card.dark {
+		@apply bg-gray-800;
+	}
+
+	.category-card.dark .card-content {
+		@apply shadow-lg;
+	}
+</style>
+
+
+
+============================================================
 File: ./src/components/ThemeToggle/ThemeToggle.svelte
 Type: .svelte
 ============================================================
@@ -2201,24 +2650,36 @@ File: ./src/hooks.server.ts
 Type: .ts
 ============================================================
 
+// src/hooks.server.ts
 import type { Handle } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	event.locals.session = null; 
-	event.locals.user = null; 
+	// FOR DEVELOPMENT ONLY: Create a mock session
+	event.locals.session = {
+		id: 'mock-session',
+		userId: 'mock-user',
+		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24) // 24 hours from now
+	};
 
+	event.locals.user = {
+		id: 'mock-user',
+		username: 'test_user',
+	};
+
+	// Comment out this section for development
+	/*
 	const protectedRoutes = ['/write'];
 	const isProtectedRoute = protectedRoutes.some((route) => event.url.pathname.startsWith(route));
 
 	if (isProtectedRoute && !event.locals.session) {
 		throw redirect(303, '/login');
 	}
+	*/
 
 	const response = await resolve(event);
 	return response;
 };
-
 
 
 ============================================================
@@ -2226,25 +2687,42 @@ File: ./src/lib/auth/index.ts
 Type: .ts
 ============================================================
 
+// src/lib/auth/index.ts
 import { goto } from '$app/navigation';
 import { page } from '$app/stores';
+import { get } from 'svelte/store';
 
-export async function signIn(provider: string) {
-
+export async function signIn(username: string, password: string) {
 	try {
-		await fetch(`/api/auth/${provider}`, {
-			method: 'POST'
+		const response = await fetch('/api/auth', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ username, password })
 		});
+
+		const data = await response.json();
+
+		if (!response.ok) {
+			throw new Error(data.error || 'Authentication failed');
+		}
+
 		goto('/');
+		return { success: true };
 	} catch (error) {
 		console.error('Sign in error:', error);
+		return {
+			success: false,
+			error: error instanceof Error ? error.message : 'Authentication failed'
+		};
 	}
 }
 
 export async function signOut() {
 	try {
-		await fetch('/api/auth/signout', {
-			method: 'POST'
+		await fetch('/api/auth', {
+			method: 'DELETE'
 		});
 		goto('/login');
 	} catch (error) {
@@ -2253,9 +2731,12 @@ export async function signOut() {
 }
 
 export function requireAuth() {
-	if (!page.data?.session) {
+	const $page = get(page);
+	if (!$page?.data?.session) {
 		goto('/login');
+		return false;
 	}
+	return true;
 }
 
 
@@ -2639,10 +3120,12 @@ Type: .svelte
 	import CardList from '../components/CardList/CardList.svelte';
 	import CategoryList from '../components/CategoryList/CategoryList.svelte';
 	import Menu from '../components/Menu/Menu.svelte';
+	import QuickCategories from '../components/QuickCategories/QuickCategories.svelte';
 </script>
 
 <!-- This should be the first section -->
 <Featured />
+<QuickCategories />
 
 <div class="home-content">
 	<!-- Popular Categories -->
@@ -2688,14 +3171,285 @@ File: ./src/routes/about/+page.svelte
 Type: .svelte
 ============================================================
 
-<div class="container mx-auto px-4 py-8">
-	<h1 class="mb-6 text-4xl font-bold">About Own Chef</h1>
-	<div class="prose max-w-none">
-		<p>
-			Welcome to Own Chef, your ultimate destination for sharing and discovering amazing recipes...
+<!-- src/routes/about/+page.svelte -->
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+	import { Users, Heart, Share2, Book, Award, Coffee } from 'lucide-svelte';
+
+	const stats = [
+		{ label: 'Active Users', value: '50K+' },
+		{ label: 'Recipes Shared', value: '10K+' },
+		{ label: 'Professional Chefs', value: '500+' },
+		{ label: 'Countries', value: '120+' }
+	];
+
+	const features = [
+		{
+			icon: Users,
+			title: 'Community Driven',
+			description: 'Join a vibrant community of food lovers sharing their culinary experiences.'
+		},
+		{
+			icon: Heart,
+			title: 'Curated Content',
+			description: 'Every recipe is tested and verified by our expert team of chefs.'
+		},
+		{
+			icon: Share2,
+			title: 'Easy Sharing',
+			description: 'Share your favorite recipes with friends and family effortlessly.'
+		}
+	];
+
+	const teamMembers = [
+		{
+			name: 'Sarah Chen',
+			role: 'Head Chef',
+			image: '/images/team/sarah.jpg',
+			bio: 'Former Michelin-star restaurant chef with 15 years of experience.'
+		},
+		{
+			name: 'Mike Rodriguez',
+			role: 'Food Photographer',
+			image: '/images/team/mike.jpg',
+			bio: 'Award-winning food photographer and styling expert.'
+		},
+		{
+			name: 'Emma Williams',
+			role: 'Recipe Curator',
+			image: '/images/team/emma.jpg',
+			bio: 'Culinary school instructor and cookbook author.'
+		}
+	];
+</script>
+
+<div class="about-container" class:dark={$theme === 'dark'}>
+	<!-- Hero Section -->
+	<section class="hero-section">
+		<div class="hero-content">
+			<h1 class="hero-title">
+				Empowering Home Chefs with
+				<span class="highlight">Authentic Recipes</span>
+			</h1>
+			<p class="hero-text">
+				Own Chef is a community-driven platform where passionate home cooks and professional chefs
+				come together to share, learn, and celebrate the art of cooking.
+			</p>
+		</div>
+		<div class="stats-grid">
+			{#each stats as stat}
+				<div class="stat-card">
+					<span class="stat-value">{stat.value}</span>
+					<span class="stat-label">{stat.label}</span>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<!-- Mission Section -->
+	<section class="mission-section">
+		<div class="section-content">
+			<h2 class="section-title">Our Mission</h2>
+			<p class="section-text">
+				We believe that great cooking should be accessible to everyone. Our mission is to preserve
+				and share authentic recipes from around the world, making it easy for anyone to create
+				delicious meals at home.
+			</p>
+			<div class="features-grid">
+				{#each features as feature}
+					<div class="feature-card">
+						<div class="icon-wrapper">
+							<svelte:component this={feature.icon} size={24} />
+						</div>
+						<h3 class="feature-title">{feature.title}</h3>
+						<p class="feature-text">{feature.description}</p>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</section>
+
+	<!-- Team Section -->
+	<section class="team-section">
+		<h2 class="section-title">Meet Our Team</h2>
+		<p class="section-text">
+			We're a diverse team of chefs, food photographers, and culinary enthusiasts dedicated to
+			making your cooking journey enjoyable and successful.
 		</p>
-	</div>
+		<div class="team-grid">
+			{#each teamMembers as member}
+				<div class="team-card">
+					<div class="member-image-wrapper">
+						<img src={member.image} alt={member.name} class="member-image" />
+					</div>
+					<div class="member-info">
+						<h3 class="member-name">{member.name}</h3>
+						<span class="member-role">{member.role}</span>
+						<p class="member-bio">{member.bio}</p>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<!-- Join Section -->
+	<section class="join-section">
+		<div class="join-content">
+			<h2 class="join-title">Join Our Culinary Community</h2>
+			<p class="join-text">
+				Whether you're a home cook or a professional chef, there's a place for you in our community.
+				Start sharing your recipes and culinary journey today.
+			</p>
+			<div class="button-group">
+				<a href="/signup" class="primary-button"> Get Started </a>
+				<a href="/contact" class="secondary-button"> Contact Us </a>
+			</div>
+		</div>
+	</section>
 </div>
+
+<style lang="postcss">
+	.about-container {
+		@apply mx-auto max-w-7xl px-4 py-12;
+	}
+
+	.hero-section {
+		@apply mb-24 text-center;
+	}
+
+	.hero-content {
+		@apply mx-auto max-w-3xl;
+	}
+
+	.hero-title {
+		@apply mb-6 text-4xl font-bold leading-tight sm:text-5xl;
+		@apply text-gray-900 dark:text-white;
+	}
+
+	.highlight {
+		@apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent;
+	}
+
+	.hero-text {
+		@apply mx-auto mb-12 max-w-2xl text-lg text-gray-600 dark:text-gray-400;
+	}
+
+	.stats-grid {
+		@apply grid gap-6 sm:grid-cols-2 lg:grid-cols-4;
+	}
+
+	.stat-card {
+		@apply flex flex-col items-center rounded-xl bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.stat-value {
+		@apply mb-2 text-3xl font-bold text-orange-500;
+	}
+
+	.stat-label {
+		@apply text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	.mission-section {
+		@apply mb-24 rounded-3xl bg-gradient-to-r from-orange-500 to-red-500 py-24 text-white;
+	}
+
+	.section-content {
+		@apply mx-auto max-w-7xl px-4;
+	}
+
+	.section-title {
+		@apply mb-6 text-center text-3xl font-bold sm:text-4xl;
+	}
+
+	.section-text {
+		@apply mx-auto mb-12 max-w-2xl text-center text-lg;
+	}
+
+	.features-grid {
+		@apply grid gap-8 sm:grid-cols-2 lg:grid-cols-3;
+	}
+
+	.feature-card {
+		@apply rounded-xl bg-white/10 p-6 backdrop-blur-sm;
+	}
+
+	.icon-wrapper {
+		@apply mb-4 inline-flex rounded-full bg-white/20 p-3;
+	}
+
+	.feature-title {
+		@apply mb-2 text-xl font-semibold;
+	}
+
+	.feature-text {
+		@apply text-white/90;
+	}
+
+	.team-section {
+		@apply mb-24 py-12;
+	}
+
+	.team-grid {
+		@apply grid gap-8 sm:grid-cols-2 lg:grid-cols-3;
+	}
+
+	.team-card {
+		@apply overflow-hidden rounded-xl bg-white shadow-sm transition-all hover:shadow-lg dark:bg-gray-800;
+	}
+
+	.member-image-wrapper {
+		@apply aspect-[4/3] w-full overflow-hidden;
+	}
+
+	.member-image {
+		@apply h-full w-full object-cover;
+	}
+
+	.member-info {
+		@apply p-6;
+	}
+
+	.member-name {
+		@apply mb-1 text-xl font-semibold text-gray-900 dark:text-white;
+	}
+
+	.member-role {
+		@apply mb-4 block text-sm text-orange-500;
+	}
+
+	.member-bio {
+		@apply text-gray-600 dark:text-gray-400;
+	}
+
+	.join-section {
+		@apply rounded-3xl bg-gray-50 py-16 text-center dark:bg-gray-900;
+	}
+
+	.join-content {
+		@apply mx-auto max-w-2xl px-4;
+	}
+
+	.join-title {
+		@apply mb-4 text-3xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.join-text {
+		@apply mb-8 text-gray-600 dark:text-gray-400;
+	}
+
+	.button-group {
+		@apply flex flex-wrap justify-center gap-4;
+	}
+
+	.primary-button {
+		@apply rounded-lg bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 font-semibold text-white transition-all hover:opacity-90;
+	}
+
+	.secondary-button {
+		@apply rounded-lg bg-white px-6 py-3 font-semibold text-gray-900 transition-all hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700;
+	}
+</style>
 
 
 
@@ -2704,10 +3458,58 @@ File: ./src/routes/api/auth/+server.ts
 Type: .ts
 ============================================================
 
+// src/routes/api/auth/+server.ts
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import * as auth from '$lib/server/auth';
+import { verify } from '@node-rs/argon2';
+import { eq } from 'drizzle-orm';
+import * as table from '$lib/server/db/schema';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async (event) => {
+	const data = await event.request.json();
+	const { username, password } = data;
+
+	if (!username || !password) {
+		return json({ error: 'Missing credentials' }, { status: 400 });
+	}
+
+	try {
+		// Find user by username
+		const results = await db.select().from(table.user).where(eq(table.user.username, username));
+
+		const user = results[0];
+
+		if (!user) {
+			return json({ error: 'Invalid credentials' }, { status: 401 });
+		}
+
+		// Verify password
+		const validPassword = await verify(user.passwordHash, password);
+		if (!validPassword) {
+			return json({ error: 'Invalid credentials' }, { status: 401 });
+		}
+
+		// Create session
+		const sessionToken = auth.generateSessionToken();
+		const session = await auth.createSession(sessionToken, user.id);
+
+		// Set session cookie
+		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+
+		return json({ success: true });
+	} catch (error) {
+		console.error('Authentication error:', error);
+		return json({ error: 'Authentication failed' }, { status: 500 });
+	}
+};
+
+export const DELETE: RequestHandler = async (event) => {
+	if (event.locals.session) {
+		await auth.invalidateSession(event.locals.session.id);
+		auth.deleteSessionTokenCookie(event);
+	}
 	return json({ success: true });
 };
 
@@ -2765,19 +3567,342 @@ File: ./src/routes/blog/+page.svelte
 Type: .svelte
 ============================================================
 
+<!-- src/routes/blog/+page.svelte -->
 <script lang="ts">
-	import CardList from '../../components/CardList/CardList.svelte';
-	import Menu from '../../components/Menu/Menu.svelte';
+	import { theme } from '$lib/stores/theme';
+	import { Search, Filter, ArrowRight } from 'lucide-svelte';
+
+	// Sample blog data - replace with actual data from your backend
+	const blogPosts = [
+		{
+			id: 1,
+			title: 'The Art of Making Perfect Sourdough Bread',
+			excerpt:
+				'Master the ancient technique of sourdough bread making with our comprehensive guide...',
+			category: 'Baking',
+			image: '/images/sourdough.jpg',
+			author: {
+				name: 'Chef Maria',
+				avatar: '/images/chef-maria.jpg'
+			},
+			readTime: '8 min read',
+			date: '2024-01-25',
+			tags: ['bread', 'baking', 'sourdough']
+		},
+		{
+			id: 2,
+			title: 'Essential Kitchen Tools Every Home Chef Needs',
+			excerpt:
+				'Discover the must-have kitchen tools that will elevate your cooking game to the next level...',
+			category: 'Kitchen Tips',
+			image: '/images/kitchen-tools.jpg',
+			author: {
+				name: 'Chef John',
+				avatar: '/images/chef-john.jpg'
+			},
+			readTime: '6 min read',
+			date: '2024-01-23',
+			tags: ['tools', 'kitchen', 'equipment']
+		}
+		// Add more blog posts...
+	];
+
+	const categories = [
+		'All',
+		'Recipes',
+		'Kitchen Tips',
+		'Cooking Techniques',
+		'Food Stories',
+		'Health & Nutrition'
+	];
+
+	let selectedCategory = 'All';
+	let searchQuery = '';
+	let activeSort = 'latest'; // latest, popular, trending
+
+	function formatDate(dateStr: string) {
+		return new Date(dateStr).toLocaleDateString('en-US', {
+			month: 'long',
+			day: 'numeric',
+			year: 'numeric'
+		});
+	}
 </script>
 
-<div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-	<div class="lg:col-span-2">
-		<CardList />
-	</div>
-	<div>
-		<Menu />
-	</div>
+<div class="blog-container" class:dark={$theme === 'dark'}>
+	<!-- Hero Section -->
+	<section class="hero">
+		<h1 class="hero-title">Culinary Stories & Insights</h1>
+		<p class="hero-subtitle">
+			Discover recipes, tips, and stories from our community of passionate chefs
+		</p>
+	</section>
+
+	<!-- Filters and Search -->
+	<section class="filters-section">
+		<div class="search-bar">
+			<Search size={20} class="search-icon" />
+			<input
+				type="text"
+				bind:value={searchQuery}
+				placeholder="Search articles..."
+				class="search-input"
+			/>
+		</div>
+
+		<div class="categories-filter">
+			{#each categories as category}
+				<button
+					class="category-btn"
+					class:active={selectedCategory === category}
+					on:click={() => (selectedCategory = category)}
+				>
+					{category}
+				</button>
+			{/each}
+		</div>
+
+		<div class="sort-options">
+			<button
+				class="sort-btn"
+				class:active={activeSort === 'latest'}
+				on:click={() => (activeSort = 'latest')}
+			>
+				Latest
+			</button>
+			<button
+				class="sort-btn"
+				class:active={activeSort === 'popular'}
+				on:click={() => (activeSort = 'popular')}
+			>
+				Popular
+			</button>
+			<button
+				class="sort-btn"
+				class:active={activeSort === 'trending'}
+				on:click={() => (activeSort = 'trending')}
+			>
+				Trending
+			</button>
+		</div>
+	</section>
+
+	<!-- Blog Posts Grid -->
+	<section class="posts-grid">
+		{#each blogPosts as post}
+			<article class="blog-card">
+				<div class="card-image-wrapper">
+					<img src={post.image} alt={post.title} class="card-image" />
+					<span class="category-tag">{post.category}</span>
+				</div>
+
+				<div class="card-content">
+					<div class="card-meta">
+						<div class="author-info">
+							<img src={post.author.avatar} alt={post.author.name} class="author-avatar" />
+							<span class="author-name">{post.author.name}</span>
+						</div>
+						<span class="read-time">{post.readTime}</span>
+					</div>
+
+					<h2 class="card-title">{post.title}</h2>
+					<p class="card-excerpt">{post.excerpt}</p>
+
+					<div class="card-footer">
+						<span class="post-date">{formatDate(post.date)}</span>
+						<a href="/blog/{post.id}" class="read-more">
+							Read More
+							<ArrowRight size={16} class="arrow-icon" />
+						</a>
+					</div>
+				</div>
+			</article>
+		{/each}
+	</section>
+
+	<!-- Newsletter Section -->
+	<section class="newsletter">
+		<div class="newsletter-content">
+			<h2 class="newsletter-title">Subscribe to Our Newsletter</h2>
+			<p class="newsletter-description">
+				Get weekly recipes, cooking tips, and food stories delivered to your inbox
+			</p>
+			<form class="newsletter-form">
+				<input type="email" placeholder="Enter your email" class="newsletter-input" />
+				<button type="submit" class="newsletter-button">Subscribe</button>
+			</form>
+		</div>
+	</section>
 </div>
+
+<style lang="postcss">
+	.blog-container {
+		@apply mx-auto max-w-7xl px-4 py-8;
+	}
+
+	.hero {
+		@apply mb-12 text-center;
+	}
+
+	.hero-title {
+		@apply mb-4 text-5xl font-bold text-gray-900 dark:text-white;
+		@apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent;
+	}
+
+	.hero-subtitle {
+		@apply text-xl text-gray-600 dark:text-gray-400;
+	}
+
+	.filters-section {
+		@apply mb-12 flex flex-col items-center gap-8;
+	}
+
+	.search-bar {
+		@apply relative mx-auto w-full max-w-2xl px-4;
+	}
+
+	.search-icon {
+		@apply pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-gray-400;
+	}
+
+	.search-input {
+		@apply w-full rounded-full border border-gray-200 bg-white px-12 py-3 text-gray-900 outline-none transition-all;
+		@apply focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20;
+		@apply dark:border-gray-700 dark:bg-gray-800 dark:text-white;
+	}
+
+	.categories-filter {
+		@apply flex flex-wrap items-center justify-center gap-3;
+		@apply w-full max-w-4xl px-4;
+	}
+
+	.category-btn {
+		@apply rounded-full px-4 py-2 text-sm font-medium transition-all;
+		@apply text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+	}
+
+	.category-btn.active {
+		@apply bg-orange-500 text-white hover:bg-orange-600;
+	}
+
+	.sort-options {
+		@apply flex items-center justify-center gap-2;
+		@apply border-t border-gray-200 pt-6 dark:border-gray-700;
+		@apply w-full max-w-4xl;
+	}
+
+	.sort-btn {
+		@apply rounded-md px-4 py-2 text-sm font-medium transition-all;
+		@apply text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+	}
+
+	.sort-btn.active {
+		@apply bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white;
+	}
+
+	.posts-grid {
+		@apply grid gap-8;
+		@apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+	}
+
+	.blog-card {
+		@apply overflow-hidden rounded-2xl bg-white shadow-sm transition-all;
+		@apply hover:shadow-xl hover:shadow-black/5;
+		@apply dark:bg-gray-800 dark:hover:shadow-white/5;
+	}
+
+	.card-image-wrapper {
+		@apply relative aspect-[16/9] w-full overflow-hidden;
+	}
+
+	.card-image {
+		@apply h-full w-full object-cover transition-transform duration-500;
+	}
+
+	.blog-card:hover .card-image {
+		@apply scale-110;
+	}
+
+	.category-tag {
+		@apply absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-medium backdrop-blur-sm;
+		@apply dark:bg-black/50;
+	}
+
+	.card-content {
+		@apply p-6;
+	}
+
+	.card-meta {
+		@apply mb-4 flex items-center justify-between;
+	}
+
+	.author-info {
+		@apply flex items-center gap-2;
+	}
+
+	.author-avatar {
+		@apply h-8 w-8 rounded-full;
+	}
+
+	.author-name {
+		@apply text-sm font-medium text-gray-900 dark:text-white;
+	}
+
+	.read-time {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.card-title {
+		@apply mb-2 text-xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.card-excerpt {
+		@apply mb-4 line-clamp-2 text-gray-600 dark:text-gray-400;
+	}
+
+	.card-footer {
+		@apply flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-700;
+	}
+
+	.post-date {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.read-more {
+		@apply flex items-center gap-1 text-sm font-medium text-orange-500 transition-colors;
+		@apply hover:text-orange-600;
+	}
+
+	.newsletter {
+		@apply mt-24 rounded-3xl bg-gradient-to-r from-orange-500 to-red-500 px-6 py-16 text-center text-white;
+	}
+
+	.newsletter-content {
+		@apply mx-auto max-w-2xl;
+	}
+
+	.newsletter-title {
+		@apply mb-4 text-3xl font-bold;
+	}
+
+	.newsletter-description {
+		@apply mb-8 text-lg text-white/90;
+	}
+
+	.newsletter-form {
+		@apply flex gap-4;
+	}
+
+	.newsletter-input {
+		@apply flex-1 rounded-lg border-2 border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 backdrop-blur-sm;
+		@apply focus:border-white/40 focus:outline-none;
+	}
+
+	.newsletter-button {
+		@apply rounded-lg bg-white px-6 py-3 font-medium text-orange-500 transition-all;
+		@apply hover:bg-orange-50;
+	}
+</style>
 
 
 
@@ -3045,11 +4170,29 @@ Type: .svelte
 ============================================================
 
 <!-- src/routes/login/+page.svelte -->
-
 <script lang="ts">
 	import { theme } from '$lib/stores/theme';
 	import { enhance } from '$app/forms';
-	import { Github, Mail, Facebook } from 'lucide-svelte';
+	import { signIn } from '$lib/auth';
+	import { Github, Mail, Facebook, AlertCircle } from 'lucide-svelte';
+
+	let username = '';
+	let password = '';
+	let error = '';
+	let loading = false;
+
+	async function handleSubmit() {
+		loading = true;
+		error = '';
+
+		const result = await signIn(username, password);
+
+		if (!result.success) {
+			error = result.error || 'Authentication failed';
+		}
+
+		loading = false;
+	}
 </script>
 
 <div class="login-container" class:dark={$theme === 'dark'}>
@@ -3062,6 +4205,13 @@ Type: .svelte
 
 		<h1 class="title">Welcome Back!</h1>
 		<p class="subtitle">Sign in to create, discover and share amazing recipes</p>
+
+		{#if error}
+			<div class="error-message">
+				<AlertCircle size={20} />
+				<span>{error}</span>
+			</div>
+		{/if}
 
 		<!-- Social Login Buttons -->
 		<div class="social-buttons">
@@ -3085,10 +4235,32 @@ Type: .svelte
 			<span>or</span>
 		</div>
 
-		<button class="email-btn">
+		<button class="email-btn" on:click={() => document.getElementById('usernameInput')?.focus()}>
 			<Mail class="h-5 w-5" />
 			<span>Continue with Email</span>
 		</button>
+
+		<!-- Hidden email login form that shows when email button is clicked -->
+		<form class="email-form" on:submit|preventDefault={handleSubmit}>
+			<input
+				id="usernameInput"
+				type="text"
+				bind:value={username}
+				placeholder="Username"
+				class="form-input"
+				required
+			/>
+			<input
+				type="password"
+				bind:value={password}
+				placeholder="Password"
+				class="form-input"
+				required
+			/>
+			<button type="submit" class="submit-btn" disabled={loading}>
+				{loading ? 'Signing in...' : 'Sign In'}
+			</button>
+		</form>
 
 		<p class="terms">
 			By continuing, you agree to our
@@ -3109,10 +4281,6 @@ Type: .svelte
 			radial-gradient(circle at 90% 80%, rgba(255, 179, 107, 0.05) 0%, transparent 50%);
 	}
 
-	.login-container.dark .login-content {
-		@apply shadow-slate-700/50;
-	}
-	
 	.login-content {
 		@apply w-full max-w-md rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800;
 		@apply transform transition-all duration-300;
@@ -3136,6 +4304,10 @@ Type: .svelte
 
 	.subtitle {
 		@apply mb-8 text-center text-gray-600 dark:text-gray-300;
+	}
+
+	.error-message {
+		@apply mb-4 flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400;
 	}
 
 	.social-buttons {
@@ -3181,6 +4353,22 @@ Type: .svelte
 		@apply transition-all duration-300;
 	}
 
+	.email-form {
+		@apply mt-4 space-y-3;
+	}
+
+	.form-input {
+		@apply w-full rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm;
+		@apply focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20;
+		@apply dark:border-gray-700 dark:bg-gray-700 dark:text-white;
+	}
+
+	.submit-btn {
+		@apply w-full rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white;
+		@apply hover:bg-orange-600 disabled:opacity-50;
+		@apply transition-all duration-300;
+	}
+
 	.terms {
 		@apply mt-6 text-center text-sm text-gray-500 dark:text-gray-400;
 	}
@@ -3188,18 +4376,2881 @@ Type: .svelte
 	.link {
 		@apply text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
 	}
+</style>
 
-	/* Hover effects */
-	.login-content:hover {
-		@apply shadow-2xl;
+
+
+============================================================
+File: ./src/routes/profile/[username]/+page.svelte
+Type: .svelte
+============================================================
+
+<!-- src/routes/profile/[username]/+page.svelte -->
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { theme } from '$lib/stores/theme';
+	import { onMount } from 'svelte';
+	import {
+		ChefHat,
+		Heart,
+		Users,
+		Settings,
+		ExternalLink,
+		MapPin,
+		Calendar,
+		Star,
+		UtensilsCrossed,
+		BookOpen,
+		Clock,
+		Grid,
+		List
+	} from 'lucide-svelte';
+	import Card from '../../../components/Card/Card.svelte';
+
+	// This would be fetched from your API in a real implementation
+	const profile = {
+		id: 'chef-priya',
+		username: 'chef_priya',
+		name: 'Chef Priya Sharma',
+		avatar: '/images/chef-priya.jpg',
+		bio: 'Professional chef with over 10 years of experience in Indian and fusion cuisine. Passionate about sharing authentic family recipes and teaching cooking techniques.',
+		location: 'Mumbai, India',
+		joined: '2022-03-15',
+		website: 'https://priyaskitchen.com',
+		social: {
+			instagram: 'chef_priya',
+			youtube: 'PriyasKitchenTV',
+			tiktok: 'chefpriya_official'
+		},
+		stats: {
+			followers: 12400,
+			following: 345,
+			recipes: 87,
+			likes: 4523
+		},
+		isFollowing: false,
+		isOwnProfile: false,
+		verified: true
+	};
+
+	const recipes = [
+		{
+			id: 'butter-chicken',
+			title: 'Classic Butter Chicken',
+			description:
+				'A rich and creamy tomato-based curry with tender chicken pieces marinated in yogurt and spices.',
+			image: '/images/butter-chicken.jpg',
+			cookTime: 45,
+			category: 'Indian',
+			difficulty: 'Medium',
+			author: {
+				name: profile.name,
+				avatar: profile.avatar
+			},
+			rating: 4.8
+		},
+		{
+			id: 'palak-paneer',
+			title: 'Palak Paneer',
+			description:
+				'Creamy spinach curry with soft paneer cheese cubes, flavored with garlic, ginger, and aromatic spices.',
+			image: '/images/palak-paneer.jpg',
+			cookTime: 35,
+			category: 'Indian',
+			difficulty: 'Easy',
+			author: {
+				name: profile.name,
+				avatar: profile.avatar
+			},
+			rating: 4.7
+		},
+		{
+			id: 'chicken-biryani',
+			title: 'Chicken Biryani',
+			description:
+				'Fragrant basmati rice cooked with tender chicken pieces, saffron, and a blend of traditional spices.',
+			image: '/images/biryani.jpg',
+			cookTime: 60,
+			category: 'Indian',
+			difficulty: 'Medium',
+			author: {
+				name: profile.name,
+				avatar: profile.avatar
+			},
+			rating: 4.9
+		},
+		{
+			id: 'masala-dosa',
+			title: 'Masala Dosa',
+			description:
+				'Crispy rice and lentil crepes filled with spiced potato filling, served with coconut chutney and sambar.',
+			image: '/images/masala-dosa.jpg',
+			cookTime: 50,
+			category: 'Indian',
+			difficulty: 'Hard',
+			author: {
+				name: profile.name,
+				avatar: profile.avatar
+			},
+			rating: 4.6
+		},
+		{
+			id: 'gulab-jamun',
+			title: 'Gulab Jamun',
+			description:
+				'Soft, spongy milk solids dumplings soaked in rose and cardamom flavored sugar syrup.',
+			image: '/images/gulab-jamun.jpg',
+			cookTime: 40,
+			category: 'Indian',
+			difficulty: 'Medium',
+			author: {
+				name: profile.name,
+				avatar: profile.avatar
+			},
+			rating: 4.7
+		},
+		{
+			id: 'vegetable-samosas',
+			title: 'Vegetable Samosas',
+			description:
+				'Crispy pastry triangles filled with spiced potatoes and peas, deep-fried to golden perfection.',
+			image: '/images/samosas.jpg',
+			cookTime: 55,
+			category: 'Indian',
+			difficulty: 'Medium',
+			author: {
+				name: profile.name,
+				avatar: profile.avatar
+			},
+			rating: 4.5
+		}
+	];
+
+	const savedRecipes = recipes.slice(0, 2);
+	const likedRecipes = recipes.slice(2, 4);
+
+	let activeTab = 'recipes';
+	let viewMode = 'grid';
+
+	function formatDate(dateString: string): string {
+		const date = new Date(dateString);
+		return new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: 'long'
+		}).format(date);
 	}
 
-	.social-btn:hover {
-		@apply -translate-y-0.5 transform;
+	function toggleFollow() {
+		profile.isFollowing = !profile.isFollowing;
+		profile.stats.followers += profile.isFollowing ? 1 : -1;
 	}
 
-	.email-btn:hover {
-		@apply -translate-y-0.5 transform shadow-lg shadow-orange-500/25;
+	let hasScrolled = false;
+
+	onMount(() => {
+		// You would fetch the profile data here in a real implementation
+		console.log('Profile page mounted');
+
+		const handleScroll = () => {
+			hasScrolled = window.scrollY > 250;
+		};
+
+		window.addEventListener('scroll', handleScroll);
+
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+		};
+	});
+</script>
+
+<svelte:head>
+	<title>{profile.name} | OwnChef</title>
+	<meta name="description" content={profile.bio} />
+</svelte:head>
+
+<div class="profile-page" class:dark={$theme === 'dark'}>
+	<!-- Profile Header Section -->
+	<div class="profile-header">
+		<div class="profile-cover">
+			<div class="cover-overlay"></div>
+		</div>
+
+		<div class="profile-info-container">
+			<div class="profile-info">
+				<div class="profile-avatar-container">
+					<img src={profile.avatar} alt={profile.name} class="profile-avatar" />
+					{#if profile.verified}
+						<span class="verified-badge" title="Verified Chef">
+							<ChefHat size={16} class="badge-icon" />
+						</span>
+					{/if}
+				</div>
+
+				<div class="profile-details">
+					<h1 class="profile-name">{profile.name}</h1>
+					<p class="profile-username">@{profile.username}</p>
+
+					<div class="profile-meta">
+						{#if profile.location}
+							<div class="meta-item">
+								<MapPin size={16} class="meta-icon" />
+								<span>{profile.location}</span>
+							</div>
+						{/if}
+
+						<div class="meta-item">
+							<Calendar size={16} class="meta-icon" />
+							<span>Joined {formatDate(profile.joined)}</span>
+						</div>
+
+						{#if profile.website}
+							<a
+								href={profile.website}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="meta-item website"
+							>
+								<ExternalLink size={16} class="meta-icon" />
+								<span>{profile.website.replace(/(^\w+:|^)\/\//, '')}</span>
+							</a>
+						{/if}
+					</div>
+
+					<p class="profile-bio">{profile.bio}</p>
+
+					<div class="profile-stats">
+						<div class="stat-item">
+							<span class="stat-value">{profile.stats.recipes}</span>
+							<span class="stat-label">Recipes</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-value">{profile.stats.followers.toLocaleString()}</span>
+							<span class="stat-label">Followers</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-value">{profile.stats.following.toLocaleString()}</span>
+							<span class="stat-label">Following</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-value">{profile.stats.likes.toLocaleString()}</span>
+							<span class="stat-label">Likes</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="profile-actions">
+					{#if profile.isOwnProfile}
+						<a href="/settings/profile" class="edit-profile-button">
+							<Settings size={18} class="button-icon" />
+							Edit Profile
+						</a>
+					{:else}
+						<button
+							class="follow-button"
+							class:following={profile.isFollowing}
+							on:click={toggleFollow}
+						>
+							<Users size={18} class="button-icon" />
+							{profile.isFollowing ? 'Following' : 'Follow'}
+						</button>
+					{/if}
+				</div>
+			</div>
+
+			<div class="social-links">
+				{#if profile.social.instagram}
+					<a
+						href={`https://instagram.com/${profile.social.instagram}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="social-link instagram"
+						aria-label="Instagram"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="social-icon"
+						>
+							<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+							<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+							<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+						</svg>
+					</a>
+				{/if}
+
+				{#if profile.social.youtube}
+					<a
+						href={`https://youtube.com/@${profile.social.youtube}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="social-link youtube"
+						aria-label="YouTube"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="social-icon"
+						>
+							<path
+								d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"
+							></path>
+							<polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+						</svg>
+					</a>
+				{/if}
+
+				{#if profile.social.tiktok}
+					<a
+						href={`https://tiktok.com/@${profile.social.tiktok}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="social-link tiktok"
+						aria-label="TikTok"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="social-icon"
+						>
+							<path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path>
+							<path d="M14 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path>
+							<path d="M8 8v8"></path>
+							<path d="M16 16V8a4 4 0 0 0-4-4"></path>
+							<path d="M16 8h4"></path>
+						</svg>
+					</a>
+				{/if}
+			</div>
+		</div>
+	</div>
+
+	<!-- Sticky Navigation -->
+	<div class="profile-navigation" class:sticky={hasScrolled}>
+		<div class="navigation-tabs">
+			<button
+				class="nav-tab"
+				class:active={activeTab === 'recipes'}
+				on:click={() => (activeTab = 'recipes')}
+			>
+				<UtensilsCrossed size={18} class="tab-icon" />
+				<span>Recipes</span>
+				<span class="tab-count">{profile.stats.recipes}</span>
+			</button>
+
+			<button
+				class="nav-tab"
+				class:active={activeTab === 'saved'}
+				on:click={() => (activeTab = 'saved')}
+			>
+				<BookOpen size={18} class="tab-icon" />
+				<span>Saved</span>
+				<span class="tab-count">{savedRecipes.length}</span>
+			</button>
+
+			<button
+				class="nav-tab"
+				class:active={activeTab === 'liked'}
+				on:click={() => (activeTab = 'liked')}
+			>
+				<Heart size={18} class="tab-icon" />
+				<span>Liked</span>
+				<span class="tab-count">{likedRecipes.length}</span>
+			</button>
+		</div>
+
+		<div class="view-toggles">
+			<button
+				class="view-toggle"
+				class:active={viewMode === 'grid'}
+				on:click={() => (viewMode = 'grid')}
+				aria-label="Grid view"
+			>
+				<Grid size={18} />
+			</button>
+			<button
+				class="view-toggle"
+				class:active={viewMode === 'list'}
+				on:click={() => (viewMode = 'list')}
+				aria-label="List view"
+			>
+				<List size={18} />
+			</button>
+		</div>
+	</div>
+
+	<!-- Recipe Content -->
+	<div class="profile-content">
+		{#if activeTab === 'recipes'}
+			<div class="tab-header">
+				<h2 class="tab-title">Recipes by {profile.name}</h2>
+				<div class="tab-filters">
+					<select class="filter-select">
+						<option value="newest">Newest First</option>
+						<option value="oldest">Oldest First</option>
+						<option value="popular">Most Popular</option>
+					</select>
+				</div>
+			</div>
+
+			{#if recipes.length > 0}
+				<div class="recipes-grid" class:list-view={viewMode === 'list'}>
+					{#each recipes as recipe}
+						<Card {recipe} />
+					{/each}
+				</div>
+			{:else}
+				<div class="empty-state">
+					<div class="empty-icon">
+						<UtensilsCrossed size={48} class="text-gray-300 dark:text-gray-600" />
+					</div>
+					<h3 class="empty-title">No recipes yet</h3>
+					<p class="empty-message">
+						{profile.isOwnProfile
+							? "You haven't added any recipes yet. Share your first recipe!"
+							: `${profile.name} hasn't added any recipes yet.`}
+					</p>
+					{#if profile.isOwnProfile}
+						<a href="/write" class="empty-action">Add Recipe</a>
+					{/if}
+				</div>
+			{/if}
+		{:else if activeTab === 'saved'}
+			<div class="tab-header">
+				<h2 class="tab-title">Saved Recipes</h2>
+			</div>
+
+			{#if savedRecipes.length > 0}
+				<div class="recipes-grid" class:list-view={viewMode === 'list'}>
+					{#each savedRecipes as recipe}
+						<Card {recipe} />
+					{/each}
+				</div>
+			{:else}
+				<div class="empty-state">
+					<div class="empty-icon">
+						<BookOpen size={48} class="text-gray-300 dark:text-gray-600" />
+					</div>
+					<h3 class="empty-title">No saved recipes</h3>
+					<p class="empty-message">
+						{profile.isOwnProfile
+							? "You haven't saved any recipes yet. Browse recipes and save your favorites!"
+							: `${profile.name} hasn't saved any recipes yet.`}
+					</p>
+					{#if profile.isOwnProfile}
+						<a href="/recipes" class="empty-action">Browse Recipes</a>
+					{/if}
+				</div>
+			{/if}
+		{:else if activeTab === 'liked'}
+			<div class="tab-header">
+				<h2 class="tab-title">Liked Recipes</h2>
+			</div>
+
+			{#if likedRecipes.length > 0}
+				<div class="recipes-grid" class:list-view={viewMode === 'list'}>
+					{#each likedRecipes as recipe}
+						<Card {recipe} />
+					{/each}
+				</div>
+			{:else}
+				<div class="empty-state">
+					<div class="empty-icon">
+						<Heart size={48} class="text-gray-300 dark:text-gray-600" />
+					</div>
+					<h3 class="empty-title">No liked recipes</h3>
+					<p class="empty-message">
+						{profile.isOwnProfile
+							? "You haven't liked any recipes yet. Like recipes to show your appreciation!"
+							: `${profile.name} hasn't liked any recipes yet.`}
+					</p>
+					{#if profile.isOwnProfile}
+						<a href="/recipes" class="empty-action">Browse Recipes</a>
+					{/if}
+				</div>
+			{/if}
+		{/if}
+	</div>
+</div>
+
+<style lang="postcss">
+	.profile-page {
+		@apply pb-16;
+	}
+
+	/* Profile Header Styles */
+	.profile-header {
+		@apply relative mb-6;
+	}
+
+	.profile-cover {
+		@apply relative h-48 w-full overflow-hidden bg-gradient-to-r from-orange-400 via-red-500 to-orange-500 sm:h-64;
+	}
+
+	.cover-overlay {
+		@apply absolute inset-0 bg-black/20;
+	}
+
+	.profile-info-container {
+		@apply relative mx-auto max-w-7xl px-4;
+	}
+
+	.profile-info {
+		@apply -mt-16 grid grid-cols-1 gap-6 sm:-mt-24 sm:grid-cols-[auto_1fr_auto];
+	}
+
+	.profile-avatar-container {
+		@apply relative;
+	}
+
+	.profile-avatar {
+		@apply h-32 w-32 rounded-full border-4 border-white object-cover shadow-md sm:h-40 sm:w-40 dark:border-gray-800;
+	}
+
+	.verified-badge {
+		@apply absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white;
+	}
+
+	.badge-icon {
+		@apply h-4 w-4;
+	}
+
+	.profile-details {
+		@apply pt-4 sm:pt-8;
+	}
+
+	.profile-name {
+		@apply mb-1 text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white;
+	}
+
+	.profile-username {
+		@apply mb-4 text-gray-600 dark:text-gray-400;
+	}
+
+	.profile-meta {
+		@apply mb-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	.meta-item {
+		@apply flex items-center gap-1.5;
+	}
+
+	.meta-icon {
+		@apply text-gray-500 dark:text-gray-500;
+	}
+
+	.meta-item.website {
+		@apply text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300;
+	}
+
+	.profile-bio {
+		@apply mb-4 text-gray-700 dark:text-gray-300;
+	}
+
+	.profile-stats {
+		@apply flex flex-wrap gap-6;
+	}
+
+	.stat-item {
+		@apply flex flex-col;
+	}
+
+	.stat-value {
+		@apply font-bold text-gray-900 dark:text-white;
+	}
+
+	.stat-label {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.profile-actions {
+		@apply flex gap-4 pt-4 sm:pt-8;
+	}
+
+	.edit-profile-button,
+	.follow-button {
+		@apply flex items-center gap-2 rounded-full px-6 py-2 font-medium transition-all;
+	}
+
+	.edit-profile-button {
+		@apply bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700;
+	}
+
+	.follow-button {
+		@apply bg-gradient-to-r from-orange-500 to-red-500 text-white hover:shadow-lg hover:shadow-orange-500/20;
+	}
+
+	.follow-button.following {
+		@apply bg-gray-100 bg-none text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700;
+	}
+
+	.button-icon {
+		@apply h-4 w-4;
+	}
+
+	.social-links {
+		@apply mt-6 flex justify-center gap-4 border-t border-gray-200 pt-6 sm:justify-end dark:border-gray-700;
+	}
+
+	.social-link {
+		@apply flex h-10 w-10 items-center justify-center rounded-full transition-all;
+	}
+
+	.social-icon {
+		@apply h-5 w-5;
+	}
+
+	.social-link.instagram {
+		@apply text-[#d62976] hover:bg-[#d62976]/10;
+	}
+
+	.social-link.youtube {
+		@apply text-[#FF0000] hover:bg-[#FF0000]/10;
+	}
+
+	.social-link.tiktok {
+		@apply text-[#000000] hover:bg-[#000000]/10 dark:text-[#ffffff] dark:hover:bg-[#ffffff]/10;
+	}
+
+	/* Navigation Styles */
+	.profile-navigation {
+		@apply mb-6 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-2 dark:border-gray-700 dark:bg-gray-800;
+	}
+
+	.profile-navigation.sticky {
+		position: sticky;
+		top: 0;
+		z-index: 40;
+		@apply shadow-sm;
+	}
+
+	.navigation-tabs {
+		@apply flex overflow-x-auto;
+	}
+
+	.nav-tab {
+		@apply flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white;
+	}
+
+	.nav-tab.active {
+		@apply border-b-2 border-orange-500 text-orange-500 dark:border-orange-400 dark:text-orange-400;
+	}
+
+	.tab-icon {
+		@apply h-4 w-4;
+	}
+
+	.tab-count {
+		@apply ml-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300;
+	}
+
+	.view-toggles {
+		@apply flex rounded-lg border border-gray-200 p-1 dark:border-gray-700;
+	}
+
+	.view-toggle {
+		@apply rounded-md p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+	}
+
+	.view-toggle.active {
+		@apply bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white;
+	}
+
+	/* Content Styles */
+	.profile-content {
+		@apply mx-auto max-w-7xl px-4;
+	}
+
+	.tab-header {
+		@apply mb-6 flex flex-wrap items-center justify-between gap-4;
+	}
+
+	.tab-title {
+		@apply text-xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.tab-filters {
+		@apply flex gap-4;
+	}
+
+	.filter-select {
+		@apply rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.recipes-grid {
+		@apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
+	}
+
+	.recipes-grid.list-view {
+		@apply grid-cols-1;
+	}
+
+	/* Empty State Styles */
+	.empty-state {
+		@apply flex flex-col items-center justify-center rounded-lg bg-white py-16 text-center shadow-sm dark:bg-gray-800;
+	}
+
+	.empty-icon {
+		@apply mb-4;
+	}
+
+	.empty-title {
+		@apply mb-2 text-xl font-semibold text-gray-900 dark:text-white;
+	}
+
+	.empty-message {
+		@apply mb-6 max-w-md text-gray-600 dark:text-gray-400;
+	}
+
+	.empty-action {
+		@apply rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 font-medium text-white transition-all hover:shadow-lg hover:shadow-orange-500/20;
+	}
+
+	/* Media Queries */
+	@media (max-width: 768px) {
+		.profile-info {
+			@apply grid-cols-1;
+		}
+
+		.profile-avatar {
+			@apply mx-auto;
+		}
+
+		.profile-details {
+			@apply text-center;
+		}
+
+		.profile-meta {
+			@apply justify-center;
+		}
+
+		.profile-stats {
+			@apply justify-center;
+		}
+
+		.profile-actions {
+			@apply justify-center;
+		}
+	}
+</style>
+
+
+
+============================================================
+File: ./src/routes/recipes/[slug]/+page.svelte
+Type: .svelte
+============================================================
+
+<!-- src/routes/recipes/[slug]/+page.svelte -->
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { theme } from '$lib/stores/theme';
+	import { onMount } from 'svelte';
+	import {
+		Clock,
+		Users,
+		ChefHat,
+		Flame,
+		Bookmark,
+		Heart,
+		Share2,
+		MessageCircle,
+		Printer,
+		Star,
+		ThumbsUp,
+		ChevronDown,
+		AlertCircle
+	} from 'lucide-svelte';
+	import Comments from '../../../components/Comments/Comments.svelte';
+
+	// This would come from your API in a real implementation
+	const recipe = {
+		id: 'classic-butter-chicken',
+		title: 'Classic Butter Chicken (Murgh Makhani)',
+		description:
+			"A rich, creamy, and aromatic Indian curry that's beloved worldwide. This authentic butter chicken recipe features tender chicken pieces in a velvety tomato-based sauce.",
+		images: [
+			'/images/butter-chicken.jpg',
+			'/images/butter-chicken-2.jpg',
+			'/images/butter-chicken-3.jpg'
+		],
+		cookTime: 45,
+		prepTime: 20,
+		totalTime: 65,
+		servings: 4,
+		difficulty: 'Medium',
+		cuisine: 'Indian',
+		category: 'Main Course',
+		rating: 4.8,
+		reviewsCount: 243,
+		likesCount: 1243,
+		isFavorited: false,
+		isLiked: false,
+		isSaved: false,
+		author: {
+			id: 'chef-priya',
+			name: 'Chef Priya',
+			avatar: '/images/chef-priya.jpg',
+			recipesCount: 87,
+			followersCount: 12400
+		},
+		ingredients: [
+			{
+				group: 'For the Marinade',
+				items: [
+					'1 lb (450g) boneless, skinless chicken thighs, cut into bite-sized pieces',
+					'1/2 cup plain yogurt',
+					'2 tablespoons lemon juice',
+					'4 cloves garlic, minced',
+					'1 tablespoon ginger paste',
+					'1 teaspoon garam masala',
+					'1 teaspoon ground cumin',
+					'1 teaspoon ground coriander',
+					'1 teaspoon Kashmiri red chili powder (or mild paprika)',
+					'1/2 teaspoon ground turmeric',
+					'Salt to taste'
+				]
+			},
+			{
+				group: 'For the Sauce',
+				items: [
+					'3 tablespoons ghee or unsalted butter',
+					'1 large onion, finely chopped',
+					'2 green chilies, slit (optional, for heat)',
+					'4 cloves garlic, minced',
+					'1 tablespoon ginger paste',
+					'1 cinnamon stick',
+					'4 green cardamom pods, slightly crushed',
+					'2 cloves',
+					'1 bay leaf',
+					'2 cups tomato puree (or 4 large tomatoes, pureed)',
+					'1 tablespoon Kashmiri red chili powder',
+					'1 teaspoon garam masala',
+					'1/2 cup heavy cream',
+					'2 tablespoons kasuri methi (dried fenugreek leaves)',
+					'2 tablespoons honey or sugar',
+					'Salt to taste'
+				]
+			},
+			{
+				group: 'For Garnish',
+				items: [
+					'2 tablespoons fresh cilantro, chopped',
+					'1 tablespoon butter, for topping',
+					'A swirl of cream, for topping'
+				]
+			}
+		],
+		steps: [
+			{
+				title: 'Marinate the Chicken',
+				content:
+					'In a large bowl, combine all marinade ingredients with the chicken pieces. Make sure all pieces are well coated. Cover and refrigerate for at least 2 hours, preferably overnight for best flavor.'
+			},
+			{
+				title: 'Cook the Marinated Chicken',
+				content:
+					'Preheat your oven to 425°F (220°C). Line a baking sheet with aluminum foil and arrange the marinated chicken pieces in a single layer. Bake for 15 minutes, or until the chicken is cooked through and slightly charred on the edges. Alternatively, you can grill the chicken or cook it in a pan until done.'
+			},
+			{
+				title: 'Prepare the Sauce',
+				content:
+					'Heat ghee or butter in a large, heavy-bottomed pot over medium heat. Add the cinnamon stick, cardamom pods, cloves, and bay leaf. Sauté for 30 seconds until fragrant. Add the chopped onions and green chilies (if using) and sauté until the onions are golden brown, about 5-7 minutes. Add the minced garlic and ginger paste. Sauté for another 1-2 minutes until the raw smell disappears.'
+			},
+			{
+				title: 'Add Tomatoes and Spices',
+				content:
+					'Pour in the tomato puree and bring to a simmer. Add the Kashmiri red chili powder and salt. Cover and simmer for about 15 minutes, stirring occasionally, until the sauce thickens and the oil begins to separate.'
+			},
+			{
+				title: 'Blend the Sauce',
+				content:
+					'Remove the cinnamon stick, cardamom pods, cloves, and bay leaf. Let the sauce cool slightly, then transfer to a blender and blend until smooth. You can also use an immersion blender directly in the pot. Return the sauce to the pot if you used a countertop blender.'
+			},
+			{
+				title: 'Finish the Dish',
+				content:
+					'Bring the sauce back to a simmer over medium heat. Add the cooked chicken pieces and any accumulated juices. Stir in the heavy cream, kasuri methi (crush it between your palms before adding), garam masala, and honey or sugar. Simmer for 5-7 minutes until the flavors meld together and the sauce reaches your desired consistency.'
+			},
+			{
+				title: 'Garnish and Serve',
+				content:
+					'Just before serving, stir in the remaining tablespoon of butter until melted. Transfer to a serving dish, drizzle with a little cream, and sprinkle with chopped cilantro. Serve hot with naan bread or steamed rice.'
+			}
+		],
+		tips: [
+			'For a richer flavor, use bone-in chicken pieces in the marinade and remove the bones before adding to the sauce.',
+			'The longer you marinate the chicken, the more flavorful and tender it will be.',
+			'If the sauce is too thick, add a little water or chicken broth to reach your desired consistency.',
+			"Don't skip the kasuri methi (dried fenugreek leaves) - it gives butter chicken its distinctive flavor.",
+			'For a tangier sauce, add a tablespoon of tomato paste along with the tomato puree.'
+		],
+		nutrition: {
+			calories: 420,
+			protein: 28,
+			carbs: 12,
+			fat: 32,
+			fiber: 3,
+			sugar: 8
+		},
+		tags: ['Indian', 'chicken', 'curry', 'creamy', 'dinner', 'comfort food'],
+		relatedRecipes: [
+			{
+				id: 'chicken-tikka-masala',
+				title: 'Chicken Tikka Masala',
+				image: '/images/chicken-tikka.jpg'
+			},
+			{
+				id: 'naan-bread',
+				title: 'Homemade Naan Bread',
+				image: '/images/naan.jpg'
+			},
+			{
+				id: 'palak-paneer',
+				title: 'Palak Paneer',
+				image: '/images/palak-paneer.jpg'
+			}
+		],
+		createdAt: '2023-08-15T14:30:00Z',
+		updatedAt: '2023-10-03T09:15:00Z'
+	};
+
+	// These would be state variables in a real implementation
+	let activeImageIndex = 0;
+	let expandedSection = '';
+	let showAllIngredients = false;
+	let showAllTips = false;
+
+	function toggleExpandSection(section: string) {
+		expandedSection = expandedSection === section ? '' : section;
+	}
+
+	function toggleLike() {
+		recipe.isLiked = !recipe.isLiked;
+		recipe.likesCount += recipe.isLiked ? 1 : -1;
+	}
+
+	function toggleSave() {
+		recipe.isSaved = !recipe.isSaved;
+	}
+
+	function toggleFavorite() {
+		recipe.isFavorited = !recipe.isFavorited;
+	}
+
+	function handleShare() {
+		// Logic for sharing would go here
+		console.log('Share recipe', recipe.id);
+	}
+
+	function formatDate(dateString: string): string {
+		const date = new Date(dateString);
+		return new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		}).format(date);
+	}
+
+	let reviews = [
+		{
+			id: 1,
+			author: {
+				name: 'Sarah M.',
+				avatar: '/images/user-1.jpg'
+			},
+			rating: 5,
+			date: '2023-09-28T10:30:00Z',
+			content:
+				"This butter chicken recipe is amazing! The flavors are perfectly balanced and it tastes just like what I've had at my favorite Indian restaurant."
+		},
+		{
+			id: 2,
+			author: {
+				name: 'Michael R.',
+				avatar: '/images/user-2.jpg'
+			},
+			rating: 4,
+			date: '2023-09-15T14:22:00Z',
+			content:
+				'Really good recipe! I reduced the cream slightly and it was still delicious. Will definitely make again.'
+		},
+		{
+			id: 3,
+			author: {
+				name: 'Jessica T.',
+				avatar: '/images/user-3.jpg'
+			},
+			rating: 5,
+			date: '2023-08-30T19:45:00Z',
+			content:
+				'The step by step instructions were so easy to follow. My family loved it! This is now going into our regular rotation.'
+		}
+	];
+
+	let showAllReviews = false;
+	let currentServings = recipe.servings;
+
+	function updateIngredientQuantities(newServings: number) {
+		// In a real implementation, you'd update the ingredient quantities based on the new servings
+		currentServings = newServings;
+	}
+
+	onMount(() => {
+		// You would fetch the recipe data here in a real implementation
+		console.log('Recipe detail page mounted');
+	});
+</script>
+
+<svelte:head>
+	<title>{recipe.title} | OwnChef</title>
+	<meta name="description" content={recipe.description} />
+</svelte:head>
+
+<div class="recipe-detail-container" class:dark={$theme === 'dark'}>
+	<!-- Recipe Header -->
+	<header class="recipe-header">
+		<div class="breadcrumb">
+			<a href="/" class="breadcrumb-link">Home</a>
+			<span class="breadcrumb-separator">/</span>
+			<a href="/recipes" class="breadcrumb-link">Recipes</a>
+			<span class="breadcrumb-separator">/</span>
+			<a href="/recipes/category/{recipe.cuisine.toLowerCase()}" class="breadcrumb-link"
+				>{recipe.cuisine}</a
+			>
+		</div>
+
+		<h1 class="recipe-title">{recipe.title}</h1>
+
+		<div class="recipe-meta">
+			<div class="recipe-rating">
+				<div class="stars">
+					{#each Array(5) as _, i}
+						<Star
+							size={18}
+							class="star"
+							fill={i < Math.floor(recipe.rating) ? 'currentColor' : 'none'}
+						/>
+					{/each}
+				</div>
+				<span class="rating-value">{recipe.rating}</span>
+				<span class="rating-count">({recipe.reviewsCount} reviews)</span>
+			</div>
+
+			<div class="recipe-time">
+				<Clock size={18} class="time-icon" />
+				<span>{recipe.totalTime} mins</span>
+			</div>
+
+			<div class="recipe-difficulty">
+				<ChefHat size={18} class="difficulty-icon" />
+				<span>{recipe.difficulty}</span>
+			</div>
+
+			<div class="recipe-servings">
+				<Users size={18} class="servings-icon" />
+				<span>{recipe.servings} servings</span>
+			</div>
+		</div>
+
+		<div class="author-info">
+			<img src={recipe.author.avatar} alt={recipe.author.name} class="author-avatar" />
+			<div class="author-details">
+				<a href="/profile/{recipe.author.id}" class="author-name">{recipe.author.name}</a>
+				<div class="author-stats">
+					<span>{recipe.author.recipesCount} recipes</span>
+					<span class="stat-separator">•</span>
+					<span>{recipe.author.followersCount.toLocaleString()} followers</span>
+				</div>
+			</div>
+			<button class="follow-button">Follow</button>
+		</div>
+	</header>
+
+	<!-- Recipe Content Grid -->
+	<div class="recipe-content">
+		<!-- Left Column: Images and Ingredients -->
+		<div class="recipe-left-column">
+			<!-- Recipe Images Gallery -->
+			<div class="recipe-gallery">
+				<div class="main-image-container">
+					<img src={recipe.images[activeImageIndex]} alt={recipe.title} class="main-image" />
+
+					<div class="image-navigation">
+						<button
+							class="nav-button prev"
+							on:click={() =>
+								(activeImageIndex =
+									(activeImageIndex - 1 + recipe.images.length) % recipe.images.length)}
+							aria-label="Previous image"
+						>
+							&lsaquo;
+						</button>
+						<button
+							class="nav-button next"
+							on:click={() => (activeImageIndex = (activeImageIndex + 1) % recipe.images.length)}
+							aria-label="Next image"
+						>
+							&rsaquo;
+						</button>
+					</div>
+
+					<div class="image-dots">
+						{#each recipe.images as _, index}
+							<button
+								class="dot-button"
+								class:active={activeImageIndex === index}
+								on:click={() => (activeImageIndex = index)}
+								aria-label={`Image ${index + 1} of ${recipe.images.length}`}
+							></button>
+						{/each}
+					</div>
+				</div>
+
+				<div class="thumbnail-container">
+					{#each recipe.images as image, index}
+						<button
+							class="thumbnail"
+							class:active={activeImageIndex === index}
+							on:click={() => (activeImageIndex = index)}
+						>
+							<img src={image} alt={`${recipe.title} - view ${index + 1}`} />
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Recipe Actions -->
+			<div class="recipe-actions">
+				<button class="action-button" class:active={recipe.isLiked} on:click={toggleLike}>
+					<Heart size={20} class="action-icon" fill={recipe.isLiked ? 'currentColor' : 'none'} />
+					<span>{recipe.likesCount}</span>
+				</button>
+
+				<button class="action-button" class:active={recipe.isSaved} on:click={toggleSave}>
+					<Bookmark size={20} class="action-icon" fill={recipe.isSaved ? 'currentColor' : 'none'} />
+					<span>Save</span>
+				</button>
+
+				<button class="action-button" class:active={recipe.isFavorited} on:click={toggleFavorite}>
+					<Star size={20} class="action-icon" fill={recipe.isFavorited ? 'currentColor' : 'none'} />
+					<span>Favorite</span>
+				</button>
+
+				<button class="action-button" on:click={handleShare}>
+					<Share2 size={20} class="action-icon" />
+					<span>Share</span>
+				</button>
+
+				<button class="action-button print">
+					<Printer size={20} class="action-icon" />
+					<span>Print</span>
+				</button>
+			</div>
+
+			<!-- Recipe Description -->
+			<div class="recipe-description">
+				<p>{recipe.description}</p>
+			</div>
+
+			<!-- Servings Adjuster -->
+			<div class="servings-adjuster">
+				<label for="servings">Adjust servings:</label>
+				<div class="servings-controls">
+					<button
+						class="adjust-button minus"
+						on:click={() => updateIngredientQuantities(Math.max(1, currentServings - 1))}
+						disabled={currentServings <= 1}>-</button
+					>
+					<input
+						type="number"
+						id="servings"
+						class="servings-input"
+						bind:value={currentServings}
+						min="1"
+						max="20"
+						on:change={(e) => updateIngredientQuantities(parseInt(e.currentTarget.value))}
+					/>
+					<button
+						class="adjust-button plus"
+						on:click={() => updateIngredientQuantities(currentServings + 1)}
+						disabled={currentServings >= 20}>+</button
+					>
+				</div>
+			</div>
+
+			<!-- Ingredients -->
+			<div class="recipe-ingredients">
+				<h2 class="section-title">Ingredients</h2>
+
+				{#each recipe.ingredients as group}
+					<div class="ingredient-group">
+						{#if group.group}
+							<h3 class="ingredient-group-title">{group.group}</h3>
+						{/if}
+
+						<ul class="ingredients-list">
+							{#each group.items.slice(0, showAllIngredients ? group.items.length : 5) as ingredient}
+								<li class="ingredient-item">
+									<div class="ingredient-checkbox">
+										<input type="checkbox" id={`ingredient-${ingredient}`} />
+										<label for={`ingredient-${ingredient}`}>{ingredient}</label>
+									</div>
+								</li>
+							{/each}
+
+							{#if !showAllIngredients && group.items.length > 5}
+								<button class="show-more-button" on:click={() => (showAllIngredients = true)}>
+									+ Show {group.items.length - 5} more ingredients
+								</button>
+							{/if}
+						</ul>
+					</div>
+				{/each}
+
+				{#if showAllIngredients}
+					<button class="show-less-button" on:click={() => (showAllIngredients = false)}>
+						- Show fewer ingredients
+					</button>
+				{/if}
+
+				<div class="shopping-list-button-container">
+					<button class="shopping-list-button">
+						<Bookmark size={18} class="button-icon" />
+						Add all to shopping list
+					</button>
+				</div>
+			</div>
+
+			<!-- Nutrition Information -->
+			<div class="nutrition-info">
+				<h2 class="section-title">Nutrition Per Serving</h2>
+				<div class="nutrition-grid">
+					<div class="nutrition-item">
+						<span class="nutrition-value">{recipe.nutrition.calories}</span>
+						<span class="nutrition-label">Calories</span>
+					</div>
+					<div class="nutrition-item">
+						<span class="nutrition-value">{recipe.nutrition.protein}g</span>
+						<span class="nutrition-label">Protein</span>
+					</div>
+					<div class="nutrition-item">
+						<span class="nutrition-value">{recipe.nutrition.carbs}g</span>
+						<span class="nutrition-label">Carbs</span>
+					</div>
+					<div class="nutrition-item">
+						<span class="nutrition-value">{recipe.nutrition.fat}g</span>
+						<span class="nutrition-label">Fat</span>
+					</div>
+					<div class="nutrition-item">
+						<span class="nutrition-value">{recipe.nutrition.fiber}g</span>
+						<span class="nutrition-label">Fiber</span>
+					</div>
+					<div class="nutrition-item">
+						<span class="nutrition-value">{recipe.nutrition.sugar}g</span>
+						<span class="nutrition-label">Sugar</span>
+					</div>
+				</div>
+				<div class="nutrition-disclaimer">
+					<AlertCircle size={16} class="disclaimer-icon" />
+					<p>
+						Nutrition information is automatically calculated and should be considered an estimate.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Right Column: Instructions and More -->
+		<div class="recipe-right-column">
+			<!-- Recipe Instructions -->
+			<div class="recipe-instructions">
+				<h2 class="section-title">Instructions</h2>
+
+				<div class="instructions-list">
+					{#each recipe.steps as step, index}
+						<div class="instruction-step">
+							<div class="step-header">
+								<div class="step-number">{index + 1}</div>
+								<h3 class="step-title">{step.title}</h3>
+							</div>
+							<p class="step-content">{step.content}</p>
+						</div>
+					{/each}
+				</div>
+
+				<div class="cook-mode-button-container">
+					<button class="cook-mode-button">
+						<Flame size={18} class="button-icon" />
+						Enter cook mode
+					</button>
+				</div>
+			</div>
+
+			<!-- Tips Section -->
+			<div class="recipe-tips">
+				<h2 class="section-title">Tips for Success</h2>
+
+				<ul class="tips-list">
+					{#each recipe.tips.slice(0, showAllTips ? recipe.tips.length : 3) as tip, index}
+						<li class="tip-item">
+							<div class="tip-number">{index + 1}</div>
+							<p>{tip}</p>
+						</li>
+					{/each}
+				</ul>
+
+				{#if !showAllTips && recipe.tips.length > 3}
+					<button class="show-more-button" on:click={() => (showAllTips = true)}>
+						+ Show {recipe.tips.length - 3} more tips
+					</button>
+				{/if}
+
+				{#if showAllTips}
+					<button class="show-less-button" on:click={() => (showAllTips = false)}>
+						- Show fewer tips
+					</button>
+				{/if}
+			</div>
+
+			<!-- Tags Section -->
+			<div class="recipe-tags">
+				<h2 class="section-title">Tags</h2>
+				<div class="tags-container">
+					{#each recipe.tags as tag}
+						<a href="/recipes/tag/{tag}" class="tag">{tag}</a>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Reviews Section -->
+			<div class="recipe-reviews">
+				<div class="reviews-header">
+					<h2 class="section-title">Reviews</h2>
+					<div class="reviews-summary">
+						<div class="reviews-rating">
+							<div class="rating-large">{recipe.rating}</div>
+							<div class="stars-large">
+								{#each Array(5) as _, i}
+									<Star
+										size={16}
+										class="star"
+										fill={i < Math.floor(recipe.rating) ? 'currentColor' : 'none'}
+									/>
+								{/each}
+							</div>
+							<div class="rating-count-large">{recipe.reviewsCount} reviews</div>
+						</div>
+						<button class="write-review-button">Write a Review</button>
+					</div>
+				</div>
+
+				<div class="reviews-list">
+					{#each reviews.slice(0, showAllReviews ? reviews.length : 2) as review}
+						<div class="review-item">
+							<div class="review-header">
+								<div class="reviewer-info">
+									<img
+										src={review.author.avatar}
+										alt={review.author.name}
+										class="reviewer-avatar"
+									/>
+									<div class="reviewer-details">
+										<div class="reviewer-name">{review.author.name}</div>
+										<div class="review-date">{formatDate(review.date)}</div>
+									</div>
+								</div>
+								<div class="review-rating">
+									{#each Array(5) as _, i}
+										<Star
+											size={14}
+											class="star"
+											fill={i < review.rating ? 'currentColor' : 'none'}
+										/>
+									{/each}
+								</div>
+							</div>
+							<p class="review-content">{review.content}</p>
+							<div class="review-actions">
+								<button class="review-helpful-button">
+									<ThumbsUp size={14} class="helpful-icon" />
+									Helpful
+								</button>
+							</div>
+						</div>
+					{/each}
+				</div>
+
+				{#if !showAllReviews && reviews.length > 2}
+					<button class="show-all-reviews-button" on:click={() => (showAllReviews = true)}>
+						View all {recipe.reviewsCount} reviews
+						<ChevronDown size={16} class="button-icon" />
+					</button>
+				{/if}
+
+				{#if showAllReviews}
+					<button class="show-less-reviews-button" on:click={() => (showAllReviews = false)}>
+						Show fewer reviews
+					</button>
+				{/if}
+			</div>
+
+			<!-- Comments Section -->
+			<div class="recipe-comments">
+				<h2 class="section-title">Comments</h2>
+				<Comments />
+			</div>
+		</div>
+	</div>
+
+	<!-- Related Recipes -->
+	<div class="related-recipes">
+		<h2 class="section-title">You Might Also Like</h2>
+		<div class="related-recipes-grid">
+			{#each recipe.relatedRecipes as relatedRecipe}
+				<a href="/recipes/{relatedRecipe.id}" class="related-recipe-card">
+					<div class="related-recipe-image-container">
+						<img src={relatedRecipe.image} alt={relatedRecipe.title} class="related-recipe-image" />
+					</div>
+					<h3 class="related-recipe-title">{relatedRecipe.title}</h3>
+				</a>
+			{/each}
+		</div>
+	</div>
+</div>
+
+<style lang="postcss">
+	.recipe-detail-container {
+		@apply mx-auto max-w-7xl px-4 pb-16 pt-8;
+	}
+
+	/* Breadcrumb Styles */
+	.breadcrumb {
+		@apply mb-4 flex text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.breadcrumb-link {
+		@apply hover:text-orange-500 dark:hover:text-orange-400;
+	}
+
+	.breadcrumb-separator {
+		@apply mx-2;
+	}
+
+	/* Recipe Header Styles */
+	.recipe-header {
+		@apply mb-8;
+	}
+
+	.recipe-title {
+		@apply mb-4 text-4xl font-bold leading-tight text-gray-900 dark:text-white;
+	}
+
+	.recipe-meta {
+		@apply mb-6 flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-300;
+	}
+
+	.recipe-rating {
+		@apply flex items-center gap-2;
+	}
+
+	.stars {
+		@apply flex;
+	}
+
+	.star {
+		@apply text-yellow-400;
+	}
+
+	.rating-value {
+		@apply font-semibold;
+	}
+
+	.rating-count {
+		@apply text-gray-500 dark:text-gray-400;
+	}
+
+	.recipe-time,
+	.recipe-difficulty,
+	.recipe-servings {
+		@apply flex items-center gap-1.5;
+	}
+
+	.time-icon,
+	.difficulty-icon,
+	.servings-icon {
+		@apply text-orange-500;
+	}
+
+	.author-info {
+		@apply mt-6 flex items-center gap-4;
+	}
+
+	.author-avatar {
+		@apply h-12 w-12 rounded-full object-cover;
+	}
+
+	.author-details {
+		@apply flex flex-col;
+	}
+
+	.author-name {
+		@apply font-medium text-gray-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-400;
+	}
+
+	.author-stats {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.stat-separator {
+		@apply mx-1.5;
+	}
+
+	.follow-button {
+		@apply ml-auto rounded-full bg-orange-500 px-5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-orange-600;
+	}
+
+	/* Recipe Content Grid Styles */
+	.recipe-content {
+		@apply grid gap-8 lg:grid-cols-[3fr_4fr];
+	}
+
+	/* Recipe Gallery Styles */
+	.recipe-gallery {
+		@apply mb-6;
+	}
+
+	.main-image-container {
+		@apply relative mb-2 overflow-hidden rounded-xl;
+	}
+
+	.main-image {
+		@apply aspect-[4/3] w-full object-cover;
+	}
+
+	.image-navigation {
+		@apply absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2;
+	}
+
+	.nav-button {
+		@apply flex h-10 w-10 items-center justify-center rounded-full bg-black/20 text-2xl text-white backdrop-blur-sm transition-all hover:bg-black/40;
+	}
+
+	.image-dots {
+		@apply absolute bottom-4 left-0 right-0 flex justify-center gap-2;
+	}
+
+	.dot-button {
+		@apply h-2 w-2 rounded-full bg-white/40 transition-all hover:bg-white;
+	}
+
+	.dot-button.active {
+		@apply bg-white;
+	}
+
+	.thumbnail-container {
+		@apply grid grid-cols-3 gap-2;
+	}
+
+	.thumbnail {
+		@apply overflow-hidden rounded-lg border-2 border-transparent transition-all hover:border-orange-500;
+	}
+
+	.thumbnail.active {
+		@apply border-orange-500;
+	}
+
+	.thumbnail img {
+		@apply aspect-[4/3] w-full object-cover;
+	}
+
+	/* Recipe Actions Styles */
+	.recipe-actions {
+		@apply mb-6 flex flex-wrap justify-between gap-2;
+	}
+
+	.action-button {
+		@apply flex flex-1 flex-col items-center gap-1 rounded-md px-2 py-3 text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800;
+	}
+
+	.action-button.active {
+		@apply text-orange-500;
+	}
+
+	.action-icon {
+		@apply transition-transform duration-300 group-hover:scale-110;
+	}
+
+	.action-button:hover .action-icon {
+		@apply scale-110;
+	}
+
+	.action-button.print {
+		@apply border border-dashed border-gray-200 dark:border-gray-700;
+	}
+
+	/* Recipe Description Styles */
+	.recipe-description {
+		@apply mb-6 text-gray-700 dark:text-gray-300;
+	}
+
+	/* Servings Adjuster Styles */
+	.servings-adjuster {
+		@apply mb-6 flex items-center gap-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800;
+	}
+
+	.servings-controls {
+		@apply flex items-center;
+	}
+
+	.adjust-button {
+		@apply flex h-8 w-8 items-center justify-center rounded-full bg-white text-xl font-bold text-gray-600 transition-colors hover:bg-gray-100 disabled:text-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+	}
+
+	.servings-input {
+		@apply w-10 appearance-none border-none bg-transparent p-0 text-center text-lg font-medium focus:outline-none focus:ring-0;
+	}
+
+	/* Ingredients Styles */
+	.recipe-ingredients {
+		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.section-title {
+		@apply mb-4 text-xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.ingredient-group {
+		@apply mb-4;
+	}
+
+	.ingredient-group-title {
+		@apply mb-2 font-medium text-gray-700 dark:text-gray-300;
+	}
+
+	.ingredients-list {
+		@apply space-y-2;
+	}
+
+	.ingredient-item {
+		@apply text-gray-600 dark:text-gray-300;
+	}
+
+	.ingredient-checkbox {
+		@apply flex items-center gap-2;
+	}
+
+	.ingredient-checkbox input[type='checkbox'] {
+		@apply h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500/20 dark:border-gray-600 dark:bg-gray-700;
+	}
+
+	.show-more-button,
+	.show-less-button {
+		@apply mt-2 text-sm font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+	}
+
+	.shopping-list-button-container {
+		@apply mt-4 border-t border-gray-100 pt-4 dark:border-gray-700;
+	}
+
+	.shopping-list-button {
+		@apply flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2 font-medium text-white transition-colors hover:bg-orange-600;
+	}
+
+	/* Nutrition Info Styles */
+	.nutrition-info {
+		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.nutrition-grid {
+		@apply grid grid-cols-3 gap-4;
+	}
+
+	.nutrition-item {
+		@apply flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-700;
+	}
+
+	.nutrition-value {
+		@apply text-lg font-semibold text-gray-900 dark:text-white;
+	}
+
+	.nutrition-label {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.nutrition-disclaimer {
+		@apply mt-4 flex items-start gap-2 rounded-lg bg-gray-50 p-3 text-sm text-gray-500 dark:bg-gray-700 dark:text-gray-400;
+	}
+
+	.disclaimer-icon {
+		@apply mt-0.5 flex-shrink-0 text-orange-500;
+	}
+
+	/* Instructions Styles */
+	.recipe-instructions {
+		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.instructions-list {
+		@apply space-y-6;
+	}
+
+	.instruction-step {
+		@apply relative;
+	}
+
+	.step-header {
+		@apply mb-2 flex items-center gap-4;
+	}
+
+	.step-number {
+		@apply flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 font-bold text-white;
+	}
+
+	.step-title {
+		@apply text-lg font-medium text-gray-900 dark:text-white;
+	}
+
+	.step-content {
+		@apply ml-12 text-gray-600 dark:text-gray-300;
+	}
+
+	.cook-mode-button-container {
+		@apply mt-8 border-t border-gray-100 pt-6 dark:border-gray-700;
+	}
+
+	.cook-mode-button {
+		@apply flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 px-4 py-3 font-medium text-white transition-all hover:shadow-lg hover:shadow-orange-500/20;
+	}
+
+	/* Tips Styles */
+	.recipe-tips {
+		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.tips-list {
+		@apply space-y-4;
+	}
+
+	.tip-item {
+		@apply flex gap-3 text-gray-600 dark:text-gray-300;
+	}
+
+	.tip-number {
+		@apply flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300;
+	}
+
+	/* Tags Styles */
+	.recipe-tags {
+		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.tags-container {
+		@apply flex flex-wrap gap-2;
+	}
+
+	.tag {
+		@apply rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+	}
+
+	/* Reviews Styles */
+	.recipe-reviews {
+		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.reviews-header {
+		@apply mb-6;
+	}
+
+	.reviews-summary {
+		@apply flex flex-wrap items-center justify-between gap-4;
+	}
+
+	.reviews-rating {
+		@apply flex flex-col items-center;
+	}
+
+	.rating-large {
+		@apply text-3xl font-bold text-gray-900 dark:text-white;
+	}
+
+	.stars-large {
+		@apply flex;
+	}
+
+	.rating-count-large {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.write-review-button {
+		@apply rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600;
+	}
+
+	.reviews-list {
+		@apply space-y-6;
+	}
+
+	.review-item {
+		@apply border-b border-gray-100 pb-6 dark:border-gray-700;
+	}
+
+	.review-header {
+		@apply mb-3 flex items-start justify-between;
+	}
+
+	.reviewer-info {
+		@apply flex items-center gap-3;
+	}
+
+	.reviewer-avatar {
+		@apply h-10 w-10 rounded-full object-cover;
+	}
+
+	.reviewer-details {
+		@apply flex flex-col;
+	}
+
+	.reviewer-name {
+		@apply font-medium text-gray-900 dark:text-white;
+	}
+
+	.review-date {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.review-rating {
+		@apply flex;
+	}
+
+	.review-content {
+		@apply text-gray-600 dark:text-gray-300;
+	}
+
+	.review-actions {
+		@apply mt-3 flex justify-end;
+	}
+
+	.review-helpful-button {
+		@apply flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+	}
+
+	.helpful-icon {
+		@apply text-gray-500 dark:text-gray-400;
+	}
+
+	.show-all-reviews-button {
+		@apply mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700;
+	}
+
+	.show-less-reviews-button {
+		@apply mt-4 text-sm font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+	}
+
+	/* Related Recipes Styles */
+	.related-recipes {
+		@apply mt-12;
+	}
+
+	.related-recipes-grid {
+		@apply grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3;
+	}
+
+	.related-recipe-card {
+		@apply overflow-hidden rounded-lg bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-gray-800;
+	}
+
+	.related-recipe-image-container {
+		@apply overflow-hidden;
+	}
+
+	.related-recipe-image {
+		@apply aspect-[16/9] w-full object-cover transition-transform duration-300;
+	}
+
+	.related-recipe-card:hover .related-recipe-image {
+		@apply scale-105;
+	}
+
+	.related-recipe-title {
+		@apply p-4 text-center text-lg font-medium text-gray-900 dark:text-white;
+	}
+
+	/* Media Queries */
+	@media (max-width: 768px) {
+		.recipe-content {
+			@apply grid-cols-1;
+		}
+
+		.recipe-meta {
+			@apply flex-col items-start gap-3;
+		}
+
+		.recipe-gallery {
+			@apply mb-4;
+		}
+
+		.author-info {
+			@apply flex-wrap;
+		}
+
+		.follow-button {
+			@apply ml-0 mt-4 w-full;
+		}
+	}
+</style>
+
+
+
+============================================================
+File: ./src/routes/search/+page.svelte
+Type: .svelte
+============================================================
+
+<!-- src/routes/search/+page.svelte -->
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { theme } from '$lib/stores/theme';
+	import { onMount } from 'svelte';
+	import {
+		Search,
+		Filter,
+		Clock,
+		X,
+		ChefHat,
+		Users,
+		Flame,
+		AlertCircle,
+		Star,
+		ChevronDown,
+		ChevronUp
+	} from 'lucide-svelte';
+	import Card from '../../components/Card/Card.svelte';
+
+	// Search parameters (would come from URL in a real implementation)
+	let searchQuery = $page.url.searchParams.get('q') || '';
+	let cuisineFilter = $page.url.searchParams.get('cuisine') || '';
+	let categoryFilter = $page.url.searchParams.get('category') || '';
+	let timeFilter = $page.url.searchParams.get('time') || '';
+	let difficultyFilter = $page.url.searchParams.get('difficulty') || '';
+	let dietaryFilter = $page.url.searchParams.get('dietary') || '';
+
+	// UI state
+	let showFilters = false;
+	let isLoading = true;
+	let resultsCount = 0;
+	let currentPage = parseInt($page.url.searchParams.get('page') || '1');
+	let sortOrder = $page.url.searchParams.get('sort') || 'relevance';
+
+	// Filter options
+	const cuisineOptions = [
+		'Indian',
+		'Chinese',
+		'Italian',
+		'Thai',
+		'Mexican',
+		'Japanese',
+		'French',
+		'Spanish',
+		'Middle Eastern',
+		'American',
+		'Korean',
+		'Vietnamese',
+		'Mediterranean'
+	];
+
+	const categoryOptions = [
+		'Breakfast',
+		'Lunch',
+		'Dinner',
+		'Appetizer',
+		'Main Course',
+		'Side Dish',
+		'Dessert',
+		'Snack',
+		'Soup',
+		'Salad',
+		'Beverage'
+	];
+
+	const timeOptions = [
+		{ value: 'under15', label: 'Under 15 minutes' },
+		{ value: 'under30', label: 'Under 30 minutes' },
+		{ value: 'under60', label: 'Under 1 hour' },
+		{ value: 'over60', label: 'Over 1 hour' }
+	];
+
+	const difficultyOptions = ['Easy', 'Medium', 'Hard'];
+
+	const dietaryOptions = [
+		'Vegetarian',
+		'Vegan',
+		'Gluten-Free',
+		'Dairy-Free',
+		'Nut-Free',
+		'Low-Carb',
+		'Keto',
+		'Paleo',
+		'Whole30'
+	];
+
+	const sortOptions = [
+		{ value: 'relevance', label: 'Relevance' },
+		{ value: 'rating', label: 'Highest Rated' },
+		{ value: 'newest', label: 'Newest First' },
+		{ value: 'popular', label: 'Most Popular' },
+		{ value: 'time_asc', label: 'Quickest First' },
+		{ value: 'time_desc', label: 'Longest First' }
+	];
+
+	// Mock search results for demo (this would be fetched from API)
+	let results = [
+		{
+			title: 'Classic Butter Chicken',
+			description:
+				'A rich and creamy tomato-based curry with tender chicken pieces marinated in yogurt and spices.',
+			image: '/images/butter-chicken.jpg',
+			cookTime: 45,
+			category: 'Indian',
+			difficulty: 'Medium',
+			author: {
+				name: 'Chef Priya',
+				avatar: '/images/chef-priya.jpg'
+			},
+			rating: 4.8
+		},
+		{
+			title: 'Palak Paneer',
+			description:
+				'Creamy spinach curry with soft paneer cheese cubes, flavored with garlic, ginger, and aromatic spices.',
+			image: '/images/palak-paneer.jpg',
+			cookTime: 35,
+			category: 'Indian',
+			difficulty: 'Easy',
+			author: {
+				name: 'Chef Raj',
+				avatar: '/images/chef-raj.jpg'
+			},
+			rating: 4.7
+		},
+		{
+			title: 'Chicken Biryani',
+			description:
+				'Fragrant basmati rice cooked with tender chicken pieces, saffron, and a blend of traditional spices.',
+			image: '/images/biryani.jpg',
+			cookTime: 60,
+			category: 'Indian',
+			difficulty: 'Medium',
+			author: {
+				name: 'Chef Priya',
+				avatar: '/images/chef-priya.jpg'
+			},
+			rating: 4.9
+		},
+		{
+			title: 'Masala Dosa',
+			description:
+				'Crispy rice and lentil crepes filled with spiced potato filling, served with coconut chutney and sambar.',
+			image: '/images/masala-dosa.jpg',
+			cookTime: 50,
+			category: 'Indian',
+			difficulty: 'Hard',
+			author: {
+				name: 'Chef Raj',
+				avatar: '/images/chef-raj.jpg'
+			},
+			rating: 4.6
+		},
+		{
+			title: 'Pad Thai',
+			description:
+				'Stir-fried rice noodles with eggs, tofu, bean sprouts, peanuts, and a tangy sauce.',
+			image: '/images/pad-thai.jpg',
+			cookTime: 25,
+			category: 'Thai',
+			difficulty: 'Medium',
+			author: {
+				name: 'Chef Sorn',
+				avatar: '/images/chef-sorn.jpg'
+			},
+			rating: 4.5
+		},
+		{
+			title: 'Spaghetti Carbonara',
+			description: 'Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper.',
+			image: '/images/carbonara.jpg',
+			cookTime: 20,
+			category: 'Italian',
+			difficulty: 'Easy',
+			author: {
+				name: 'Chef Marco',
+				avatar: '/images/chef-marco.jpg'
+			},
+			rating: 4.7
+		},
+		{
+			title: 'Vegetable Stir Fry',
+			description:
+				'Quick and healthy stir-fried vegetables with a savory sauce, perfect as a side dish or main course.',
+			image: '/images/stir-fry.jpg',
+			cookTime: 15,
+			category: 'Chinese',
+			difficulty: 'Easy',
+			author: {
+				name: 'Chef Li',
+				avatar: '/images/chef-li.jpg'
+			},
+			rating: 4.3
+		},
+		{
+			title: 'Chocolate Lava Cake',
+			description:
+				'Decadent chocolate dessert with a molten center, served with vanilla ice cream.',
+			image: '/images/lava-cake.jpg',
+			cookTime: 25,
+			category: 'Dessert',
+			difficulty: 'Medium',
+			author: {
+				name: 'Chef Pierre',
+				avatar: '/images/chef-pierre.jpg'
+			},
+			rating: 4.9
+		},
+		{
+			title: 'Greek Salad',
+			description:
+				'Fresh Mediterranean salad with cucumber, tomato, olives, feta cheese, and a zesty dressing.',
+			image: '/images/greek-salad.jpg',
+			cookTime: 10,
+			category: 'Salad',
+			difficulty: 'Easy',
+			author: {
+				name: 'Chef Helena',
+				avatar: '/images/chef-helena.jpg'
+			},
+			rating: 4.4
+		}
+	];
+
+	// Filter results based on selected criteria
+	$: filteredResults = filterResults(results);
+	$: resultsCount = filteredResults.length;
+
+	// Function to filter results based on selected criteria
+	function filterResults(recipes) {
+		return recipes.filter((recipe) => {
+			let matchesQuery =
+				!searchQuery ||
+				recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				recipe.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+			let matchesCuisine = !cuisineFilter || recipe.category === cuisineFilter;
+
+			let matchesCategory = !categoryFilter || recipe.category === categoryFilter;
+
+			let matchesTime = !timeFilter;
+			if (timeFilter === 'under15') matchesTime = recipe.cookTime < 15;
+			if (timeFilter === 'under30') matchesTime = recipe.cookTime < 30;
+			if (timeFilter === 'under60') matchesTime = recipe.cookTime < 60;
+			if (timeFilter === 'over60') matchesTime = recipe.cookTime >= 60;
+
+			let matchesDifficulty = !difficultyFilter || recipe.difficulty === difficultyFilter;
+
+			// For dietary restrictions, we'd need more data in the recipe model
+			// This is a simplified example
+			let matchesDietary = !dietaryFilter;
+
+			return (
+				matchesQuery &&
+				matchesCuisine &&
+				matchesCategory &&
+				matchesTime &&
+				matchesDifficulty &&
+				matchesDietary
+			);
+		});
+	}
+
+	// Function to handle search form submission
+	function handleSearch() {
+		// In a real implementation, we'd update the URL and fetch results
+		isLoading = true;
+
+		// Simulate API call
+		setTimeout(() => {
+			isLoading = false;
+		}, 800);
+	}
+
+	// Function to clear all filters
+	function clearFilters() {
+		searchQuery = '';
+		cuisineFilter = '';
+		categoryFilter = '';
+		timeFilter = '';
+		difficultyFilter = '';
+		dietaryFilter = '';
+		handleSearch();
+	}
+
+	// Function to handle pagination
+	function changePage(newPage) {
+		if (newPage < 1 || newPage > Math.ceil(resultsCount / 9)) return;
+		currentPage = newPage;
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	// Function to handle sort order change
+	function handleSortChange(event) {
+		sortOrder = event.target.value;
+		handleSearch();
+	}
+
+	// Generate pagination range
+	$: totalPages = Math.ceil(resultsCount / 9);
+	$: paginationRange = generatePaginationRange(currentPage, totalPages);
+
+	function generatePaginationRange(current, total) {
+		const range = [];
+		const delta = 2; // Pages to show before and after current page
+
+		for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+			range.push(i);
+		}
+
+		// Always include first and last page
+		if (current - delta > 2) range.unshift('...');
+		if (current + delta < total - 1) range.push('...');
+
+		if (total > 1) {
+			range.unshift(1);
+			if (total > 1) range.push(total);
+		}
+
+		return range;
+	}
+
+	// Get active filter count
+	$: activeFilterCount = [
+		cuisineFilter,
+		categoryFilter,
+		timeFilter,
+		difficultyFilter,
+		dietaryFilter
+	].filter(Boolean).length;
+
+	onMount(() => {
+		// Simulate API call
+		setTimeout(() => {
+			isLoading = false;
+		}, 1200);
+	});
+</script>
+
+<svelte:head>
+	<title>{searchQuery ? `Search: ${searchQuery}` : 'Search Recipes'} | OwnChef</title>
+</svelte:head>
+
+<div class="search-results-container" class:dark={$theme === 'dark'}>
+	<!-- Search Header -->
+	<div class="search-header">
+		<div class="search-bar-container">
+			<form on:submit|preventDefault={handleSearch} class="search-form">
+				<div class="search-bar">
+					<Search size={20} class="search-icon" />
+					<input
+						type="text"
+						bind:value={searchQuery}
+						placeholder="Search recipes, ingredients, or cuisines"
+						class="search-input"
+						aria-label="Search recipes"
+					/>
+					{#if searchQuery}
+						<button type="button" class="clear-search" on:click={() => (searchQuery = '')}>
+							<X size={18} />
+						</button>
+					{/if}
+				</div>
+
+				<button type="submit" class="search-button"> Search </button>
+
+				<button
+					type="button"
+					class="filter-toggle-button"
+					class:active={showFilters}
+					on:click={() => (showFilters = !showFilters)}
+					aria-expanded={showFilters}
+					aria-controls="search-filters"
+				>
+					<Filter size={20} class="filter-icon" />
+					<span>Filters</span>
+					{#if activeFilterCount > 0}
+						<span class="filter-count">{activeFilterCount}</span>
+					{/if}
+				</button>
+			</form>
+
+			{#if searchQuery || activeFilterCount > 0}
+				<div class="search-info">
+					{#if isLoading}
+						<span>Searching...</span>
+					{:else}
+						<span class="results-count"
+							>{resultsCount} {resultsCount === 1 ? 'recipe' : 'recipes'} found</span
+						>
+
+						{#if activeFilterCount > 0}
+							<button type="button" class="clear-filters" on:click={clearFilters}>
+								Clear all filters
+							</button>
+						{/if}
+					{/if}
+				</div>
+			{/if}
+		</div>
+	</div>
+
+	<!-- Advanced Search Filters -->
+	{#if showFilters}
+		<div id="search-filters" class="search-filters" transition:slide={{ duration: 300 }}>
+			<div class="filters-content">
+				<div class="filter-section">
+					<h3 class="filter-section-title">Cuisine</h3>
+					<div class="filter-options">
+						{#each cuisineOptions as cuisine}
+							<label class="filter-option">
+								<input
+									type="radio"
+									name="cuisine"
+									value={cuisine}
+									bind:group={cuisineFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{cuisine}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="filter-section">
+					<h3 class="filter-section-title">Category</h3>
+					<div class="filter-options">
+						{#each categoryOptions as category}
+							<label class="filter-option">
+								<input
+									type="radio"
+									name="category"
+									value={category}
+									bind:group={categoryFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{category}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="filter-section">
+					<h3 class="filter-section-title">Cooking Time</h3>
+					<div class="filter-options">
+						{#each timeOptions as option}
+							<label class="filter-option">
+								<input
+									type="radio"
+									name="time"
+									value={option.value}
+									bind:group={timeFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{option.label}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="filter-section">
+					<h3 class="filter-section-title">Difficulty</h3>
+					<div class="filter-options">
+						{#each difficultyOptions as difficulty}
+							<label class="filter-option">
+								<input
+									type="radio"
+									name="difficulty"
+									value={difficulty}
+									bind:group={difficultyFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{difficulty}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="filter-section">
+					<h3 class="filter-section-title">Dietary Restrictions</h3>
+					<div class="filter-options">
+						{#each dietaryOptions as dietary}
+							<label class="filter-option">
+								<input
+									type="radio"
+									name="dietary"
+									value={dietary}
+									bind:group={dietaryFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{dietary}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+			</div>
+
+			<div class="filters-footer">
+				<button type="button" class="clear-all-button" on:click={clearFilters}>
+					Clear All Filters
+				</button>
+				<button type="button" class="apply-filters-button" on:click={() => (showFilters = false)}>
+					Apply Filters
+				</button>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Results and Sidebar Layout -->
+	<div class="search-results-layout">
+		<!-- Sidebar Filters (desktop only) -->
+		<div class="filters-sidebar">
+			<div class="sidebar-section">
+				<h3 class="sidebar-title">Sort Results</h3>
+				<select class="sort-select" bind:value={sortOrder} on:change={handleSortChange}>
+					{#each sortOptions as option}
+						<option value={option.value}>{option.label}</option>
+					{/each}
+				</select>
+			</div>
+
+			<div class="sidebar-section">
+				<div class="sidebar-header">
+					<h3 class="sidebar-title">Filters</h3>
+					{#if activeFilterCount > 0}
+						<button type="button" class="clear-sidebar-filters" on:click={clearFilters}>
+							Clear All
+						</button>
+					{/if}
+				</div>
+
+				<div class="sidebar-filter">
+					<h4 class="filter-title">Cuisine</h4>
+					<div class="sidebar-options">
+						{#each cuisineOptions.slice(0, 6) as cuisine}
+							<label class="sidebar-option">
+								<input
+									type="radio"
+									name="sidebar-cuisine"
+									value={cuisine}
+									bind:group={cuisineFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{cuisine}</span>
+							</label>
+						{/each}
+						{#if cuisineOptions.length > 6}
+							<button type="button" class="show-more-button"> Show more cuisines </button>
+						{/if}
+					</div>
+				</div>
+
+				<div class="sidebar-filter">
+					<h4 class="filter-title">Cooking Time</h4>
+					<div class="sidebar-options">
+						{#each timeOptions as option}
+							<label class="sidebar-option">
+								<input
+									type="radio"
+									name="sidebar-time"
+									value={option.value}
+									bind:group={timeFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{option.label}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="sidebar-filter">
+					<h4 class="filter-title">Difficulty</h4>
+					<div class="sidebar-options">
+						{#each difficultyOptions as difficulty}
+							<label class="sidebar-option">
+								<input
+									type="radio"
+									name="sidebar-difficulty"
+									value={difficulty}
+									bind:group={difficultyFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{difficulty}</span>
+							</label>
+						{/each}
+					</div>
+				</div>
+
+				<div class="sidebar-filter">
+					<h4 class="filter-title">Dietary Restrictions</h4>
+					<div class="sidebar-options">
+						{#each dietaryOptions.slice(0, 5) as dietary}
+							<label class="sidebar-option">
+								<input
+									type="radio"
+									name="sidebar-dietary"
+									value={dietary}
+									bind:group={dietaryFilter}
+									on:change={handleSearch}
+								/>
+								<span class="option-label">{dietary}</span>
+							</label>
+						{/each}
+						{#if dietaryOptions.length > 5}
+							<button type="button" class="show-more-button"> Show more options </button>
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Search Results -->
+		<div class="search-results">
+			{#if isLoading}
+				<div class="loading-state">
+					<div class="spinner"></div>
+					<p>Searching for recipes...</p>
+				</div>
+			{:else if filteredResults.length === 0}
+				<div class="empty-state">
+					<div class="empty-icon">
+						<SlashedZero size={48} class="text-gray-300 dark:text-gray-600" />
+					</div>
+					<h2 class="empty-title">No recipes found</h2>
+					<p class="empty-message">
+						We couldn't find any recipes matching your search criteria. Try adjusting your filters
+						or search terms.
+					</p>
+					<button type="button" class="empty-action" on:click={clearFilters}>
+						Clear All Filters
+					</button>
+				</div>
+			{:else}
+				<div class="results-grid">
+					{#each filteredResults.slice((currentPage - 1) * 9, currentPage * 9) as recipe}
+						<Card {recipe} />
+					{/each}
+				</div>
+
+				<!-- Pagination -->
+				{#if totalPages > 1}
+					<div class="pagination">
+						<button
+							class="page-button prev"
+							on:click={() => changePage(currentPage - 1)}
+							disabled={currentPage === 1}
+						>
+							Previous
+						</button>
+
+						<div class="page-numbers">
+							{#each paginationRange as pageNum}
+								{#if pageNum === '...'}
+									<span class="page-ellipsis">...</span>
+								{:else}
+									<button
+										class="page-number"
+										class:active={pageNum === currentPage}
+										on:click={() => changePage(pageNum)}
+									>
+										{pageNum}
+									</button>
+								{/if}
+							{/each}
+						</div>
+
+						<button
+							class="page-button next"
+							on:click={() => changePage(currentPage + 1)}
+							disabled={currentPage === totalPages}
+						>
+							Next
+						</button>
+					</div>
+				{/if}
+			{/if}
+		</div>
+	</div>
+</div>
+
+<style lang="postcss">
+	.search-results-container {
+		@apply mx-auto max-w-7xl px-4 pb-16 pt-8;
+	}
+
+	/* Search Header Styles */
+	.search-header {
+		@apply mb-6;
+	}
+
+	.search-bar-container {
+		@apply mx-auto max-w-4xl;
+	}
+
+	.search-form {
+		@apply flex flex-wrap gap-2;
+	}
+
+	.search-bar {
+		@apply relative flex-1;
+	}
+
+	.search-icon {
+		@apply absolute left-4 top-1/2 -translate-y-1/2 text-gray-400;
+	}
+
+	.search-input {
+		@apply w-full rounded-full border border-gray-300 bg-white py-3 pl-11 pr-4 text-gray-900 outline-none;
+		@apply focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20;
+		@apply dark:border-gray-600 dark:bg-gray-800 dark:text-white;
+	}
+
+	.clear-search {
+		@apply absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600;
+		@apply dark:hover:text-gray-300;
+	}
+
+	.search-button {
+		@apply rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 font-medium text-white;
+		@apply transition-all hover:shadow-lg hover:shadow-orange-500/20;
+	}
+
+	.filter-toggle-button {
+		@apply flex items-center gap-2 rounded-full border border-gray-300 px-4 py-3 text-gray-700;
+		@apply transition-all hover:bg-gray-50;
+		@apply dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700;
+	}
+
+	.filter-toggle-button.active {
+		@apply border-orange-500 bg-orange-50 text-orange-500;
+		@apply dark:border-orange-500 dark:bg-orange-900/20 dark:text-orange-400;
+	}
+
+	.filter-count {
+		@apply ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs font-medium text-white;
+	}
+
+	.search-info {
+		@apply mt-3 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	.results-count {
+		@apply font-medium;
+	}
+
+	.clear-filters {
+		@apply text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+	}
+
+	/* Search Filters Styles */
+	.search-filters {
+		@apply mb-8 rounded-xl bg-white p-6 shadow-md dark:bg-gray-800;
+	}
+
+	.filters-content {
+		@apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
+	}
+
+	.filter-section {
+		@apply space-y-3;
+	}
+
+	.filter-section-title {
+		@apply text-sm font-semibold text-gray-900 dark:text-white;
+	}
+
+	.filter-options {
+		@apply grid grid-cols-2 gap-2;
+	}
+
+	.filter-option {
+		@apply flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-700;
+		@apply transition-colors hover:bg-gray-100;
+		@apply dark:text-gray-300 dark:hover:bg-gray-700;
+	}
+
+	.filter-option input[type='radio'] {
+		@apply h-4 w-4 rounded-full border-gray-300 text-orange-500;
+		@apply focus:ring-orange-500/20;
+		@apply dark:border-gray-600 dark:bg-gray-700;
+	}
+
+	.option-label {
+		@apply select-none;
+	}
+
+	.filters-footer {
+		@apply mt-6 flex justify-end gap-4 border-t border-gray-100 pt-4 dark:border-gray-700;
+	}
+
+	.clear-all-button {
+		@apply rounded-lg px-4 py-2 text-sm font-medium text-gray-600;
+		@apply hover:bg-gray-100 hover:text-gray-900;
+		@apply dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+	}
+
+	.apply-filters-button {
+		@apply rounded-lg bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 text-sm font-medium text-white;
+		@apply transition-all hover:shadow-lg hover:shadow-orange-500/20;
+	}
+
+	/* Layout Styles */
+	.search-results-layout {
+		@apply grid gap-8 lg:grid-cols-[280px_1fr];
+	}
+
+	/* Sidebar Styles */
+	.filters-sidebar {
+		@apply hidden space-y-6 lg:block;
+	}
+
+	.sidebar-section {
+		@apply rounded-xl bg-white p-5 shadow-sm dark:bg-gray-800;
+	}
+
+	.sidebar-header {
+		@apply mb-4 flex items-center justify-between;
+	}
+
+	.sidebar-title {
+		@apply text-lg font-semibold text-gray-900 dark:text-white;
+	}
+
+	.clear-sidebar-filters {
+		@apply text-xs text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+	}
+
+	.sort-select {
+		@apply mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-700;
+		@apply focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20;
+		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.sidebar-filter {
+		@apply mt-6 first:mt-0;
+	}
+
+	.filter-title {
+		@apply mb-3 text-sm font-medium text-gray-900 dark:text-white;
+	}
+
+	.sidebar-options {
+		@apply space-y-2;
+	}
+
+	.sidebar-option {
+		@apply flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-700;
+		@apply transition-colors hover:bg-gray-100;
+		@apply dark:text-gray-300 dark:hover:bg-gray-700;
+	}
+
+	.show-more-button {
+		@apply mt-2 text-xs text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+	}
+
+	/* Results Styles */
+	.search-results {
+		@apply min-h-[500px];
+	}
+
+	.results-grid {
+		@apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
+	}
+
+	/* Loading State */
+	.loading-state {
+		@apply flex flex-col items-center justify-center py-12 text-center;
+	}
+
+	.spinner {
+		@apply mb-4 h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-orange-500;
+	}
+
+	/* Empty State */
+	.empty-state {
+		@apply flex flex-col items-center justify-center rounded-xl bg-white py-16 text-center shadow-sm dark:bg-gray-800;
+	}
+
+	.empty-icon {
+		@apply mb-4;
+	}
+
+	.empty-title {
+		@apply mb-2 text-xl font-semibold text-gray-900 dark:text-white;
+	}
+
+	.empty-message {
+		@apply mb-6 max-w-md text-gray-600 dark:text-gray-400;
+	}
+
+	.empty-action {
+		@apply rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 font-medium text-white;
+		@apply transition-all hover:shadow-lg hover:shadow-orange-500/20;
+	}
+
+	/* Pagination */
+	.pagination {
+		@apply mt-12 flex items-center justify-center;
+	}
+
+	.page-button {
+		@apply rounded-lg px-4 py-2 text-sm font-medium;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	.page-button.prev {
+		@apply mr-2 bg-gray-100 text-gray-700 hover:bg-gray-200;
+		@apply dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+	}
+
+	.page-button.next {
+		@apply ml-2 bg-gray-100 text-gray-700 hover:bg-gray-200;
+		@apply dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+	}
+
+	.page-numbers {
+		@apply flex items-center;
+	}
+
+	.page-number {
+		@apply mx-1 flex h-8 w-8 items-center justify-center rounded-full text-sm;
+		@apply text-gray-700 hover:bg-gray-100;
+		@apply dark:text-gray-300 dark:hover:bg-gray-700;
+	}
+
+	.page-number.active {
+		@apply bg-orange-500 text-white;
+	}
+
+	.page-ellipsis {
+		@apply mx-1 text-gray-500 dark:text-gray-400;
 	}
 </style>
 
@@ -3215,9 +7266,9 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.session) {
-		throw redirect(303, '/login');
-	}
+	// if (!locals.session) {
+	// 	throw redirect(303, '/login');
+	// }
 	return {};
 };
 
@@ -3232,94 +7283,1138 @@ Type: .svelte
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import { Image as ImageIcon, Plus, ExternalLink, Video } from 'lucide-svelte';
 	import { page } from '$app/stores';
+	import { theme } from '$lib/stores/theme';
+	import { onMount } from 'svelte';
 	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
+	import {
+		Image as ImageIcon,
+		Plus,
+		X,
+		Clock,
+		Users,
+		ChefHat,
+		Tag,
+		ListOrdered,
+		ShoppingBasket,
+		AlertCircle,
+		Link,
+		Video,
+		Info
+	} from 'lucide-svelte';
 
-	let open = false;
-	let content = '';
-	let title = '';
+	// Form state
+	let recipe = {
+		title: '',
+		description: '',
+		content: '',
+		cookTime: 30,
+		prepTime: 15,
+		servings: 4,
+		difficulty: 'Medium',
+		cuisine: '',
+		category: '',
+		images: ['', '', ''],
+		ingredients: [{ group: '', items: ['', ''] }],
+		steps: [{ title: '', content: '' }],
+		tips: [''],
+		tags: ['']
+	};
+
+	// UI state
+	let activeTab = 'basic';
+	let hasUnsavedChanges = false;
+	let isSubmitting = false;
+	let errors: Record<string, string> = {};
+	let uploadedImages: string[] = [];
+	let imgPreviewUrls: string[] = [];
+
+	// Available options
+	const difficultyOptions = ['Easy', 'Medium', 'Hard'];
+	const cuisineOptions = [
+		'Indian',
+		'Chinese',
+		'Italian',
+		'Japanese',
+		'Thai',
+		'Mexican',
+		'French',
+		'Spanish',
+		'American',
+		'Mediterranean',
+		'Other'
+	];
+	const categoryOptions = [
+		'Appetizer',
+		'Main Course',
+		'Side Dish',
+		'Dessert',
+		'Breakfast',
+		'Lunch',
+		'Dinner',
+		'Snack',
+		'Soup',
+		'Salad',
+		'Beverage',
+		'Other'
+	];
 
 	// Client-side redirect if no session
-	$: if (!$page.data.session) {
-		goto('/login');
+	// $: if (!$page.data.session) {
+	// 	goto('/login');
+	// }
+
+	// Track form changes
+	$: {
+		const { title, description, content, cookTime, prepTime, servings } = recipe;
+		hasUnsavedChanges = Boolean(
+			title || description || content || cookTime !== 30 || prepTime !== 15 || servings !== 4
+		);
 	}
 
-	// Handle form submission
-	async function handleSubmit() {
-		if (!title || !content) return;
+	function validateForm() {
+		errors = {};
 
-		const response = await fetch('/api/posts', {
-			method: 'POST',
-			body: JSON.stringify({
-				title,
-				content
-			})
+		if (!recipe.title.trim()) {
+			errors.title = 'Recipe title is required';
+		}
+
+		if (!recipe.description.trim()) {
+			errors.description = 'Recipe description is required';
+		}
+
+		if (recipe.prepTime <= 0) {
+			errors.prepTime = 'Prep time must be greater than 0';
+		}
+
+		if (recipe.cookTime <= 0) {
+			errors.cookTime = 'Cook time must be greater than 0';
+		}
+
+		if (recipe.servings <= 0) {
+			errors.servings = 'Number of servings must be greater than 0';
+		}
+
+		if (!recipe.cuisine) {
+			errors.cuisine = 'Please select a cuisine';
+		}
+
+		if (!recipe.category) {
+			errors.category = 'Please select a category';
+		}
+
+		let hasIngredients = false;
+		recipe.ingredients.forEach((group, groupIndex) => {
+			group.items.forEach((item, itemIndex) => {
+				if (item.trim()) hasIngredients = true;
+			});
 		});
 
-		if (response.ok) {
-			goto('/blog');
+		if (!hasIngredients) {
+			errors.ingredients = 'At least one ingredient is required';
+		}
+
+		let hasSteps = false;
+		recipe.steps.forEach((step, index) => {
+			if (step.content.trim()) hasSteps = true;
+		});
+
+		if (!hasSteps) {
+			errors.steps = 'At least one instruction step is required';
+		}
+
+		return Object.keys(errors).length === 0;
+	}
+
+	// Ingredient management
+	function addIngredientGroup() {
+		recipe.ingredients = [...recipe.ingredients, { group: '', items: [''] }];
+	}
+
+	function removeIngredientGroup(groupIndex: number) {
+		recipe.ingredients = recipe.ingredients.filter((_, i) => i !== groupIndex);
+		if (recipe.ingredients.length === 0) {
+			recipe.ingredients = [{ group: '', items: [''] }];
 		}
 	}
+
+	function addIngredientItem(groupIndex: number) {
+		recipe.ingredients = recipe.ingredients.map((group, i) => {
+			if (i === groupIndex) {
+				return { ...group, items: [...group.items, ''] };
+			}
+			return group;
+		});
+	}
+
+	function removeIngredientItem(groupIndex: number, itemIndex: number) {
+		recipe.ingredients = recipe.ingredients.map((group, i) => {
+			if (i === groupIndex) {
+				return {
+					...group,
+					items: group.items.filter((_, j) => j !== itemIndex)
+				};
+			}
+			return group;
+		});
+
+		// If the last item is removed, add a new empty one
+		if (recipe.ingredients[groupIndex].items.length === 0) {
+			recipe.ingredients[groupIndex].items = [''];
+		}
+	}
+
+	// Instruction steps management
+	function addStep() {
+		recipe.steps = [...recipe.steps, { title: '', content: '' }];
+	}
+
+	function removeStep(index: number) {
+		recipe.steps = recipe.steps.filter((_, i) => i !== index);
+		if (recipe.steps.length === 0) {
+			recipe.steps = [{ title: '', content: '' }];
+		}
+	}
+
+	// Tips management
+	function addTip() {
+		recipe.tips = [...recipe.tips, ''];
+	}
+
+	function removeTip(index: number) {
+		recipe.tips = recipe.tips.filter((_, i) => i !== index);
+		if (recipe.tips.length === 0) {
+			recipe.tips = [''];
+		}
+	}
+
+	// Tags management
+	function addTag() {
+		recipe.tags = [...recipe.tags, ''];
+	}
+
+	function removeTag(index: number) {
+		recipe.tags = recipe.tags.filter((_, i) => i !== index);
+		if (recipe.tags.length === 0) {
+			recipe.tags = [''];
+		}
+	}
+
+	// Image management
+	function handleImageUpload(event: Event, index: number) {
+		const input = event.target as HTMLInputElement;
+		const file = input.files?.[0];
+
+		if (file) {
+			// In a real implementation, you would upload the file to your server or cloud storage
+			// For now, we'll just create a local object URL for preview
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				imgPreviewUrls[index] = e.target?.result as string;
+				recipe.images[index] = file.name; // In real implementation, this would be the URL from your server
+			};
+			reader.readAsDataURL(file);
+		}
+	}
+
+	function removeImage(index: number) {
+		imgPreviewUrls[index] = '';
+		recipe.images[index] = '';
+	}
+
+	// Form submission
+	async function handleSubmit() {
+		if (!validateForm()) {
+			// Scroll to the first error
+			const firstErrorKey = Object.keys(errors)[0];
+			const element = document.querySelector(`[data-error="${firstErrorKey}"]`);
+			element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			return;
+		}
+
+		isSubmitting = true;
+
+		try {
+			// In a real implementation, you would submit the form data to your API
+			const response = await fetch('/api/recipes', {
+				method: 'POST',
+				body: JSON.stringify(recipe),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (response.ok) {
+				// Navigate to the new recipe
+				const data = await response.json();
+				goto(`/recipes/${data.slug}`);
+			} else {
+				// Handle errors from the API
+				const errorData = await response.json();
+				errors = errorData.errors || { form: 'Failed to save recipe' };
+			}
+		} catch (error) {
+			console.error('Error saving recipe:', error);
+			errors = { form: 'An unexpected error occurred' };
+		} finally {
+			isSubmitting = false;
+		}
+	}
+
+	function handleCancel() {
+		if (
+			hasUnsavedChanges &&
+			!confirm('You have unsaved changes. Are you sure you want to leave this page?')
+		) {
+			return;
+		}
+
+		goto('/');
+	}
+
+	onMount(() => {
+		// If we want to load a draft or edit an existing recipe, we would do it here
+		console.log('Recipe form mounted');
+
+		// Set up confirmation before leaving the page
+		const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+			if (hasUnsavedChanges) {
+				e.preventDefault();
+				e.returnValue = '';
+				return '';
+			}
+		};
+
+		window.addEventListener('beforeunload', beforeUnloadHandler);
+
+		return () => {
+			window.removeEventListener('beforeunload', beforeUnloadHandler);
+		};
+	});
 </script>
 
-<div class="container">
-	<form on:submit|preventDefault={handleSubmit} class="relative">
-		<input type="text" placeholder="T I T L E" class="input" bind:value={title} required />
+<svelte:head>
+	<title>Create New Recipe | OwnChef</title>
+</svelte:head>
 
-		<div class="editor">
-			<button type="button" class="button" on:click={() => (open = !open)}>
-				<Plus size={24} />
-			</button>
+<div class="recipe-form-container" class:dark={$theme === 'dark'}>
+	<div class="form-header">
+		<h1 class="form-title">Create New Recipe</h1>
+		<p class="form-subtitle">Share your culinary masterpiece with the world</p>
+	</div>
 
-			{#if open}
-				<div class="add">
-					<button type="button" class="addButton">
-						<ImageIcon size={24} />
-					</button>
-					<button type="button" class="addButton">
-						<ExternalLink size={24} />
-					</button>
-					<button type="button" class="addButton">
-						<Video size={24} />
-					</button>
+	{#if errors.form}
+		<div class="form-error" role="alert">
+			<AlertCircle size={18} class="error-icon" />
+			<span>{errors.form}</span>
+		</div>
+	{/if}
+
+	<div class="form-tabs">
+		<button
+			class="tab-button"
+			class:active={activeTab === 'basic'}
+			on:click={() => (activeTab = 'basic')}
+		>
+			Basic Info
+		</button>
+		<button
+			class="tab-button"
+			class:active={activeTab === 'ingredients'}
+			on:click={() => (activeTab = 'ingredients')}
+		>
+			Ingredients
+		</button>
+		<button
+			class="tab-button"
+			class:active={activeTab === 'instructions'}
+			on:click={() => (activeTab = 'instructions')}
+		>
+			Instructions
+		</button>
+		<button
+			class="tab-button"
+			class:active={activeTab === 'media'}
+			on:click={() => (activeTab = 'media')}
+		>
+			Media
+		</button>
+		<button
+			class="tab-button"
+			class:active={activeTab === 'tips'}
+			on:click={() => (activeTab = 'tips')}
+		>
+			Tips & Tags
+		</button>
+	</div>
+
+	<form on:submit|preventDefault={handleSubmit} class="recipe-form">
+		<!-- Basic Info Tab -->
+		<div class="form-tab-content" class:active={activeTab === 'basic'}>
+			<div class="form-section">
+				<div class="form-group" data-error="title">
+					<label for="title" class="form-label">Recipe Title*</label>
+					<input
+						type="text"
+						id="title"
+						class="form-input"
+						class:error={errors.title}
+						bind:value={recipe.title}
+						placeholder="E.g., Classic Chocolate Chip Cookies"
+					/>
+					{#if errors.title}
+						<span class="error-message">{errors.title}</span>
+					{/if}
 				</div>
-			{/if}
 
-			<RichTextEditor bind:value={content} />
+				<div class="form-group" data-error="description">
+					<label for="description" class="form-label">Description*</label>
+					<textarea
+						id="description"
+						class="form-textarea"
+						class:error={errors.description}
+						bind:value={recipe.description}
+						placeholder="Briefly describe your recipe in 2-3 sentences"
+						rows="3"
+					></textarea>
+					{#if errors.description}
+						<span class="error-message">{errors.description}</span>
+					{/if}
+				</div>
+
+				<div class="form-row">
+					<div class="form-group" data-error="prepTime">
+						<label for="prepTime" class="form-label">Prep Time (mins)*</label>
+						<input
+							type="number"
+							id="prepTime"
+							class="form-input"
+							class:error={errors.prepTime}
+							bind:value={recipe.prepTime}
+							min="1"
+						/>
+						{#if errors.prepTime}
+							<span class="error-message">{errors.prepTime}</span>
+						{/if}
+					</div>
+
+					<div class="form-group" data-error="cookTime">
+						<label for="cookTime" class="form-label">Cook Time (mins)*</label>
+						<input
+							type="number"
+							id="cookTime"
+							class="form-input"
+							class:error={errors.cookTime}
+							bind:value={recipe.cookTime}
+							min="0"
+						/>
+						{#if errors.cookTime}
+							<span class="error-message">{errors.cookTime}</span>
+						{/if}
+					</div>
+
+					<div class="form-group" data-error="servings">
+						<label for="servings" class="form-label">Servings*</label>
+						<input
+							type="number"
+							id="servings"
+							class="form-input"
+							class:error={errors.servings}
+							bind:value={recipe.servings}
+							min="1"
+						/>
+						{#if errors.servings}
+							<span class="error-message">{errors.servings}</span>
+						{/if}
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group" data-error="difficulty">
+						<label for="difficulty" class="form-label">Difficulty*</label>
+						<select
+							id="difficulty"
+							class="form-select"
+							class:error={errors.difficulty}
+							bind:value={recipe.difficulty}
+						>
+							{#each difficultyOptions as option}
+								<option value={option}>{option}</option>
+							{/each}
+						</select>
+						{#if errors.difficulty}
+							<span class="error-message">{errors.difficulty}</span>
+						{/if}
+					</div>
+
+					<div class="form-group" data-error="cuisine">
+						<label for="cuisine" class="form-label">Cuisine*</label>
+						<select
+							id="cuisine"
+							class="form-select"
+							class:error={errors.cuisine}
+							bind:value={recipe.cuisine}
+						>
+							<option value="">Select Cuisine</option>
+							{#each cuisineOptions as option}
+								<option value={option}>{option}</option>
+							{/each}
+						</select>
+						{#if errors.cuisine}
+							<span class="error-message">{errors.cuisine}</span>
+						{/if}
+					</div>
+
+					<div class="form-group" data-error="category">
+						<label for="category" class="form-label">Category*</label>
+						<select
+							id="category"
+							class="form-select"
+							class:error={errors.category}
+							bind:value={recipe.category}
+						>
+							<option value="">Select Category</option>
+							{#each categoryOptions as option}
+								<option value={option}>{option}</option>
+							{/each}
+						</select>
+						{#if errors.category}
+							<span class="error-message">{errors.category}</span>
+						{/if}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-nav">
+				<button type="button" class="form-button secondary" on:click={handleCancel}>
+					Cancel
+				</button>
+				<button
+					type="button"
+					class="form-button primary"
+					on:click={() => (activeTab = 'ingredients')}
+				>
+					Next: Ingredients
+				</button>
+			</div>
 		</div>
 
-		<button type="submit" class="publish"> Publish </button>
+		<!-- Ingredients Tab -->
+		<div class="form-tab-content" class:active={activeTab === 'ingredients'}>
+			<div class="form-section">
+				<div class="form-group-header">
+					<h2 class="form-section-title">
+						<ShoppingBasket size={20} class="section-icon" />
+						Ingredients
+					</h2>
+					<p class="form-section-help">
+						List all ingredients needed for your recipe, with measurements
+					</p>
+				</div>
+
+				{#if errors.ingredients}
+					<div class="section-error" role="alert">
+						<AlertCircle size={18} class="error-icon" />
+						<span>{errors.ingredients}</span>
+					</div>
+				{/if}
+
+				{#each recipe.ingredients as group, groupIndex}
+					<div class="ingredient-group" data-error="ingredients">
+						<div class="group-header">
+							<div class="form-group">
+								<label for={`group-${groupIndex}`} class="form-label">Group Name (optional)</label>
+								<input
+									type="text"
+									id={`group-${groupIndex}`}
+									class="form-input"
+									bind:value={group.group}
+									placeholder="E.g., For the marinade, For the sauce, etc."
+								/>
+							</div>
+
+							{#if recipe.ingredients.length > 1}
+								<button
+									type="button"
+									class="remove-button"
+									on:click={() => removeIngredientGroup(groupIndex)}
+									aria-label="Remove ingredient group"
+								>
+									<X size={18} />
+								</button>
+							{/if}
+						</div>
+
+						<div class="ingredients-list">
+							{#each group.items as item, itemIndex}
+								<div class="ingredient-item">
+									<input
+										type="text"
+										class="form-input"
+										bind:value={group.items[itemIndex]}
+										placeholder="E.g., 2 cups all-purpose flour"
+									/>
+
+									<button
+										type="button"
+										class="remove-button"
+										on:click={() => removeIngredientItem(groupIndex, itemIndex)}
+										aria-label="Remove ingredient"
+										disabled={group.items.length === 1}
+									>
+										<X size={18} />
+									</button>
+								</div>
+							{/each}
+
+							<button
+								type="button"
+								class="add-button"
+								on:click={() => addIngredientItem(groupIndex)}
+							>
+								<Plus size={16} />
+								Add Ingredient
+							</button>
+						</div>
+					</div>
+				{/each}
+
+				<button type="button" class="add-group-button" on:click={addIngredientGroup}>
+					<Plus size={16} />
+					Add Ingredient Group
+				</button>
+			</div>
+
+			<div class="form-nav">
+				<button type="button" class="form-button secondary" on:click={() => (activeTab = 'basic')}>
+					Previous: Basic Info
+				</button>
+				<button
+					type="button"
+					class="form-button primary"
+					on:click={() => (activeTab = 'instructions')}
+				>
+					Next: Instructions
+				</button>
+			</div>
+		</div>
+
+		<!-- Instructions Tab -->
+		<div class="form-tab-content" class:active={activeTab === 'instructions'}>
+			<div class="form-section">
+				<div class="form-group-header">
+					<h2 class="form-section-title">
+						<ListOrdered size={20} class="section-icon" />
+						Instructions
+					</h2>
+					<p class="form-section-help">
+						Provide step-by-step instructions for preparing your recipe
+					</p>
+				</div>
+
+				{#if errors.steps}
+					<div class="section-error" role="alert">
+						<AlertCircle size={18} class="error-icon" />
+						<span>{errors.steps}</span>
+					</div>
+				{/if}
+
+				{#each recipe.steps as step, index}
+					<div class="instruction-step" data-error="steps">
+						<div class="step-header">
+							<div class="step-number">{index + 1}</div>
+							<div class="form-group step-title-group">
+								<label for={`step-title-${index}`} class="form-label">Step Title (optional)</label>
+								<input
+									type="text"
+									id={`step-title-${index}`}
+									class="form-input"
+									bind:value={step.title}
+									placeholder="E.g., Prepare the dough, Marinate the chicken, etc."
+								/>
+							</div>
+
+							{#if recipe.steps.length > 1}
+								<button
+									type="button"
+									class="remove-button"
+									on:click={() => removeStep(index)}
+									aria-label="Remove step"
+								>
+									<X size={18} />
+								</button>
+							{/if}
+						</div>
+
+						<div class="form-group">
+							<label for={`step-content-${index}`} class="form-label">Step Instructions*</label>
+							<textarea
+								id={`step-content-${index}`}
+								class="form-textarea"
+								bind:value={step.content}
+								placeholder="Describe this step in detail"
+								rows="3"
+							></textarea>
+						</div>
+					</div>
+				{/each}
+
+				<button type="button" class="add-button" on:click={addStep}>
+					<Plus size={16} />
+					Add Step
+				</button>
+			</div>
+
+			<div class="form-nav">
+				<button
+					type="button"
+					class="form-button secondary"
+					on:click={() => (activeTab = 'ingredients')}
+				>
+					Previous: Ingredients
+				</button>
+				<button type="button" class="form-button primary" on:click={() => (activeTab = 'media')}>
+					Next: Media
+				</button>
+			</div>
+		</div>
+
+		<!-- Media Tab -->
+		<div class="form-tab-content" class:active={activeTab === 'media'}>
+			<div class="form-section">
+				<div class="form-group-header">
+					<h2 class="form-section-title">
+						<ImageIcon size={20} class="section-icon" />
+						Recipe Images
+					</h2>
+					<p class="form-section-help">Upload high-quality images of your finished dish</p>
+				</div>
+
+				<div class="images-grid">
+					{#each recipe.images as _, index}
+						<div class="image-upload-container">
+							{#if imgPreviewUrls[index]}
+								<div class="image-preview">
+									<img src={imgPreviewUrls[index]} alt="Recipe preview" />
+									<button
+										type="button"
+										class="remove-image-button"
+										on:click={() => removeImage(index)}
+										aria-label="Remove image"
+									>
+										<X size={18} />
+									</button>
+								</div>
+							{:else}
+								<label for={`image-upload-${index}`} class="image-upload-label">
+									<div class="upload-placeholder">
+										<ImageIcon size={24} class="placeholder-icon" />
+										<span>Upload Image</span>
+										<span class="upload-hint">Click to browse</span>
+									</div>
+									<input
+										type="file"
+										id={`image-upload-${index}`}
+										class="image-upload-input"
+										accept="image/*"
+										on:change={(e) => handleImageUpload(e, index)}
+									/>
+								</label>
+							{/if}
+						</div>
+					{/each}
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Video URL (optional)</label>
+					<div class="input-with-icon">
+						<Video size={18} class="input-icon" />
+						<input
+							type="url"
+							class="with-icon form-input"
+							placeholder="E.g., https://youtube.com/watch?v=..."
+						/>
+					</div>
+					<p class="input-help">You can link to YouTube, Vimeo, or other video platforms</p>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">External Source URL (optional)</label>
+					<div class="input-with-icon">
+						<Link size={18} class="input-icon" />
+						<input
+							type="url"
+							class="with-icon form-input"
+							placeholder="E.g., https://myrecipeblog.com/pasta-recipe"
+						/>
+					</div>
+					<p class="input-help">
+						If this recipe is from another source, please provide credit by linking to it
+					</p>
+				</div>
+			</div>
+
+			<div class="form-nav">
+				<button
+					type="button"
+					class="form-button secondary"
+					on:click={() => (activeTab = 'instructions')}
+				>
+					Previous: Instructions
+				</button>
+				<button type="button" class="form-button primary" on:click={() => (activeTab = 'tips')}>
+					Next: Tips & Tags
+				</button>
+			</div>
+		</div>
+
+		<!-- Tips & Tags Tab -->
+		<div class="form-tab-content" class:active={activeTab === 'tips'}>
+			<div class="form-section">
+				<div class="form-group-header">
+					<h2 class="form-section-title">
+						<Info size={20} class="section-icon" />
+						Tips for Success
+					</h2>
+					<p class="form-section-help">
+						Share tips, variations, or helpful advice for making this recipe
+					</p>
+				</div>
+
+				{#each recipe.tips as tip, index}
+					<div class="tip-item">
+						<div class="form-group">
+							<label for={`tip-${index}`} class="form-label">Tip {index + 1}</label>
+							<textarea
+								id={`tip-${index}`}
+								class="form-textarea"
+								bind:value={recipe.tips[index]}
+								placeholder="E.g., For a crispier crust, preheat the baking sheet"
+								rows="2"
+							></textarea>
+						</div>
+
+						{#if recipe.tips.length > 1}
+							<button
+								type="button"
+								class="remove-button"
+								on:click={() => removeTip(index)}
+								aria-label="Remove tip"
+							>
+								<X size={18} />
+							</button>
+						{/if}
+					</div>
+				{/each}
+
+				<button type="button" class="add-button" on:click={addTip}>
+					<Plus size={16} />
+					Add Tip
+				</button>
+
+				<div class="form-divider"></div>
+
+				<div class="form-group-header">
+					<h2 class="form-section-title">
+						<Tag size={20} class="section-icon" />
+						Recipe Tags
+					</h2>
+					<p class="form-section-help">Add tags to help others discover your recipe</p>
+				</div>
+
+				<div class="tags-container">
+					{#each recipe.tags as tag, index}
+						<div class="tag-item">
+							<input
+								type="text"
+								class="tag-input form-input"
+								bind:value={recipe.tags[index]}
+								placeholder="E.g., vegetarian, gluten-free, dessert, etc."
+							/>
+
+							{#if recipe.tags.length > 1}
+								<button
+									type="button"
+									class="remove-button"
+									on:click={() => removeTag(index)}
+									aria-label="Remove tag"
+								>
+									<X size={18} />
+								</button>
+							{/if}
+						</div>
+					{/each}
+				</div>
+
+				<button type="button" class="add-button" on:click={addTag}>
+					<Plus size={16} />
+					Add Tag
+				</button>
+			</div>
+
+			<div class="form-nav">
+				<button type="button" class="form-button secondary" on:click={() => (activeTab = 'media')}>
+					Previous: Media
+				</button>
+				<button type="submit" class="form-button submit" disabled={isSubmitting}>
+					{isSubmitting ? 'Publishing...' : 'Publish Recipe'}
+				</button>
+			</div>
+		</div>
 	</form>
 </div>
 
 <style lang="postcss">
-	.container {
-		@apply flex flex-col gap-5 p-8;
+	.recipe-form-container {
+		@apply mx-auto max-w-3xl px-4 pb-16 pt-8;
 	}
 
-	.input {
-		@apply border-none bg-transparent p-12 text-3xl outline-none placeholder:text-gray-400;
+	.form-header {
+		@apply mb-8 text-center;
 	}
 
-	.editor {
-		@apply relative flex flex-col gap-5;
+	.form-title {
+		@apply mb-2 text-3xl font-bold text-gray-900 dark:text-white;
 	}
 
-	.button {
-		@apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-gray-50;
+	.form-subtitle {
+		@apply text-gray-600 dark:text-gray-400;
 	}
 
-	.add {
-		@apply absolute left-12 top-0 z-10 flex gap-5;
+	.form-error {
+		@apply mb-6 flex items-center gap-2 rounded-lg bg-red-50 p-4 text-red-600 dark:bg-red-900/20 dark:text-red-400;
 	}
 
-	.addButton {
-		@apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-gray-50;
+	.error-icon {
+		@apply flex-shrink-0;
 	}
 
-	.publish {
-		@apply absolute right-8 top-8 cursor-pointer rounded-md border-none bg-green-500 px-5 py-2 text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50;
+	.form-tabs {
+		@apply mb-6 flex flex-wrap rounded-lg bg-gray-100 p-1 dark:bg-gray-800;
+	}
+
+	.tab-button {
+		@apply flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all;
+		@apply text-gray-600 hover:bg-white hover:text-gray-900;
+		@apply dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+	}
+
+	.tab-button.active {
+		@apply bg-white text-gray-900 shadow-sm;
+		@apply dark:bg-gray-700 dark:text-white;
+	}
+
+	.form-tab-content {
+		@apply hidden;
+	}
+
+	.form-tab-content.active {
+		@apply block;
+	}
+
+	.form-section {
+		@apply mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+	}
+
+	.form-group {
+		@apply mb-4;
+	}
+
+	.form-group-header {
+		@apply mb-4;
+	}
+
+	.form-section-title {
+		@apply mb-1 flex items-center gap-2 text-xl font-semibold text-gray-900 dark:text-white;
+	}
+
+	.section-icon {
+		@apply text-orange-500;
+	}
+
+	.form-section-help {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	.form-label {
+		@apply mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300;
+	}
+
+	.form-input,
+	.form-textarea,
+	.form-select {
+		@apply w-full rounded-lg border border-gray-300 px-4 py-2 text-gray-700;
+		@apply focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20;
+		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.form-input.with-icon {
+		@apply pl-10;
+	}
+
+	.form-input.error,
+	.form-textarea.error,
+	.form-select.error {
+		@apply border-red-500 bg-red-50 dark:border-red-500 dark:bg-red-900/20;
+	}
+
+	.input-with-icon {
+		@apply relative;
+	}
+
+	.input-icon {
+		@apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-400;
+	}
+
+	.input-help {
+		@apply mt-1 text-xs text-gray-500 dark:text-gray-400;
+	}
+
+	.error-message {
+		@apply mt-1 text-sm text-red-500 dark:text-red-400;
+	}
+
+	.section-error {
+		@apply mb-4 flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400;
+	}
+
+	.form-row {
+		@apply mb-4 grid gap-4 sm:grid-cols-3;
+	}
+
+	.form-nav {
+		@apply mt-8 flex justify-between;
+	}
+
+	.form-button {
+		@apply rounded-lg px-6 py-2 text-sm font-medium transition-all;
+	}
+
+	.form-button.primary {
+		@apply bg-gray-100 text-gray-900 hover:bg-gray-200;
+		@apply dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600;
+	}
+
+	.form-button.secondary {
+		@apply text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+	}
+
+	.form-button.submit {
+		@apply bg-gradient-to-r from-orange-500 to-red-500 text-white;
+		@apply hover:shadow-lg hover:shadow-orange-500/20;
+		@apply disabled:opacity-70;
+	}
+
+	/* Ingredient Styles */
+	.ingredient-group {
+		@apply mb-6 rounded-lg border border-gray-200 p-4 dark:border-gray-700;
+	}
+
+	.group-header {
+		@apply mb-4 flex gap-4;
+	}
+
+	.ingredients-list {
+		@apply space-y-2;
+	}
+
+	.ingredient-item {
+		@apply flex items-center gap-2;
+	}
+
+	.remove-button {
+		@apply flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors;
+		@apply hover:bg-gray-100 hover:text-red-500;
+		@apply dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-red-400;
+		@apply disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	.add-button {
+		@apply mt-2 flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors;
+		@apply hover:bg-gray-100 hover:text-gray-900;
+		@apply dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+	}
+
+	.add-group-button {
+		@apply flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-3 text-sm;
+		@apply text-gray-600 transition-colors hover:border-orange-500 hover:text-orange-500;
+		@apply dark:border-gray-600 dark:text-gray-400 dark:hover:border-orange-500 dark:hover:text-orange-500;
+	}
+
+	/* Instructions Styles */
+	.instruction-step {
+		@apply mb-6 rounded-lg border border-gray-200 p-4 dark:border-gray-700;
+	}
+
+	.step-header {
+		@apply mb-4 flex items-start gap-4;
+	}
+
+	.step-number {
+		@apply flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-orange-500 font-semibold text-white;
+	}
+
+	.step-title-group {
+		@apply flex-1;
+	}
+
+	/* Media Styles */
+	.images-grid {
+		@apply mb-6 grid gap-4 sm:grid-cols-3;
+	}
+
+	.image-upload-container {
+		@apply aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-700;
+	}
+
+	.image-upload-label {
+		@apply flex h-full w-full cursor-pointer items-center justify-center;
+	}
+
+	.upload-placeholder {
+		@apply flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400;
+	}
+
+	.placeholder-icon {
+		@apply mb-2;
+	}
+
+	.upload-hint {
+		@apply mt-1 text-xs text-gray-400 dark:text-gray-500;
+	}
+
+	.image-upload-input {
+		@apply hidden;
+	}
+
+	.image-preview {
+		@apply relative h-full;
+	}
+
+	.image-preview img {
+		@apply h-full w-full object-cover;
+	}
+
+	.remove-image-button {
+		@apply absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70;
+	}
+
+	/* Tips Styles */
+	.tip-item {
+		@apply mb-4 flex items-start gap-2;
+	}
+
+	.form-divider {
+		@apply my-8 border-t border-gray-200 dark:border-gray-700;
+	}
+
+	/* Tags Styles */
+	.tags-container {
+		@apply mb-4 space-y-2;
+	}
+
+	.tag-item {
+		@apply flex items-center gap-2;
 	}
 </style>
 
