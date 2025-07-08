@@ -3,6 +3,7 @@
 	import '../app.css';
 	import Navbar from '../components/Navbar/Navbar.svelte';
 	import Footer from '../components/Footer/Footer.svelte';
+	import ToastContainer from '$lib/components/Toast/ToastContainer.svelte';
 	import { theme } from '$lib/stores/theme';
 
 	export let data;
@@ -16,4 +17,7 @@
 		</div>
 	</main>
 	<Footer />
+
+	<!-- Toast notifications -->
+	<ToastContainer position="top-right" maxToasts={5} />
 </div>

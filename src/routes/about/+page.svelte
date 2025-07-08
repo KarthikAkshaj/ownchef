@@ -32,13 +32,13 @@
 		{
 			name: 'Sarah Chen',
 			role: 'Head Chef',
-			image: '/images/team/sarah.jpg',
+			image: '/images/team/lisa.jpeg',
 			bio: 'Former Michelin-star restaurant chef with 15 years of experience.'
 		},
 		{
 			name: 'Mike Rodriguez',
 			role: 'Food Photographer',
-			image: '/images/team/mike.jpg',
+			image: '/images/team/mike.jpeg',
 			bio: 'Award-winning food photographer and styling expert.'
 		},
 		{

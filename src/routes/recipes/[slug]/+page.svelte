@@ -40,9 +40,9 @@
 		description:
 			"A rich, creamy, and aromatic Indian curry that's beloved worldwide. This authentic butter chicken recipe features tender chicken pieces in a velvety tomato-based sauce.",
 		images: [
-			'/images/butter-chicken.jpg',
-			'/images/butter-chicken-2.jpg',
-			'/images/butter-chicken-3.jpg'
+			'/images/recipes/butter-chicken.jpg',
+			'/images/recipes/butter-chicken-2.jpg',
+			'/images/recipes/butter-chicken-3.jpg'
 		],
 		cookTime: 45,
 		prepTime: 20,
@@ -58,9 +58,9 @@
 		isLiked: false,
 		isSaved: false,
 		author: {
-			id: 'chef-priya',
-			name: 'Chef Priya',
-			avatar: '/images/chef-priya.jpg',
+			id: 'chef-yuki',
+			name: 'Chef Yuki',
+			avatar: '/images/users/chef-yuki.jpg',
 			recipesCount: 87,
 			followersCount: 12400
 		},
@@ -168,17 +168,17 @@
 			{
 				id: 'chicken-tikka-masala',
 				title: 'Chicken Tikka Masala',
-				image: '/images/chicken-tikka.jpg'
+				image: '/images/recipes/chicken-tikka.jpeg'
 			},
 			{
 				id: 'naan-bread',
 				title: 'Homemade Naan Bread',
-				image: '/images/naan.jpg'
+				image: '/images/recipes/naan.jpeg'
 			},
 			{
 				id: 'palak-paneer',
 				title: 'Palak Paneer',
-				image: '/images/palak-paneer.jpg'
+				image: '/images/recipes/palak-paneer.jpg'
 			}
 		],
 		createdAt: '2023-08-15T14:30:00Z',
@@ -227,7 +227,7 @@
 			id: 1,
 			author: {
 				name: 'Sarah M.',
-				avatar: '/images/user-1.jpg'
+				avatar: '/images/users/default-avatar.jpg'
 			},
 			rating: 5,
 			date: '2023-09-28T10:30:00Z',
@@ -238,7 +238,7 @@
 			id: 2,
 			author: {
 				name: 'Michael R.',
-				avatar: '/images/user-2.jpg'
+				avatar: '/images/users/default-avatar.jpg'
 			},
 			rating: 4,
 			date: '2023-09-15T14:22:00Z',
@@ -249,7 +249,7 @@
 			id: 3,
 			author: {
 				name: 'Jessica T.',
-				avatar: '/images/user-3.jpg'
+				avatar: '/images/users/default-avatar.jpg'
 			},
 			rating: 5,
 			date: '2023-08-30T19:45:00Z',

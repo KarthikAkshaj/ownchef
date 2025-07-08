@@ -77,7 +77,7 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <nav
-	class="fixed z-[100] left-0 right-0 mx-auto mt-4 max-w-[calc(100%-2rem)] rounded-2xl transition-all duration-300"
+	class="fixed left-0 right-0 z-[100] mx-auto mt-4 max-w-[calc(100%-2rem)] rounded-2xl transition-all duration-300"
 	class:scrolled={isScrolled}
 	class:dark={$theme === 'dark'}
 >
@@ -149,14 +149,6 @@
 				{/if}
 			</div>
 
-			<a
-				href="/blog"
-				class="nav-link"
-				class:dark={$theme === 'dark'}
-				class:active={$page.url.pathname === '/blog'}
-			>
-				Blog
-			</a>
 			<a
 				href="/about"
 				class="nav-link"

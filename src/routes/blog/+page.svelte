@@ -11,10 +11,10 @@
 			excerpt:
 				'Master the ancient technique of sourdough bread making with our comprehensive guide...',
 			category: 'Baking',
-			image: '/images/sourdough.jpg',
+			image: '/images/recipes/sourdough.jpg',
 			author: {
 				name: 'Chef Maria',
-				avatar: '/images/chef-maria.jpg'
+				avatar: '/images/users/chef-maria.jpg'
 			},
 			readTime: '8 min read',
 			date: '2024-01-25',
@@ -26,10 +26,10 @@
 			excerpt:
 				'Discover the must-have kitchen tools that will elevate your cooking game to the next level...',
 			category: 'Kitchen Tips',
-			image: '/images/kitchen-tools.jpg',
+			image: '/images/blog/kitchen-tools.jpeg',
 			author: {
 				name: 'Chef John',
-				avatar: '/images/chef-john.jpg'
+				avatar: '/images/users/chef-giovanni.jpeg'
 			},
 			readTime: '6 min read',
 			date: '2024-01-23',

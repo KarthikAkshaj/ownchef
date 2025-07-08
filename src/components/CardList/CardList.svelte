@@ -13,13 +13,13 @@
 		{
 			title: 'Homemade Margherita Pizza',
 			description: 'Classic Italian pizza with fresh basil, mozzarella, and tomato sauce',
-			image: '/images/margherita-pizza.jpg',
+			image: '/images/recipes/margherita-pizza.jpg',
 			cookTime: 45,
 			category: 'Italian',
 			difficulty: 'Medium',
 			author: {
 				name: 'Chef Maria',
-				avatar: '/images/chef-maria.jpg'
+				avatar: '/images/users/chef-maria.jpg'
 			},
 			rating: 4.5
 		},
@@ -27,65 +27,65 @@
 			title: 'Spicy Thai Green Curry',
 			description:
 				'Authentic Thai green curry with coconut milk, vegetables, and your choice of protein',
-			image: '/images/thai-curry.jpg',
+			image: '/images/recipes/thai-curry.jpg',
 			cookTime: 35,
 			category: 'Thai',
 			difficulty: 'Easy',
 			author: {
-				name: 'Chef Sorn',
-				avatar: '/images/chef-sorn.jpg'
+				name: 'Chef Raj',
+				avatar: '/images/users/chef-raj.jpg'
 			},
 			rating: 4.8
 		},
 		{
 			title: 'Classic Beef Burger',
 			description: 'Juicy homemade beef burger with special sauce and fresh toppings',
-			image: '/images/beef-burger.jpg',
+			image: '/images/recipes/beef-burger.jpg',
 			cookTime: 25,
 			category: 'American',
 			difficulty: 'Easy',
 			author: {
-				name: 'Chef John',
-				avatar: '/images/chef-john.jpg'
+				name: 'Chef Ahmed',
+				avatar: '/images/users/chef-ahmed.jpg'
 			},
 			rating: 4.7
 		},
 		{
 			title: 'Sushi Roll Platter',
 			description: 'Assorted fresh sushi rolls with premium grade fish and seasonal ingredients',
-			image: '/images/sushi.jpg',
+			image: '/images/recipes/sushi.jpeg',
 			cookTime: 60,
 			category: 'Japanese',
 			difficulty: 'Hard',
 			author: {
 				name: 'Chef Yuki',
-				avatar: '/images/chef-yuki.jpg'
+				avatar: '/images/users/chef-yuki.jpg'
 			},
 			rating: 4.9
 		},
 		{
 			title: 'Mediterranean Mezze',
 			description: 'A vibrant platter of hummus, falafel, baba ganoush, and fresh pita bread',
-			image: '/images/mezze.jpg',
+			image: '/images/recipes/mezze.jpeg',
 			cookTime: 40,
 			category: 'Mediterranean',
 			difficulty: 'Medium',
 			author: {
-				name: 'Chef Hassan',
-				avatar: '/images/chef-hassan.jpg'
+				name: 'Chef Giovanni',
+				avatar: '/images/users/chef-giovanni.jpeg'
 			},
 			rating: 4.6
 		},
 		{
 			title: 'French Onion Soup',
 			description: 'Rich beef broth with caramelized onions and melted Gruyère cheese',
-			image: '/images/onion-soup.jpg',
+			image: '/images/recipes/onion-soup.jpg',
 			cookTime: 55,
 			category: 'French',
 			difficulty: 'Medium',
 			author: {
-				name: 'Chef Pierre',
-				avatar: '/images/chef-pierre.jpg'
+				name: 'Chef Sarah',
+				avatar: '/images/users/chef-sarah.jpg'
 			},
 			rating: 4.7
 		}

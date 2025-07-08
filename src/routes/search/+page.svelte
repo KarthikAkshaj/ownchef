@@ -100,13 +100,13 @@
 			title: 'Classic Butter Chicken',
 			description:
 				'A rich and creamy tomato-based curry with tender chicken pieces marinated in yogurt and spices.',
-			image: '/images/butter-chicken.jpg',
+			image: '/images/recipes/butter-chicken.jpg',
 			cookTime: 45,
 			category: 'Indian',
 			difficulty: 'Medium',
 			author: {
-				name: 'Chef Priya',
-				avatar: '/images/chef-priya.jpg'
+				name: 'Chef Maria',
+				avatar: '/images/users/chef-maria.jpg'
 			},
 			rating: 4.8
 		},
@@ -120,7 +120,7 @@
 			difficulty: 'Easy',
 			author: {
 				name: 'Chef Raj',
-				avatar: '/images/chef-raj.jpg'
+				avatar: '/images/users/chef-raj.jpg'
 			},
 			rating: 4.7
 		},
@@ -128,13 +128,13 @@
 			title: 'Chicken Biryani',
 			description:
 				'Fragrant basmati rice cooked with tender chicken pieces, saffron, and a blend of traditional spices.',
-			image: '/images/biryani.jpg',
+			image: '/images/recipes/biryani.jpg',
 			cookTime: 60,
 			category: 'Indian',
 			difficulty: 'Medium',
 			author: {
-				name: 'Chef Priya',
-				avatar: '/images/chef-priya.jpg'
+				name: 'Chef Sarah',
+				avatar: '/images/users/chef-sarah.jpg'
 			},
 			rating: 4.9
 		},
@@ -142,13 +142,13 @@
 			title: 'Masala Dosa',
 			description:
 				'Crispy rice and lentil crepes filled with spiced potato filling, served with coconut chutney and sambar.',
-			image: '/images/masala-dosa.jpg',
+			image: '/images/recipes/masala-dosa.jpg',
 			cookTime: 50,
 			category: 'Indian',
 			difficulty: 'Hard',
 			author: {
 				name: 'Chef Raj',
-				avatar: '/images/chef-raj.jpg'
+				avatar: '/images/users/chef-raj.jpg'
 			},
 			rating: 4.6
 		},
@@ -156,26 +156,26 @@
 			title: 'Pad Thai',
 			description:
 				'Stir-fried rice noodles with eggs, tofu, bean sprouts, peanuts, and a tangy sauce.',
-			image: '/images/pad-thai.jpg',
+			image: '/images/recipes/pad-thai.jpg',
 			cookTime: 25,
 			category: 'Thai',
 			difficulty: 'Medium',
 			author: {
-				name: 'Chef Sorn',
-				avatar: '/images/chef-sorn.jpg'
+				name: 'Chef Giovanni',
+				avatar: '/images/users/chef-giovanni.jpeg'
 			},
 			rating: 4.5
 		},
 		{
 			title: 'Spaghetti Carbonara',
 			description: 'Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper.',
-			image: '/images/carbonara.jpg',
+			image: '/images/recipes/carbonara.jpg',
 			cookTime: 20,
 			category: 'Italian',
 			difficulty: 'Easy',
 			author: {
-				name: 'Chef Marco',
-				avatar: '/images/chef-marco.jpg'
+				name: 'Chef Ahmed',
+				avatar: '/images/users/chef-ahmed.jpg'
 			},
 			rating: 4.7
 		},
@@ -183,13 +183,13 @@
 			title: 'Vegetable Stir Fry',
 			description:
 				'Quick and healthy stir-fried vegetables with a savory sauce, perfect as a side dish or main course.',
-			image: '/images/stir-fry.jpg',
+			image: '/images/recipe/stir-fry.jpg',
 			cookTime: 15,
 			category: 'Chinese',
 			difficulty: 'Easy',
 			author: {
-				name: 'Chef Li',
-				avatar: '/images/chef-li.jpg'
+				name: 'Chef Maria',
+				avatar: '/images/users/chef-maria.jpg'
 			},
 			rating: 4.3
 		},
@@ -197,13 +197,13 @@
 			title: 'Chocolate Lava Cake',
 			description:
 				'Decadent chocolate dessert with a molten center, served with vanilla ice cream.',
-			image: '/images/lava-cake.jpg',
+			image: '/images/recipes/lava-cake.jpeg',
 			cookTime: 25,
 			category: 'Dessert',
 			difficulty: 'Medium',
 			author: {
-				name: 'Chef Pierre',
-				avatar: '/images/chef-pierre.jpg'
+				name: 'Chef Raj',
+				avatar: '/images/users/chef-raj.jpg'
 			},
 			rating: 4.9
 		},
@@ -211,13 +211,13 @@
 			title: 'Greek Salad',
 			description:
 				'Fresh Mediterranean salad with cucumber, tomato, olives, feta cheese, and a zesty dressing.',
-			image: '/images/greek-salad.jpg',
+			image: '/images/recipes/caesar-salad.jpg',
 			cookTime: 10,
 			category: 'Salad',
 			difficulty: 'Easy',
 			author: {
-				name: 'Chef Helena',
-				avatar: '/images/chef-helena.jpg'
+				name: 'Chef Yuki',
+				avatar: '/images/chef-yuki.jpg'
 			},
 			rating: 4.4
 		}

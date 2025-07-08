@@ -10,7 +10,7 @@
 			title: 'Classic Italian Pasta Carbonara',
 			description:
 				'Learn the authentic way to make this creamy Roman pasta dish with eggs, cheese, and pancetta.',
-			image: '/images/carbonara.jpg',
+			image: '/images/recipes/carbonara.jpg',
 			category: 'Italian',
 			author: 'Chef Maria',
 			readTime: '15 min'
@@ -20,7 +20,7 @@
 			title: 'Perfect Butter Chicken',
 			description:
 				'Discover the secrets to making the most tender and flavorful butter chicken at home.',
-			image: '/images/butter-chicken.jpg',
+			image: '/images/recipes/butter-chicken.jpg',
 			category: 'Indian',
 			author: 'Chef Raj',
 			readTime: '25 min'
@@ -30,7 +30,7 @@
 			title: 'Sushi Rolling Masterclass',
 			description:
 				'Master the art of sushi rolling with our step-by-step guide to perfect rolls every time.',
-			image: '/images/sushi.jpg',
+			image: '/images/recipes/sushi.jpeg',
 			category: 'Japanese',
 			author: 'Chef Yuki',
 			readTime: '30 min'

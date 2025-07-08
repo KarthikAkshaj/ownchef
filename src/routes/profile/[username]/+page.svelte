@@ -22,18 +22,18 @@
 
 	// This would be fetched from your API in a real implementation
 	const profile = {
-		id: 'chef-priya',
-		username: 'chef_priya',
-		name: 'Chef Priya Sharma',
-		avatar: '/images/chef-priya.jpg',
-		bio: 'Professional chef with over 10 years of experience in Indian and fusion cuisine. Passionate about sharing authentic family recipes and teaching cooking techniques.',
-		location: 'Mumbai, India',
+		id: 'chef-Yuki',
+		username: 'chef_Yuki',
+		name: 'Chef Yuki Sakai',
+		avatar: '/images/users/chef-yuki.jpg',
+		bio: 'Professional chef with over 10 years of experience in japanese and fusion cuisine. Passionate about sharing authentic family recipes and teaching cooking techniques.',
+		location: 'Tokyo, Japan',
 		joined: '2022-03-15',
-		website: 'https://priyaskitchen.com',
+		website: 'https://yukiskitchen.com',
 		social: {
-			instagram: 'chef_priya',
-			youtube: 'PriyasKitchenTV',
-			tiktok: 'chefpriya_official'
+			instagram: 'chef_yuki',
+			youtube: 'YukisKitchenTV',
+			tiktok: 'chefyuki_official'
 		},
 		stats: {
 			followers: 12400,
@@ -52,7 +52,7 @@
 			title: 'Classic Butter Chicken',
 			description:
 				'A rich and creamy tomato-based curry with tender chicken pieces marinated in yogurt and spices.',
-			image: '/images/butter-chicken.jpg',
+			image: '/images/recipes/butter-chicken.jpg',
 			cookTime: 45,
 			category: 'Indian',
 			difficulty: 'Medium',
@@ -67,7 +67,7 @@
 			title: 'Palak Paneer',
 			description:
 				'Creamy spinach curry with soft paneer cheese cubes, flavored with garlic, ginger, and aromatic spices.',
-			image: '/images/palak-paneer.jpg',
+			image: '/images/recipes/palak-paneer.jpg',
 			cookTime: 35,
 			category: 'Indian',
 			difficulty: 'Easy',
@@ -82,7 +82,7 @@
 			title: 'Chicken Biryani',
 			description:
 				'Fragrant basmati rice cooked with tender chicken pieces, saffron, and a blend of traditional spices.',
-			image: '/images/biryani.jpg',
+			image: '/images/recipes/biriyani.jpg',
 			cookTime: 60,
 			category: 'Indian',
 			difficulty: 'Medium',
@@ -97,7 +97,7 @@
 			title: 'Masala Dosa',
 			description:
 				'Crispy rice and lentil crepes filled with spiced potato filling, served with coconut chutney and sambar.',
-			image: '/images/masala-dosa.jpg',
+			image: '/images/recipes/masala-dosa.jpg',
 			cookTime: 50,
 			category: 'Indian',
 			difficulty: 'Hard',
@@ -112,7 +112,7 @@
 			title: 'Gulab Jamun',
 			description:
 				'Soft, spongy milk solids dumplings soaked in rose and cardamom flavored sugar syrup.',
-			image: '/images/gulab-jamun.jpg',
+			image: '/images/recipes/gulab-jamun.jpg',
 			cookTime: 40,
 			category: 'Indian',
 			difficulty: 'Medium',
@@ -127,7 +127,7 @@
 			title: 'Vegetable Samosas',
 			description:
 				'Crispy pastry triangles filled with spiced potatoes and peas, deep-fried to golden perfection.',
-			image: '/images/samosas.jpg',
+			image: '/images/recipes/samosa.jpg',
 			cookTime: 55,
 			category: 'Indian',
 			difficulty: 'Medium',

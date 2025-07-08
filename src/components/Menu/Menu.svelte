@@ -9,7 +9,7 @@
 			id: 1,
 			title: 'Classic Italian Pasta Carbonara',
 			views: 12543,
-			image: '/images/carbonara.jpg',
+			image: '/images/recipes/carbonara.jpg',
 			author: 'Chef Maria',
 			date: '2024-01-15'
 		},
@@ -17,7 +17,7 @@
 			id: 2,
 			title: 'Authentic Thai Green Curry',
 			views: 10234,
-			image: '/images/curry.jpg',
+			image: '/images/recipes/thai-curry.jpg',
 			author: 'Chef Sorn',
 			date: '2024-01-18'
 		},
@@ -25,7 +25,7 @@
 			id: 3,
 			title: 'Perfect Homemade Pizza',
 			views: 9876,
-			image: '/images/pizza.jpg',
+			image: '/images/recipes/margherita-pizza.jpg',
 			author: 'Chef Marco',
 			date: '2024-01-20'
 		}
@@ -36,7 +36,7 @@
 			id: 1,
 			title: 'Japanese Ramen from Scratch',
 			rating: 4.9,
-			image: '/images/ramen.jpg',
+			image: '/images/recipes/ramen.jpg',
 			author: 'Chef Yuki',
 			date: '2024-01-22'
 		},
@@ -44,7 +44,7 @@
 			id: 2,
 			title: 'French Croissants Masterclass',
 			rating: 4.8,
-			image: '/images/croissant.jpg',
+			image: '/images/recipes/croissant.jpg',
 			author: 'Chef Pierre',
 			date: '2024-01-25'
 		}
