@@ -986,7 +986,9 @@
 	}
 
 	.step-item.active {
-		@apply border-orange-500 bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300;
+		border-color: #8FA998;
+		background: rgba(143, 169, 152, 0.1);
+		color: #677D6A;
 	}
 
 	.step-item.completed {
@@ -999,7 +1001,8 @@
 	}
 
 	.step-item.active .step-icon {
-		@apply bg-orange-500 text-white;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
 	}
 
 	.step-item.completed .step-icon {
@@ -1045,9 +1048,13 @@
 	}
 
 	.form-input {
-		@apply w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20;
-		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-orange-400;
+		@apply w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors outline-none;
+		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.form-input:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 3px rgba(143, 169, 152, 0.1);
 	}
 
 	.form-input.error {
@@ -1055,15 +1062,23 @@
 	}
 
 	.form-textarea {
-		@apply w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-colors;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20;
-		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-orange-400;
+		@apply w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-colors outline-none;
+		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.form-textarea:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 3px rgba(143, 169, 152, 0.1);
 	}
 
 	.form-select {
-		@apply w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20;
-		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-orange-400;
+		@apply w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors outline-none;
+		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.form-select:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 3px rgba(143, 169, 152, 0.1);
 	}
 
 	.error-text {
@@ -1077,7 +1092,8 @@
 	}
 
 	.image-upload-area.drag-active {
-		@apply border-orange-500 bg-orange-50 dark:bg-orange-900/20;
+		border-color: #8FA998;
+		background: rgba(143, 169, 152, 0.1);
 	}
 
 	.upload-placeholder {
@@ -1097,7 +1113,12 @@
 	}
 
 	.remove-image {
-		@apply absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600;
+		@apply absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full text-white transition-colors;
+		background: #EF4444;
+	}
+
+	.remove-image:hover {
+		background: #DC2626;
 	}
 
 	/* Ingredients */
@@ -1117,9 +1138,16 @@
 	.ingredient-unit,
 	.ingredient-name,
 	.ingredient-notes {
-		@apply rounded-md border border-gray-300 px-3 py-2 text-sm;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/20;
+		@apply rounded-md border border-gray-300 px-3 py-2 text-sm outline-none;
 		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.ingredient-amount:focus,
+	.ingredient-unit:focus,
+	.ingredient-name:focus,
+	.ingredient-notes:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 2px rgba(143, 169, 152, 0.1);
 	}
 
 	.remove-ingredient {
@@ -1144,13 +1172,19 @@
 	}
 
 	.step-number-large {
-		@apply flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 text-lg font-bold text-white;
+		@apply flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
 	}
 
 	.instruction-title {
-		@apply flex-1 rounded-md border border-gray-300 px-3 py-2;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/20;
+		@apply flex-1 rounded-md border border-gray-300 px-3 py-2 outline-none;
 		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.instruction-title:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 2px rgba(143, 169, 152, 0.1);
 	}
 
 	.remove-instruction {
@@ -1158,9 +1192,13 @@
 	}
 
 	.instruction-content {
-		@apply mb-4 w-full resize-none rounded-md border border-gray-300 px-3 py-2;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/20;
+		@apply mb-4 w-full resize-none rounded-md border border-gray-300 px-3 py-2 outline-none;
 		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.instruction-content:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 2px rgba(143, 169, 152, 0.1);
 	}
 
 	.instruction-extras {
@@ -1172,9 +1210,13 @@
 	}
 
 	.timer-field {
-		@apply w-24 rounded-md border border-gray-300 px-3 py-2 text-sm;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/20;
+		@apply w-24 rounded-md border border-gray-300 px-3 py-2 text-sm outline-none;
 		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.timer-field:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 2px rgba(143, 169, 152, 0.1);
 	}
 
 	.file-input-small {
@@ -1194,7 +1236,12 @@
 	}
 
 	.remove-image-small {
-		@apply absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600;
+		@apply absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-white transition-colors;
+		background: #EF4444;
+	}
+
+	.remove-image-small:hover {
+		background: #DC2626;
 	}
 
 	.add-instruction {
@@ -1216,11 +1263,17 @@
 	}
 
 	.tag-item {
-		@apply flex items-center gap-1 rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-300;
+		@apply flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium;
+		background: rgba(143, 169, 152, 0.15);
+		color: #677D6A;
 	}
 
 	.tag-item button {
-		@apply ml-1 rounded-full p-0.5 hover:bg-orange-200 dark:hover:bg-orange-800/50;
+		@apply ml-1 rounded-full p-0.5 transition-colors;
+	}
+
+	.tag-item button:hover {
+		background: rgba(103, 125, 106, 0.2);
 	}
 
 	.tag-input-wrapper {
@@ -1228,13 +1281,24 @@
 	}
 
 	.tag-input {
-		@apply flex-1 rounded-md border border-gray-300 px-3 py-2;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/20;
+		@apply flex-1 rounded-md border border-gray-300 px-3 py-2 outline-none;
 		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
 	}
 
+	.tag-input:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 2px rgba(143, 169, 152, 0.1);
+	}
+
 	.add-tag-btn {
-		@apply flex h-10 w-10 items-center justify-center rounded-md bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50;
+		@apply flex h-10 w-10 items-center justify-center rounded-md transition-all disabled:opacity-50;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+	}
+
+	.add-tag-btn:hover:not(:disabled) {
+		background: linear-gradient(135deg, #8FA998, #B5C9BD);
+		transform: translateY(-2px);
 	}
 
 	/* Tips */
@@ -1247,9 +1311,13 @@
 	}
 
 	.tip-input {
-		@apply flex-1 rounded-md border border-gray-300 px-3 py-2;
-		@apply focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/20;
+		@apply flex-1 rounded-md border border-gray-300 px-3 py-2 outline-none;
 		@apply dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+	}
+
+	.tip-input:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 2px rgba(143, 169, 152, 0.1);
 	}
 
 	.remove-tip {
@@ -1270,7 +1338,20 @@
 	}
 
 	.nav-btn.primary {
-		@apply bg-orange-500 text-white hover:bg-orange-600;
+		@apply transition-all;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.nav-btn.primary:hover {
+		background: linear-gradient(135deg, #8FA998, #B5C9BD);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 16px rgba(143, 169, 152, 0.4);
+	}
+
+	.nav-btn.primary:active {
+		transform: translateY(0);
 	}
 
 	.nav-btn.secondary {
@@ -1290,7 +1371,19 @@
 	}
 
 	.publish-btn {
-		@apply flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 px-6 py-3 font-medium text-white transition-all hover:opacity-90 disabled:opacity-50;
+		@apply flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-all disabled:opacity-50;
+		background: linear-gradient(135deg, #677D6A, #8FA998, #B5C9BD);
+		color: #EBE0CC;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.publish-btn:hover:not(:disabled) {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(143, 169, 152, 0.5);
+	}
+
+	.publish-btn:active:not(:disabled) {
+		transform: translateY(0);
 	}
 
 	/* Success Modal */

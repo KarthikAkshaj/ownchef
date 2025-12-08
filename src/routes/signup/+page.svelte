@@ -688,13 +688,13 @@
 	/* Global Styles */
 	.signup-page {
 		@apply fixed inset-0 overflow-hidden;
-		background: linear-gradient(135deg, #fef7ed 0%, #fff7ed 50%, #fef3c7 100%);
+		background: linear-gradient(135deg, #E0CEAD 0%, #EBE0CC 50%, #B5C9BD 100%);
 		min-height: 100vh;
 		min-width: 100vw;
 	}
 
 	.signup-page.dark {
-		background: linear-gradient(135deg, #0c0a09 0%, #1c1917 50%, #292524 100%);
+		background: linear-gradient(135deg, #1A3636 0%, #40534C 50%, #677D6A 100%);
 	}
 
 	/* Animated Background */
@@ -712,14 +712,16 @@
 	}
 
 	.shape-1 {
-		@apply h-32 w-32 bg-orange-400;
+		@apply h-32 w-32;
+		background-color: #677D6A;
 		top: 5%;
 		left: 10%;
 		animation-duration: 35s;
 	}
 
 	.shape-2 {
-		@apply h-24 w-24 bg-red-400;
+		@apply h-24 w-24;
+		background-color: #8FA998;
 		top: 15%;
 		right: 15%;
 		animation-duration: 40s;
@@ -727,14 +729,16 @@
 	}
 
 	.shape-3 {
-		@apply h-40 w-40 bg-yellow-400;
+		@apply h-40 w-40;
+		background-color: #B5C9BD;
 		bottom: 25%;
 		left: 20%;
 		animation-duration: 45s;
 	}
 
 	.shape-4 {
-		@apply h-20 w-20 bg-pink-400;
+		@apply h-20 w-20;
+		background-color: #D6BD98;
 		top: 50%;
 		right: 25%;
 		animation-duration: 30s;
@@ -742,14 +746,16 @@
 	}
 
 	.shape-5 {
-		@apply h-36 w-36 bg-purple-400;
+		@apply h-36 w-36;
+		background-color: #E0CEAD;
 		bottom: 10%;
 		right: 10%;
 		animation-duration: 50s;
 	}
 
 	.shape-6 {
-		@apply h-28 w-28 bg-blue-400;
+		@apply h-28 w-28;
+		background-color: #677D6A;
 		top: 35%;
 		left: 5%;
 		animation-duration: 35s;
@@ -757,14 +763,16 @@
 	}
 
 	.shape-7 {
-		@apply h-16 w-16 bg-green-400;
+		@apply h-16 w-16;
+		background-color: #8FA998;
 		top: 75%;
 		left: 35%;
 		animation-duration: 32s;
 	}
 
 	.shape-8 {
-		@apply h-44 w-44 bg-indigo-400;
+		@apply h-44 w-44;
+		background-color: #B5C9BD;
 		top: 8%;
 		right: 40%;
 		animation-duration: 55s;
@@ -772,14 +780,16 @@
 	}
 
 	.shape-9 {
-		@apply h-20 w-20 bg-teal-400;
+		@apply h-20 w-20;
+		background-color: #D6BD98;
 		bottom: 40%;
 		left: 45%;
 		animation-duration: 38s;
 	}
 
 	.shape-10 {
-		@apply h-16 w-16 bg-cyan-400;
+		@apply h-16 w-16;
+		background-color: #E0CEAD;
 		top: 60%;
 		right: 5%;
 		animation-duration: 42s;
@@ -813,28 +823,32 @@
 	}
 
 	.orb-1 {
-		@apply h-96 w-96 bg-orange-500;
+		@apply h-96 w-96;
+		background-color: #677D6A;
 		top: -15%;
 		left: -15%;
 		animation: pulse 10s infinite ease-in-out;
 	}
 
 	.orb-2 {
-		@apply h-80 w-80 bg-red-500;
+		@apply h-80 w-80;
+		background-color: #8FA998;
 		bottom: -15%;
 		right: -15%;
 		animation: pulse 12s infinite ease-in-out reverse;
 	}
 
 	.orb-3 {
-		@apply h-64 w-64 bg-yellow-500;
+		@apply h-64 w-64;
+		background-color: #B5C9BD;
 		top: 40%;
 		left: 60%;
 		animation: pulse 14s infinite ease-in-out;
 	}
 
 	.orb-4 {
-		@apply h-72 w-72 bg-purple-500;
+		@apply h-72 w-72;
+		background-color: #D6BD98;
 		top: 60%;
 		left: 20%;
 		animation: pulse 16s infinite ease-in-out reverse;
@@ -879,7 +893,8 @@
 	}
 
 	.logo-coffee {
-		@apply h-12 w-12 text-orange-500;
+		@apply h-12 w-12;
+		color: #677D6A;
 		animation: bounce 3s infinite ease-in-out;
 	}
 
@@ -888,7 +903,8 @@
 	}
 
 	.logo-sparkle {
-		@apply h-6 w-6 text-yellow-400;
+		@apply h-6 w-6;
+		color: #8FA998;
 		animation: sparkle 4s infinite ease-in-out;
 	}
 
@@ -933,7 +949,10 @@
 	}
 
 	.logo-main {
-		@apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-4xl font-black text-transparent;
+		background: linear-gradient(to right, #677D6A, #8FA998);
+		-webkit-background-clip: text;
+		background-clip: text;
+		@apply text-4xl font-black text-transparent;
 	}
 
 	.logo-sub {
@@ -962,11 +981,13 @@
 	}
 
 	.benefit-icon-wrapper {
-		@apply flex h-10 w-10 items-center justify-center rounded-full bg-orange-500/10;
+		@apply flex h-10 w-10 items-center justify-center rounded-full;
+		background-color: rgba(103, 125, 106, 0.1);
 	}
 
 	.benefit-icon {
-		@apply h-5 w-5 text-orange-500;
+		@apply h-5 w-5;
+		color: #677D6A;
 	}
 
 	.benefit-content {
@@ -1183,8 +1204,8 @@
 	}
 
 	.input-wrapper.focused {
-		@apply border-orange-500 ring-2 ring-orange-500/20 dark:border-orange-400;
-		@apply shadow-lg shadow-orange-500/10;
+		border-color: #677D6A;
+		box-shadow: 0 0 0 2px rgba(103, 125, 106, 0.2), 0 10px 15px -3px rgba(103, 125, 106, 0.1);
 	}
 
 	.input-wrapper.error {
@@ -1206,7 +1227,7 @@
 	}
 
 	.input-wrapper.focused .input-icon {
-		@apply text-orange-500 dark:text-orange-400;
+		color: #677D6A;
 	}
 
 	.input-wrapper.error .input-icon {
@@ -1330,7 +1351,8 @@
 	}
 
 	.terms-input:checked + .terms-custom {
-		@apply border-orange-500 bg-orange-500;
+		border-color: #677D6A;
+		background-color: #677D6A;
 	}
 
 	.terms-input:checked + .terms-custom::after {
@@ -1343,20 +1365,33 @@
 	}
 
 	.terms-link {
-		@apply font-medium text-orange-500 hover:text-orange-600;
-		@apply transition-colors duration-200;
+		@apply font-medium transition-colors duration-200;
+		color: #677D6A;
+	}
+
+	.terms-link:hover {
+		color: #8FA998;
 	}
 
 	/* Submit Button */
 	.submit-btn {
 		@apply w-full overflow-hidden rounded-xl;
-		@apply bg-gradient-to-r from-orange-500 to-red-500;
-		@apply hover:from-orange-600 hover:to-red-600;
+		background: linear-gradient(to right, #677D6A, #8FA998);
 		@apply font-semibold text-white;
 		@apply transform transition-all duration-300;
-		@apply hover:scale-[1.02] hover:shadow-lg hover:shadow-orange-500/25;
 		@apply disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50;
-		@apply focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+		@apply focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+		box-shadow: 0 4px 6px -1px rgba(103, 125, 106, 0.1), 0 2px 4px -1px rgba(103, 125, 106, 0.06);
+	}
+
+	.submit-btn:hover {
+		background: linear-gradient(to right, #8FA998, #B5C9BD);
+		transform: scale(1.02);
+		box-shadow: 0 10px 15px -3px rgba(103, 125, 106, 0.25);
+	}
+
+	.submit-btn:focus {
+		ring-color: #677D6A;
 	}
 
 	.submit-btn.loading {
@@ -1398,8 +1433,12 @@
 	}
 
 	.signin-link {
-		@apply font-semibold text-orange-500 hover:text-orange-600;
-		@apply transition-colors duration-200;
+		@apply font-semibold transition-colors duration-200;
+		color: #677D6A;
+	}
+
+	.signin-link:hover {
+		color: #8FA998;
 	}
 
 	/* Responsive Design */

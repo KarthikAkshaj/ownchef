@@ -1,4 +1,3 @@
-<!-- src/components/AuthLinks/AuthLinks.svelte -->
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { signOut } from '$lib/auth';
@@ -17,11 +16,17 @@
 <style lang="postcss">
 	.login-btn {
 		@apply relative flex items-center justify-center overflow-hidden rounded-full px-6 py-2;
-		@apply bg-gradient-to-r from-orange-500 via-red-500 to-orange-500 bg-[length:200%_100%];
+		background: linear-gradient(to right, #677D6A, #8FA998, #677D6A);
+		background-size: 200% 100%;
 		@apply text-sm font-semibold text-white;
 		@apply transition-all duration-300;
-		@apply hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25;
 		animation: gradient 3s linear infinite;
+		box-shadow: 0 4px 14px 0 rgba(103, 125, 106, 0.39);
+	}
+
+	.login-btn:hover {
+		transform: scale(1.05);
+		box-shadow: 0 10px 15px -3px rgba(103, 125, 106, 0.25);
 	}
 
 	.login-btn .shine {
@@ -57,7 +62,12 @@
 	}
 
 	.auth-link {
-		@apply rounded-md bg-blue-500 px-3 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-blue-600;
+		@apply rounded-md px-3 py-2 text-sm font-medium text-white transition-colors duration-200;
+		background-color: #677D6A;
+	}
+
+	.auth-link:hover {
+		background-color: #8FA998;
 	}
 
 	button.auth-link {

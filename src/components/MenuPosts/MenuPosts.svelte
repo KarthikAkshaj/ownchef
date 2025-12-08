@@ -7,7 +7,7 @@
 		<a href="/" class="item">
 			{#if withImage}
 				<div class="imageContainer">
-					<img src="/Food.jpg" alt="" class="image" />
+					<img src="/images/recipes/carbonara.jpg" alt="" class="image" />
 				</div>
 			{/if}
 			<div class="textContainer">

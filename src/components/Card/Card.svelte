@@ -1,4 +1,3 @@
-<!-- src/components/Card/Card.svelte -->
 <script lang="ts">
 	import { theme } from '$lib/stores/theme';
 	import { Clock, Star } from 'lucide-svelte';
@@ -77,7 +76,7 @@
 					<Star
 						size={16}
 						fill={filled ? 'currentColor' : 'none'}
-						class={filled ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}
+						class={filled ? 'star-filled' : 'star-empty'}
 					/>
 				{/each}
 			</div>
@@ -99,10 +98,11 @@
 
 <style lang="postcss">
 	.recipe-card {
-		@apply relative overflow-hidden rounded-2xl bg-white;
+		@apply relative overflow-hidden rounded-2xl;
+		background-color: #40534C;
 		@apply transform transition-all duration-500 ease-out;
-		@apply hover:shadow-xl dark:bg-gray-800;
-		@apply border border-gray-100 dark:border-gray-700;
+		@apply hover:shadow-xl;
+		border: 1px solid rgba(103, 125, 106, 0.3);
 		@apply will-change-transform;
 		max-width: 380px;
 		height: fit-content;
@@ -127,8 +127,9 @@
 
 	.category-badge {
 		@apply rounded-full px-3 py-1 text-xs font-semibold;
-		@apply bg-white/90 text-gray-800 backdrop-blur-sm;
-		@apply dark:bg-gray-800/90 dark:text-white;
+		background-color: rgba(103, 125, 106, 0.8);
+		color: #E0CEAD;
+		@apply backdrop-blur-sm;
 		@apply transition-transform duration-300;
 	}
 
@@ -146,15 +147,18 @@
 	}
 
 	.difficulty-badge.easy {
-		@apply bg-emerald-500/90 text-white;
+		background-color: rgba(143, 169, 152, 0.9);
+		@apply text-white;
 	}
 
 	.difficulty-badge.medium {
-		@apply bg-amber-500/90 text-white;
+		background-color: rgba(181, 201, 189, 0.9);
+		@apply text-white;
 	}
 
 	.difficulty-badge.hard {
-		@apply bg-rose-500/90 text-white;
+		background-color: rgba(103, 125, 106, 0.9);
+		@apply text-white;
 	}
 
 	.content {
@@ -163,13 +167,13 @@
 
 	.title {
 		@apply text-lg font-bold leading-tight tracking-tight;
-		@apply text-gray-800 dark:text-white;
+		color: #E0CEAD;
 		@apply line-clamp-1;
 	}
 
 	.description {
 		@apply text-sm leading-relaxed;
-		@apply text-gray-600 dark:text-gray-300;
+		color: #D6BD98;
 		@apply line-clamp-2;
 	}
 
@@ -179,35 +183,46 @@
 
 	.cook-time {
 		@apply flex items-center gap-1.5 text-sm;
-		@apply text-gray-600 dark:text-gray-400;
+		color: rgba(214, 189, 152, 0.8);
 	}
 
 	.rating {
 		@apply flex gap-0.5;
 	}
 
+	:global(.star-filled) {
+		color: #D6BD98;
+	}
+
+	:global(.star-empty) {
+		color: rgba(103, 125, 106, 0.3);
+	}
+
 	.author {
-		@apply flex items-center gap-3 border-t border-gray-100 pt-4 dark:border-gray-700;
+		@apply flex items-center gap-3 pt-4;
+		border-top: 1px solid rgba(103, 125, 106, 0.3);
 	}
 
 	.author-avatar {
-		@apply h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-gray-700;
+		@apply h-8 w-8 rounded-full object-cover ring-2;
+		ring-color: rgba(103, 125, 106, 0.5);
 	}
 
 	.author-name {
 		@apply text-sm font-medium;
-		@apply text-gray-600 dark:text-gray-400;
+		color: rgba(214, 189, 152, 0.8);
 	}
 
 	.view-recipe {
 		@apply relative mt-2 w-full overflow-hidden rounded-lg px-6 py-2.5;
 		@apply text-sm font-semibold tracking-wide;
-		@apply bg-gradient-to-r from-orange-500 to-red-500;
+		background: linear-gradient(to right, #677D6A, #8FA998);
 		@apply text-white transition-all duration-300;
 	}
 
 	.view-recipe:hover {
-		@apply -translate-y-0.5 shadow-lg shadow-orange-500/25;
+		@apply -translate-y-0.5;
+		box-shadow: 0 10px 15px -3px rgba(103, 125, 106, 0.25);
 	}
 
 	.view-recipe:active {

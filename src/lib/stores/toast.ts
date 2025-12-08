@@ -325,6 +325,9 @@ export class ToastPersistence {
      * Save pending toasts to localStorage
      */
     static save(toasts: ToastData[]): void {
+        // Skip if running on server
+        if (typeof window === 'undefined') return;
+
         try {
             const persistentToasts = toasts.filter(t => t.persistent);
             localStorage.setItem(
@@ -340,6 +343,9 @@ export class ToastPersistence {
      * Load pending toasts from localStorage
      */
     static load(): ToastData[] {
+        // Skip if running on server
+        if (typeof window === 'undefined') return [];
+
         try {
             const stored = localStorage.getItem(this.STORAGE_KEY);
             if (!stored) return [];
@@ -361,6 +367,9 @@ export class ToastPersistence {
      * Clear stored toasts
      */
     static clear(): void {
+        // Skip if running on server
+        if (typeof window === 'undefined') return;
+
         try {
             localStorage.removeItem(this.STORAGE_KEY);
         } catch (error) {

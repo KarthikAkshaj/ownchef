@@ -1,4 +1,3 @@
-<!-- src/components/CardList/CardList.svelte -->
 <script lang="ts">
 	import { theme } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
@@ -8,7 +7,6 @@
 	export let page = 1;
 	export let hasMore = true;
 
-	// Extended sample data with more recipes
 	const recipes = [
 		{
 			title: 'Homemade Margherita Pizza',
@@ -134,7 +132,7 @@
 	}
 
 	.highlight {
-		@apply text-orange-500;
+		color: #677D6A;
 	}
 
 	.regular-text {

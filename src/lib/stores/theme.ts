@@ -12,7 +12,5 @@ export const theme = writable<string>(initialValue);
 if (browser) {
 	theme.subscribe((value) => {
 		window.localStorage.setItem('theme', value);
-		document.documentElement.setAttribute('data-theme', value);
-		document.documentElement.classList.toggle('dark', value === 'dark');
 	});
 }

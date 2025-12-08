@@ -29,9 +29,21 @@
 	}
 
 	.page-button {
-		@apply rounded-lg px-6 py-2 text-sm font-semibold transition-all duration-200;
-		@apply bg-orange-500 text-white hover:bg-orange-600;
+		@apply rounded-lg px-6 py-2 text-sm font-semibold transition-all duration-300;
 		@apply disabled:cursor-not-allowed disabled:opacity-50;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #1A3636;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.page-button:hover:not(.disabled) {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 16px rgba(143, 169, 152, 0.4);
+		background: linear-gradient(135deg, #8FA998, #B5C9BD);
+	}
+
+	.page-button:active:not(.disabled) {
+		transform: translateY(0);
 	}
 
 	.disabled {

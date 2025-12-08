@@ -1,23 +1,18 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-/* @import '$lib/styles/themes.css'; */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-	--background: #fff;
-	--foreground: #000;
-}
+@layer base {
+	:root {
+		--background: #1A3636;
+		--foreground: #D6BD98;
+		--accent: #677D6A;
+	}
 
-[data-theme='dark'] {
-	--background: #1a1a1a;
-	--foreground: #fff;
-}
-
-body {
-	background-color: var(--background);
-	color: var(--foreground);
+	html,
+	body {
+		background-color: #1A3636;
+		color: #D6BD98;
+		min-height: 100vh;
+	}
 }

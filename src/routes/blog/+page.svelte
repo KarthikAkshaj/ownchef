@@ -176,8 +176,11 @@
 	}
 
 	.hero-title {
-		@apply mb-4 text-5xl font-bold text-gray-900 dark:text-white;
-		@apply bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent;
+		@apply mb-4 text-5xl font-bold;
+		background: linear-gradient(to right, #677D6A, #8FA998, #B5C9BD);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
 	}
 
 	.hero-subtitle {
@@ -193,13 +196,25 @@
 	}
 
 	.search-icon {
-		@apply pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-gray-400;
+		@apply pointer-events-none absolute left-7 top-1/2 -translate-y-1/2;
+		color: rgba(103, 125, 106, 0.6);
 	}
 
 	.search-input {
-		@apply w-full rounded-full border border-gray-200 bg-white px-12 py-3 text-gray-900 outline-none transition-all;
-		@apply focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20;
-		@apply dark:border-gray-700 dark:bg-gray-800 dark:text-white;
+		@apply w-full rounded-full border px-12 py-3 outline-none transition-all;
+		border-color: rgba(103, 125, 106, 0.3);
+		background: rgba(103, 125, 106, 0.05);
+		color: #1A3636;
+	}
+
+	.search-input:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow: 0 0 0 3px rgba(143, 169, 152, 0.1);
+		background: rgba(103, 125, 106, 0.1);
+	}
+
+	.search-input::placeholder {
+		color: rgba(103, 125, 106, 0.6);
 	}
 
 	.categories-filter {
@@ -213,7 +228,15 @@
 	}
 
 	.category-btn.active {
-		@apply bg-orange-500 text-white hover:bg-orange-600;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.category-btn.active:hover {
+		background: linear-gradient(135deg, #8FA998, #B5C9BD);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 16px rgba(143, 169, 152, 0.4);
 	}
 
 	.sort-options {
@@ -237,9 +260,16 @@
 	}
 
 	.blog-card {
-		@apply overflow-hidden rounded-2xl bg-white shadow-sm transition-all;
-		@apply hover:shadow-xl hover:shadow-black/5;
-		@apply dark:bg-gray-800 dark:hover:shadow-white/5;
+		@apply overflow-hidden rounded-2xl transition-all duration-300;
+		background: linear-gradient(to bottom, rgba(103, 125, 106, 0.03), rgba(255, 255, 255, 1));
+		border: 1px solid rgba(103, 125, 106, 0.15);
+		box-shadow: 0 4px 12px rgba(26, 54, 54, 0.08);
+	}
+
+	.blog-card:hover {
+		transform: translateY(-8px);
+		box-shadow: 0 12px 24px rgba(103, 125, 106, 0.15);
+		border-color: rgba(143, 169, 152, 0.3);
 	}
 
 	.card-image-wrapper {
@@ -255,12 +285,38 @@
 	}
 
 	.category-tag {
-		@apply absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-medium backdrop-blur-sm;
-		@apply dark:bg-black/50;
+		@apply absolute left-4 top-4 rounded-full px-3 py-1.5 text-xs font-semibold backdrop-blur-md;
+		@apply transition-all duration-300;
+		background: linear-gradient(135deg, rgba(103, 125, 106, 0.9), rgba(143, 169, 152, 0.9));
+		color: #EBE0CC;
+		box-shadow: 0 2px 8px rgba(26, 54, 54, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	.blog-card:hover .category-tag {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.4);
 	}
 
 	.card-content {
 		@apply p-6;
+		position: relative;
+	}
+
+	.card-content::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 3px;
+		background: linear-gradient(90deg, #677D6A, #8FA998, #B5C9BD);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.blog-card:hover .card-content::before {
+		opacity: 1;
 	}
 
 	.card-meta {
@@ -273,6 +329,13 @@
 
 	.author-avatar {
 		@apply h-8 w-8 rounded-full;
+		border: 2px solid rgba(143, 169, 152, 0.3);
+		transition: all 0.3s ease;
+	}
+
+	.blog-card:hover .author-avatar {
+		border-color: rgba(143, 169, 152, 0.6);
+		transform: scale(1.1);
 	}
 
 	.author-name {
@@ -284,7 +347,12 @@
 	}
 
 	.card-title {
-		@apply mb-2 text-xl font-bold text-gray-900 dark:text-white;
+		@apply mb-2 text-xl font-bold transition-colors duration-300;
+		color: #1A3636;
+	}
+
+	.blog-card:hover .card-title {
+		color: #677D6A;
 	}
 
 	.card-excerpt {
@@ -300,12 +368,27 @@
 	}
 
 	.read-more {
-		@apply flex items-center gap-1 text-sm font-medium text-orange-500 transition-colors;
-		@apply hover:text-orange-600;
+		@apply flex items-center gap-1 text-sm font-semibold transition-all duration-300;
+		color: #8FA998;
+	}
+
+	.read-more:hover {
+		color: #677D6A;
+		gap: 0.375rem;
+	}
+
+	.read-more :global(.arrow-icon) {
+		@apply transition-transform duration-300;
+	}
+
+	.read-more:hover :global(.arrow-icon) {
+		transform: translateX(4px);
 	}
 
 	.newsletter {
-		@apply mt-24 rounded-3xl bg-gradient-to-r from-orange-500 to-red-500 px-6 py-16 text-center text-white;
+		@apply mt-24 rounded-3xl px-6 py-16 text-center;
+		background: linear-gradient(135deg, #40534C, #677D6A, #8FA998);
+		box-shadow: 0 20px 60px rgba(26, 54, 54, 0.3);
 	}
 
 	.newsletter-content {
@@ -314,10 +397,12 @@
 
 	.newsletter-title {
 		@apply mb-4 text-3xl font-bold;
+		color: #EBE0CC;
 	}
 
 	.newsletter-description {
-		@apply mb-8 text-lg text-white/90;
+		@apply mb-8 text-lg;
+		color: rgba(235, 224, 204, 0.9);
 	}
 
 	.newsletter-form {
@@ -325,12 +410,35 @@
 	}
 
 	.newsletter-input {
-		@apply flex-1 rounded-lg border-2 border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 backdrop-blur-sm;
-		@apply focus:border-white/40 focus:outline-none;
+		@apply flex-1 rounded-lg border-2 px-4 py-3 backdrop-blur-sm outline-none transition-all;
+		border-color: rgba(235, 224, 204, 0.3);
+		background: rgba(235, 224, 204, 0.1);
+		color: #EBE0CC;
+	}
+
+	.newsletter-input::placeholder {
+		color: rgba(235, 224, 204, 0.6);
+	}
+
+	.newsletter-input:focus {
+		border-color: rgba(235, 224, 204, 0.5);
+		background: rgba(235, 224, 204, 0.15);
 	}
 
 	.newsletter-button {
-		@apply rounded-lg bg-white px-6 py-3 font-medium text-orange-500 transition-all;
-		@apply hover:bg-orange-50;
+		@apply rounded-lg px-6 py-3 font-semibold transition-all;
+		background: linear-gradient(135deg, #D6BD98, #E0CEAD);
+		color: #1A3636;
+		box-shadow: 0 4px 12px rgba(214, 189, 152, 0.3);
+	}
+
+	.newsletter-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 16px rgba(224, 206, 173, 0.4);
+		background: linear-gradient(135deg, #E0CEAD, #EBE0CC);
+	}
+
+	.newsletter-button:active {
+		transform: translateY(0);
 	}
 </style>

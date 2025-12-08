@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fade, scale, fly } from 'svelte/transition';
-	import { ChevronLeft, ChevronRight, Clock, User } from 'lucide-svelte';
+	import { Clock, User, ChevronRight, ChevronLeft } from 'lucide-svelte';
+	import Swiper from 'swiper';
+	import { Pagination, Autoplay, EffectFade, Navigation } from 'swiper/modules';
+	import 'swiper/css';
+	import 'swiper/css/pagination';
+	import 'swiper/css/effect-fade';
+	import 'swiper/css/navigation';
 
-	// Sample data - later we can fetch this from an API
 	const featuredPosts = [
 		{
 			id: 1,
@@ -13,7 +17,9 @@
 			image: '/images/recipes/carbonara.jpg',
 			category: 'Italian',
 			author: 'Chef Maria',
-			readTime: '15 min'
+			readTime: '15 min',
+			difficulty: 'Medium',
+			servings: 4
 		},
 		{
 			id: 2,
@@ -23,7 +29,9 @@
 			image: '/images/recipes/butter-chicken.jpg',
 			category: 'Indian',
 			author: 'Chef Raj',
-			readTime: '25 min'
+			readTime: '25 min',
+			difficulty: 'Easy',
+			servings: 6
 		},
 		{
 			id: 3,
@@ -33,244 +41,459 @@
 			image: '/images/recipes/sushi.jpeg',
 			category: 'Japanese',
 			author: 'Chef Yuki',
-			readTime: '30 min'
+			readTime: '30 min',
+			difficulty: 'Hard',
+			servings: 2
 		}
 	];
 
-	let currentIndex = 0;
-	let intervalId: NodeJS.Timeout;
-	let isHovered = false;
-
-	function nextSlide() {
-		currentIndex = (currentIndex + 1) % featuredPosts.length;
-	}
-
-	function prevSlide() {
-		currentIndex = (currentIndex - 1 + featuredPosts.length) % featuredPosts.length;
-	}
-
-	function startAutoPlay() {
-		intervalId = setInterval(nextSlide, 5000);
-		isHovered = false;
-	}
-
-	function stopAutoPlay() {
-		if (intervalId) clearInterval(intervalId);
-		isHovered = true;
-	}
+	let swiperInstance: Swiper;
 
 	onMount(() => {
-		startAutoPlay();
-		return () => stopAutoPlay();
+		swiperInstance = new Swiper('.featured-swiper', {
+			modules: [Pagination, Autoplay, EffectFade, Navigation],
+			effect: 'fade',
+			fadeEffect: {
+				crossFade: true
+			},
+			speed: 800,
+			loop: true,
+			autoplay: {
+				delay: 3000,
+				disableOnInteraction: false,
+				pauseOnMouseEnter: true
+			},
+			pagination: {
+				el: '.swiper-pagination',
+				clickable: true,
+				renderBullet: function (_index, className) {
+					return '<span class="' + className + '"></span>';
+				}
+			},
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev'
+			}
+		});
+
+		return () => {
+			if (swiperInstance) swiperInstance.destroy();
+		};
 	});
 </script>
 
-<div
-	class="featured-section"
-	role="region"
-	aria-label="Featured Recipes Carousel"
-	on:mouseenter={stopAutoPlay}
-	on:mouseleave={startAutoPlay}
->
-	<div class="featured-content" role="group">
-		{#key currentIndex}
-			<div
-				class="slide"
-				role="group"
-				aria-roledescription="slide"
-				aria-label={`Slide ${currentIndex + 1} of ${featuredPosts.length}`}
-				in:fade={{ duration: 400 }}
-				out:fade={{ duration: 400 }}
-			>
-				<div class="image-wrapper">
-					<img
-						src={featuredPosts[currentIndex].image}
-						alt={featuredPosts[currentIndex].title}
-						class="slide-image"
-					/>
-					<div class="overlay" aria-hidden="true" ></div>
-				</div>
+<section class="hero-section" aria-label="Featured Recipes">
+	<div class="swiper featured-swiper">
+		<div class="swiper-wrapper">
+			{#each featuredPosts as post (post.id)}
+				<div class="swiper-slide">
+					<div class="hero-container">
+						<!-- Left Content -->
+						<div class="hero-content">
+							<div class="content-wrapper">
+								<span class="eyebrow">{post.category}</span>
+								<h1 class="hero-title">{post.title}</h1>
+								<p class="hero-description">{post.description}</p>
 
-				<div class="text-content" in:fly={{ x: 50, duration: 500, delay: 200 }}>
-					<span class="category" in:scale={{ duration: 300, delay: 300 }}>
-						{featuredPosts[currentIndex].category}
-					</span>
-					<h1 class="title">{featuredPosts[currentIndex].title}</h1>
-					<p class="description">{featuredPosts[currentIndex].description}</p>
-					<div class="meta" role="contentinfo">
-						<div class="meta-item">
-							<User size={16} aria-hidden="true" />
-							<span>{featuredPosts[currentIndex].author}</span>
+								<div class="meta-grid">
+									<div class="meta-item">
+										<User size={18} strokeWidth={1.5} />
+										<span>{post.author}</span>
+									</div>
+									<div class="meta-item">
+										<Clock size={18} strokeWidth={1.5} />
+										<span>{post.readTime}</span>
+									</div>
+								</div>
+
+								<div class="cta-wrapper">
+									<a href={`/recipes/${post.id}`} class="primary-button">
+										<span>View Recipe</span>
+										<ChevronRight size={18} strokeWidth={2} />
+									</a>
+								</div>
+							</div>
 						</div>
-						<div class="divider" aria-hidden="true"></div>
-						<div class="meta-item">
-							<Clock size={16} aria-hidden="true" />
-							<span>{featuredPosts[currentIndex].readTime} read</span>
+
+						<!-- Right Recipe Card -->
+						<div class="hero-visual">
+							<div class="recipe-card">
+								<div class="card-image-wrapper">
+									<img src={post.image} alt={post.title} class="card-image" />
+									<div class="card-overlay"></div>
+								</div>
+
+								<div class="card-details">
+									<div class="card-header">
+										<h3 class="card-category">{post.category}</h3>
+										<span class="card-difficulty">{post.difficulty}</span>
+									</div>
+
+									<div class="card-stats">
+										<div class="stat">
+											<span class="stat-label">Servings</span>
+											<span class="stat-value">{post.servings}</span>
+										</div>
+										<div class="stat-divider"></div>
+										<div class="stat">
+											<span class="stat-label">Time</span>
+											<span class="stat-value">{post.readTime}</span>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-					<button class="read-more" aria-label={`Read ${featuredPosts[currentIndex].title}`}>
-						Read Recipe
-						<div class="btn-shine" aria-hidden="true"></div>
-					</button>
 				</div>
-			</div>
-		{/key}
-
-		<!-- Navigation -->
-		<div
-			class="navigation-wrapper"
-			class:show={isHovered}
-			role="group"
-			aria-label="Carousel Navigation"
-		>
-			<button class="nav-button prev" on:click={prevSlide} aria-label="Previous slide">
-				<ChevronLeft size={24} aria-hidden="true" />
-			</button>
-
-			<button class="nav-button next" on:click={nextSlide} aria-label="Next slide">
-				<ChevronRight size={24} aria-hidden="true" />
-			</button>
-		</div>
-
-		<div class="dots" role="tablist" aria-label="Slide dots">
-			{#each featuredPosts as _, index}
-				<button
-					class="dot"
-					role="tab"
-					aria-selected={currentIndex === index}
-					aria-label={`Go to slide ${index + 1}`}
-					class:active={currentIndex === index}
-					on:click={() => (currentIndex = index)}
-				></button>
 			{/each}
 		</div>
+
+		<!-- Navigation Buttons -->
+		<button class="swiper-button-prev" aria-label="Previous slide">
+			<ChevronLeft size={28} strokeWidth={2.5} />
+		</button>
+		<button class="swiper-button-next" aria-label="Next slide">
+			<ChevronRight size={28} strokeWidth={2.5} />
+		</button>
+
+		<!-- Pagination -->
+		<div class="swiper-pagination"></div>
 	</div>
-</div>
+</section>
 
 <style lang="postcss">
-	.featured-section {
-		@apply relative mx-auto mt-8 overflow-hidden rounded-3xl;
-		@apply z-[1];
-		height: min(70vh, 600px);
+	/* ========== Hero Section ========== */
+	.hero-section {
+		@apply relative mx-auto;
+		max-width: 1400px;
+		padding: 80px 24px;
+		overflow: visible;
 	}
 
-	.featured-content {
+	.featured-swiper {
 		@apply relative h-full w-full;
+		overflow: visible;
 	}
 
-	.slide {
-		@apply relative flex h-full w-full items-center;
+	/* ========== Hero Container - Split Layout ========== */
+	.hero-container {
+		@apply grid items-center gap-12;
+		grid-template-columns: 1.2fr 0.8fr;
+		min-height: 600px;
 	}
 
-	.image-wrapper {
-		@apply absolute inset-0 overflow-hidden;
+	/* ========== Left Content ========== */
+	.hero-content {
+		@apply flex items-center;
 	}
 
-	.slide-image {
-		@apply h-full w-full object-cover;
-		transform: scale(1);
-		transition: transform 6s ease;
+	.content-wrapper {
+		max-width: 520px;
 	}
 
-	.slide:hover .slide-image {
-		transform: scale(1.1);
+	.eyebrow {
+		@apply mb-4 inline-block rounded-full px-4 py-1.5 text-sm font-medium uppercase tracking-wider;
+		background: rgba(103, 125, 106, 0.2);
+		color: #8FA998;
+		border: 1px solid rgba(103, 125, 106, 0.3);
 	}
 
-	.overlay {
-		@apply absolute inset-0;
-		background: linear-gradient(
-			90deg,
-			rgba(0, 0, 0, 0.8) 0%,
-			rgba(0, 0, 0, 0.6) 50%,
-			rgba(0, 0, 0, 0.2) 100%
-		);
+	.hero-title {
+		@apply mb-6 font-bold leading-tight tracking-tight;
+		color: #E0CEAD;
+		font-size: clamp(2.5rem, 5vw, 4rem);
+		line-height: 1.1;
 	}
 
-	.text-content {
-		@apply relative z-[2] ml-16 max-w-2xl text-white;
+	.hero-description {
+		@apply mb-8 text-lg leading-relaxed;
+		color: #D6BD98;
+		max-width: 480px;
 	}
 
-	.category {
-		@apply mb-4 inline-block rounded-full px-4 py-1 text-sm font-semibold;
-		background: linear-gradient(135deg, #ff6b6b, #ffa07a);
-	}
-
-	.title {
-		@apply mb-4 text-5xl font-bold leading-tight;
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-	}
-
-	.description {
-		@apply mb-6 text-lg text-gray-200;
-		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-	}
-
-	.meta {
-		@apply mb-8 flex items-center space-x-4 text-sm text-gray-300;
+	/* Meta Info */
+	.meta-grid {
+		@apply mb-10 flex items-center gap-6 text-sm;
+		color: rgba(214, 189, 152, 0.8);
 	}
 
 	.meta-item {
 		@apply flex items-center gap-2;
 	}
 
-	.divider {
-		@apply h-4 w-px bg-gray-400/30;
+	/* CTA Button */
+	.cta-wrapper {
+		@apply flex items-center gap-4;
 	}
 
-	.read-more {
-		@apply relative overflow-hidden rounded-lg px-6 py-3 text-sm font-semibold;
-		background: linear-gradient(135deg, #ff6b6b, #ffa07a);
-		transition: all 0.3s ease;
+	.primary-button {
+		@apply relative inline-flex items-center gap-2 overflow-hidden rounded-full px-8 py-4 font-semibold transition-all duration-300;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #1A3636;
+		box-shadow: 0 4px 14px 0 rgba(103, 125, 106, 0.39);
 	}
 
-	.read-more:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
+	.primary-button::before {
+		@apply absolute inset-0 translate-y-full transition-transform duration-300;
+		content: '';
+		background: linear-gradient(135deg, #8FA998, #B5C9BD);
 	}
 
-	.btn-shine {
-		@apply absolute inset-0;
-		background: linear-gradient(
-			45deg,
-			transparent 0%,
-			rgba(255, 255, 255, 0.2) 50%,
-			transparent 100%
-		);
-		transform: translateX(-100%);
-		transition: transform 0.5s ease;
+	.primary-button:hover::before {
+		@apply translate-y-0;
 	}
 
-	.read-more:hover .btn-shine {
-		transform: translateX(100%);
+	.primary-button span,
+	.primary-button :global(svg) {
+		@apply relative z-10;
 	}
 
-	.navigation-wrapper {
-		@apply absolute inset-y-0 left-0 right-0 z-[3] flex items-center justify-between px-4;
-		opacity: 0;
-		transition: opacity 0.3s ease;
+	.primary-button :global(svg) {
+		@apply transition-transform duration-300;
 	}
 
-	.navigation-wrapper.show {
-		opacity: 1;
+	.primary-button:hover :global(svg) {
+		@apply translate-x-1;
 	}
 
-	.nav-button {
-		@apply flex h-12 w-12 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm;
-		@apply transition-all duration-300;
-		@apply hover:scale-110 hover:bg-black/50;
+	/* ========== Right Recipe Card ========== */
+	.hero-visual {
+		@apply flex items-center justify-center;
 	}
 
-	.dots {
-		@apply absolute bottom-6 left-1/2 z-[3] flex -translate-x-1/2 space-x-2;
+	.recipe-card {
+		@apply relative w-full overflow-hidden rounded-3xl shadow-2xl transition-all duration-500;
+		background: #40534C;
+		border: 1px solid rgba(103, 125, 106, 0.3);
+		max-width: 420px;
+		transform-style: preserve-3d;
 	}
 
-	.dot {
-		@apply h-2 w-2 rounded-full transition-all duration-300;
-		background: rgba(255, 255, 255, 0.3);
+	.recipe-card:hover {
+		transform: translateY(-8px);
+		box-shadow:
+			0 30px 60px -12px rgba(26, 54, 54, 0.6),
+			0 18px 36px -18px rgba(26, 54, 54, 0.4);
+		border-color: rgba(143, 169, 152, 0.5);
 	}
 
-	.dot.active {
+	.card-image-wrapper {
+		@apply relative overflow-hidden;
+		aspect-ratio: 16 / 9;
+	}
+
+	.card-image {
+		@apply h-full w-full object-cover transition-transform duration-700;
+	}
+
+	.recipe-card:hover .card-image {
+		transform: scale(1.05);
+	}
+
+	.card-overlay {
+		@apply pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300;
+		background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+	}
+
+	.recipe-card:hover .card-overlay {
+		@apply opacity-100;
+	}
+
+	/* Card Details */
+	.card-details {
+		@apply p-6;
+	}
+
+	.card-header {
+		@apply mb-4 flex items-center justify-between;
+	}
+
+	.card-category {
+		@apply text-sm font-semibold uppercase tracking-wide;
+		color: #E0CEAD;
+	}
+
+	.card-difficulty {
+		@apply rounded-full px-3 py-1 text-xs font-medium;
+		background: rgba(143, 169, 152, 0.2);
+		color: #B5C9BD;
+		border: 1px solid rgba(143, 169, 152, 0.3);
+	}
+
+	.card-stats {
+		@apply flex items-center justify-around border-t pt-4;
+		border-color: rgba(103, 125, 106, 0.3);
+	}
+
+	.stat {
+		@apply flex flex-col items-center gap-1;
+	}
+
+	.stat-label {
+		@apply text-xs uppercase tracking-wide;
+		color: rgba(214, 189, 152, 0.7);
+	}
+
+	.stat-value {
+		@apply text-base font-semibold;
+		color: #E0CEAD;
+	}
+
+	.stat-divider {
+		@apply h-8 w-px;
+		background: rgba(103, 125, 106, 0.3);
+	}
+
+	/* ========== Swiper Navigation Buttons ========== */
+	:global(.swiper-button-prev),
+	:global(.swiper-button-next) {
+		@apply flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300;
+		background-color: rgba(103, 125, 106, 0.8);
+		color: #E0CEAD;
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		backdrop-filter: blur(4px);
+		top: 50% !important;
+		transform: translateY(-50%);
+		margin-top: 0 !important;
+	}
+
+	:global(.swiper-button-prev) {
+		left: 0 !important;
+	}
+
+	:global(.swiper-button-next) {
+		right: 0 !important;
+	}
+
+	@media (min-width: 1500px) {
+		:global(.swiper-button-prev) {
+			left: -60px !important;
+		}
+
+		:global(.swiper-button-next) {
+			right: -60px !important;
+		}
+	}
+
+	:global(.swiper-button-prev):hover,
+	:global(.swiper-button-next):hover {
+		background-color: rgba(143, 169, 152, 0.9);
+		color: #EBE0CC;
+		transform: translateY(-50%) scale(1.1);
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.4);
+	}
+
+	:global(.swiper-button-prev)::after,
+	:global(.swiper-button-next)::after {
+		content: '';
+	}
+
+	:global(.swiper-button-disabled) {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+
+	/* ========== Swiper Pagination ========== */
+	:global(.swiper-pagination) {
+		@apply !bottom-8 flex items-center justify-center gap-2;
+	}
+
+	:global(.swiper-pagination-bullet) {
+		@apply h-2 w-2 rounded-full opacity-100 transition-all duration-300;
+		background: rgba(103, 125, 106, 0.4);
+		margin: 0 4px !important;
+	}
+
+	:global(.swiper-pagination-bullet-active) {
 		@apply w-8;
-		background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+	}
+
+	/* ========== Responsive Design ========== */
+	@media (max-width: 1024px) {
+		:global(.swiper-button-prev) {
+			left: 16px !important;
+		}
+
+		:global(.swiper-button-next) {
+			right: 16px !important;
+		}
+
+		.hero-container {
+			grid-template-columns: 1fr;
+			gap: 48px;
+			min-height: auto;
+		}
+
+		.hero-content {
+			@apply text-center;
+		}
+
+		.content-wrapper {
+			@apply mx-auto;
+		}
+
+		.hero-description {
+			@apply mx-auto;
+		}
+
+		.meta-grid {
+			@apply justify-center;
+		}
+
+		.cta-wrapper {
+			@apply justify-center;
+		}
+
+		.hero-visual {
+			@apply order-first;
+		}
+
+		.recipe-card {
+			max-width: 400px;
+		}
+	}
+
+	@media (max-width: 640px) {
+		:global(.swiper-button-prev),
+		:global(.swiper-button-next) {
+			@apply h-10 w-10;
+		}
+
+		:global(.swiper-button-prev) {
+			left: 8px !important;
+		}
+
+		:global(.swiper-button-next) {
+			right: 8px !important;
+		}
+
+		.hero-section {
+			padding: 40px 16px;
+		}
+
+		.hero-title {
+			@apply mb-4;
+		}
+
+		.hero-description {
+			@apply mb-6 text-base;
+		}
+
+		.meta-grid {
+			@apply mb-6;
+		}
+
+		.recipe-card {
+			max-width: 100%;
+		}
+
+		.card-details {
+			@apply p-4;
+		}
+
+		:global(.swiper-pagination) {
+			@apply !bottom-4;
+		}
 	}
 </style>

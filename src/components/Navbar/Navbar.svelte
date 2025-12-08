@@ -1,7 +1,6 @@
 <!-- src/components/Navbar/Navbar.svelte -->
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { theme } from '$lib/stores/theme';
 	import { browser } from '$app/environment';
 	import { slide } from 'svelte/transition';
 	import { clickOutside } from '$lib/utils/clickOutside';
@@ -15,7 +14,6 @@
 		Twitter,
 		Youtube
 	} from 'lucide-svelte';
-	import ThemeToggle from '../ThemeToggle/ThemeToggle.svelte';
 	import AuthLinks from '../AuthLinks/AuthLinks.svelte';
 
 	let isScrolled = false;
@@ -79,7 +77,6 @@
 <nav
 	class="fixed left-0 right-0 z-[100] mx-auto mt-4 max-w-[calc(100%-2rem)] rounded-2xl transition-all duration-300"
 	class:scrolled={isScrolled}
-	class:dark={$theme === 'dark'}
 >
 	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 		<div class="flex h-16 items-center justify-between">
@@ -88,7 +85,7 @@
 				<div class="logo-wrapper">
 					<span class="own">Own</span>
 					<div class="chef-wrapper">
-						<span class="chef" class:dark={$theme === 'dark'}>CHEF</span>
+						<span class="chef">CHEF</span>
 						<div class="utensils">
 							<span class="knife">🔪</span>
 							<span class="fork">🍴</span>
@@ -103,11 +100,9 @@
 				role="navigation"
 				on:mouseenter={handleMouseEnter}
 				on:mouseleave={handleMouseLeave}
-				class:dark={$theme === 'dark'}
 			>
 				<button
 					class="nav-link flex items-center gap-1"
-					class:dark={$theme === 'dark'}
 					aria-expanded={isDropdownOpen}
 					aria-controls="categories-menu"
 					aria-haspopup="true"
@@ -149,15 +144,6 @@
 				{/if}
 			</div>
 
-			<a
-				href="/about"
-				class="nav-link"
-				class:dark={$theme === 'dark'}
-				class:active={$page.url.pathname === '/about'}
-			>
-				About
-			</a>
-
 			<!-- Search Bar -->
 			<div class="search-container" class:open={isSearchOpen}>
 				<input
@@ -196,9 +182,8 @@
 				</a>
 			</div>
 
-			<!-- Theme Toggle and Auth -->
-			<div class="flex items-center space-x-4">
-				<ThemeToggle />
+			<!-- Auth Links -->
+			<div class="flex items-center">
 				<AuthLinks />
 			</div>
 		</div>
@@ -271,17 +256,15 @@
 <style lang="postcss">
 	nav {
 		@apply shadow-sm backdrop-blur-md;
-		background: rgba(255, 255, 255, 0.8);
+		background: rgba(64, 83, 76, 0.95);
+		border: 1px solid rgba(103, 125, 106, 0.2);
 		left: 50%;
 		transform: translateX(-50%);
 	}
 
 	nav.scrolled {
 		@apply shadow-xl;
-	}
-
-	nav.dark {
-		background: rgba(17, 17, 17, 0.8);
+		background: rgba(64, 83, 76, 0.98);
 	}
 
 	.logo {
@@ -293,8 +276,11 @@
 	}
 
 	.own {
-		@apply bg-gradient-to-br from-red-500 via-orange-400 to-yellow-500 bg-clip-text text-3xl font-black text-transparent;
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+		background: linear-gradient(to bottom right, #D6BD98, #E0CEAD, #EBE0CC);
+		-webkit-background-clip: text;
+		background-clip: text;
+		@apply text-3xl font-black text-transparent;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 	}
 
 	.chef-wrapper {
@@ -302,11 +288,8 @@
 	}
 
 	.chef {
-		@apply -mt-2 text-xl font-bold tracking-widest text-gray-800 transition-colors duration-300;
-	}
-
-	.chef.dark {
-		@apply text-gray-100;
+		@apply -mt-2 text-xl font-bold tracking-widest transition-colors duration-300;
+		color: #D6BD98;
 	}
 
 	.utensils {
@@ -328,22 +311,22 @@
 
 	.nav-link {
 		@apply relative px-3 py-2 text-sm font-medium;
-		@apply text-gray-900 hover:text-orange-500 dark:text-gray-900 dark:hover:text-orange-400;
+		color: #D6BD98;
+		transition: color 0.3s ease;
+	}
+
+	.nav-link:hover {
+		color: #8FA998;
 	}
 
 	.nav-link.active {
-		@apply text-orange-500 dark:text-orange-400;
-	}
-
-	.nav-link.dark {
-		@apply text-gray-100;
-		@apply hover:text-orange-400;
+		color: #8FA998;
 	}
 
 	.dropdown-menu {
-		@apply absolute left-0 top-full z-[101] mt-1 w-48 rounded-lg py-1 shadow-lg;
-		@apply bg-white dark:bg-gray-800;
-		@apply border border-gray-100 dark:border-gray-700;
+		@apply absolute left-0 top-full z-[101] mt-1 w-48 rounded-lg border py-1 shadow-lg;
+		background-color: #40534C;
+		border-color: #677D6A;
 		margin-top: 2px;
 	}
 
@@ -362,12 +345,17 @@
 
 	.dropdown-item {
 		@apply block w-full px-4 py-2 text-left text-sm transition-colors duration-200;
-		@apply text-gray-900 hover:bg-gray-100 hover:text-orange-500;
-		@apply dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-orange-400;
+		color: #D6BD98;
+	}
+
+	.dropdown-item:hover {
+		background-color: #677D6A;
+		color: #E0CEAD;
 	}
 
 	.dropdown-item:focus {
-		@apply outline-none ring-2 ring-orange-500 dark:ring-orange-400;
+		@apply outline-none ring-2;
+		ring-color: #677D6A;
 	}
 
 	.search-container {
@@ -382,11 +370,14 @@
 
 	.search-input {
 		@apply h-8 w-full rounded-full pl-4 pr-10 text-sm outline-none transition-all duration-300;
-		@apply bg-gray-100 dark:bg-gray-800;
-		@apply text-gray-900 dark:text-gray-100;
-		@apply placeholder-gray-500 dark:placeholder-gray-400;
+		background-color: #1A3636;
+		color: #D6BD98;
 		opacity: 0;
 		pointer-events: none;
+	}
+
+	.search-input::placeholder {
+		color: rgba(214, 189, 152, 0.5);
 	}
 
 	.search-container.open .search-input {
@@ -396,7 +387,11 @@
 
 	.search-toggle {
 		@apply absolute right-0 flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300;
-		@apply text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+		color: #D6BD98;
+	}
+
+	.search-toggle:hover {
+		background-color: #677D6A;
 	}
 
 	.social-links {
@@ -425,12 +420,16 @@
 
 	.mobile-menu-button {
 		@apply flex items-center rounded-lg p-2 transition-colors duration-300 lg:hidden;
-		@apply text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800;
+		color: #D6BD98;
+	}
+
+	.mobile-menu-button:hover {
+		background-color: #677D6A;
 	}
 
 	.mobile-menu {
 		@apply px-4 pb-3 pt-2 shadow-lg lg:hidden;
-		@apply bg-white dark:bg-gray-900;
+		background-color: #40534C;
 	}
 
 	.mobile-search {
@@ -439,23 +438,30 @@
 
 	.mobile-search-input {
 		@apply w-full rounded-full px-4 py-2;
-		@apply bg-gray-100 dark:bg-gray-800;
-		@apply text-gray-900 dark:text-gray-100;
-		@apply placeholder-gray-500 dark:placeholder-gray-400;
+		background-color: #1A3636;
+		color: #D6BD98;
+	}
+
+	.mobile-search-input::placeholder {
+		color: rgba(214, 189, 152, 0.5);
 	}
 
 	.mobile-nav-item {
 		@apply block px-3 py-2 text-base font-medium transition-colors duration-200;
-		@apply text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800;
+		color: #D6BD98;
+	}
+
+	.mobile-nav-item:hover {
+		background-color: #677D6A;
 	}
 
 	.mobile-social-links {
-		@apply flex justify-center space-x-6 px-3 py-4;
-		@apply border-t border-gray-200 dark:border-gray-700;
+		@apply flex justify-center space-x-6 border-t px-3 py-4;
+		border-color: #677D6A;
 	}
 
 	.mobile-auth-wrapper {
-		@apply px-3 py-4;
-		@apply border-t border-gray-200 dark:border-gray-700;
+		@apply border-t px-3 py-4;
+		border-color: #677D6A;
 	}
 </style>

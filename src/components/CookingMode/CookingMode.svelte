@@ -1,4 +1,3 @@
-<!-- src/components/CookingMode/CookingMode.svelte -->
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
 	import { X, ChevronLeft, ChevronRight, Clock, Check } from 'lucide-svelte';

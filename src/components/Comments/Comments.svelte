@@ -18,7 +18,7 @@
 			<div class="comment">
 				<div class="user">
 					<div class="userImageContainer">
-						<img src="/Food.jpg" alt="user Image" class="image" />
+						<img src="/images/recipes/carbonara.jpg" alt="user Image" class="image" />
 					</div>
 					<div class="userInfo">
 						<span class="username">Megumi Fushiguro</span>

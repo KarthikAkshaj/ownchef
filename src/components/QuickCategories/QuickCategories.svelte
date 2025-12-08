@@ -9,8 +9,7 @@
 			title: 'Quick & Easy',
 			description: 'Ready in 30 minutes or less',
 			icon: Clock,
-			color: 'bg-orange-500',
-			gradient: 'from-orange-500 to-red-500',
+			gradient: 'sage-gradient-1',
 			count: 245
 		},
 		{
@@ -18,8 +17,7 @@
 			title: 'Vegetarian',
 			description: 'Plant-based delights',
 			icon: Leaf,
-			color: 'bg-green-500',
-			gradient: 'from-green-500 to-emerald-500',
+			gradient: 'sage-gradient-2',
 			count: 189
 		},
 		{
@@ -27,8 +25,7 @@
 			title: 'Breakfast',
 			description: 'Start your day right',
 			icon: Coffee,
-			color: 'bg-blue-500',
-			gradient: 'from-blue-500 to-indigo-500',
+			gradient: 'sage-gradient-3',
 			count: 167
 		},
 		{
@@ -36,8 +33,7 @@
 			title: 'Desserts',
 			description: 'Sweet treats & bakes',
 			icon: Cake,
-			color: 'bg-pink-500',
-			gradient: 'from-pink-500 to-rose-500',
+			gradient: 'sage-gradient-4',
 			count: 203
 		},
 		{
@@ -45,8 +41,7 @@
 			title: 'Healthy',
 			description: 'Nutritious & delicious',
 			icon: Heart,
-			color: 'bg-purple-500',
-			gradient: 'from-purple-500 to-violet-500',
+			gradient: 'sage-gradient-5',
 			count: 178
 		},
 		{
@@ -54,8 +49,7 @@
 			title: 'Party Food',
 			description: 'Crowd-pleasing favorites',
 			icon: Users,
-			color: 'bg-yellow-500',
-			gradient: 'from-yellow-500 to-amber-500',
+			gradient: 'sage-gradient-6',
 			count: 156
 		}
 	];
@@ -70,7 +64,7 @@
 	<div class="categories-grid">
 		{#each categories as category}
 			<a href="/category/{category.id}" class="category-card" class:dark={$theme === 'dark'}>
-				<div class="card-content bg-gradient-to-r {category.gradient}">
+				<div class="card-content {category.gradient}">
 					<div class="icon-wrapper">
 						<svelte:component this={category.icon} size={24} class="text-white" />
 					</div>
@@ -129,6 +123,30 @@
 	.card-content {
 		@apply relative flex items-center gap-4 p-6;
 		@apply overflow-hidden;
+	}
+
+	.sage-gradient-1 {
+		background: linear-gradient(to right, #677D6A, #8FA998);
+	}
+
+	.sage-gradient-2 {
+		background: linear-gradient(to right, #8FA998, #B5C9BD);
+	}
+
+	.sage-gradient-3 {
+		background: linear-gradient(to right, #40534C, #677D6A);
+	}
+
+	.sage-gradient-4 {
+		background: linear-gradient(to right, #D6BD98, #E0CEAD);
+	}
+
+	.sage-gradient-5 {
+		background: linear-gradient(to right, #677D6A, #B5C9BD);
+	}
+
+	.sage-gradient-6 {
+		background: linear-gradient(to right, #8FA998, #D6BD98);
 	}
 
 	.icon-wrapper {

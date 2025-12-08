@@ -51,12 +51,12 @@
 	];
 
 	const categories = [
-		{ name: 'Indian', count: 128, color: 'bg-orange-500' },
-		{ name: 'Italian', count: 156, color: 'bg-green-500' },
-		{ name: 'Chinese', count: 142, color: 'bg-red-500' },
-		{ name: 'Japanese', count: 98, color: 'bg-blue-500' },
-		{ name: 'Mexican', count: 87, color: 'bg-yellow-500' },
-		{ name: 'Thai', count: 76, color: 'bg-purple-500' }
+		{ name: 'Indian', count: 128, color: 'sage-1' },
+		{ name: 'Italian', count: 156, color: 'sage-2' },
+		{ name: 'Chinese', count: 142, color: 'sage-3' },
+		{ name: 'Japanese', count: 98, color: 'sage-4' },
+		{ name: 'Mexican', count: 87, color: 'sage-5' },
+		{ name: 'Thai', count: 76, color: 'sage-6' }
 	];
 
 	function formatNumber(num: number): string {
@@ -73,7 +73,7 @@
 	<!-- Most Popular Section -->
 	<section class="section">
 		<div class="section-header">
-			<Flame class="icon text-orange-500" size={20} />
+			<Flame class="icon sage-icon" size={20} />
 			<h2 class="section-title">Most Popular</h2>
 		</div>
 		<div class="posts-grid">
@@ -98,7 +98,7 @@
 	<!-- Categories Section -->
 	<section class="section">
 		<div class="section-header">
-			<Hash class="icon text-blue-500" size={20} />
+			<Hash class="icon sage-icon" size={20} />
 			<h2 class="section-title">Categories</h2>
 		</div>
 		<div class="categories-grid">
@@ -117,7 +117,7 @@
 	<!-- Editor's Picks Section -->
 	<section class="section">
 		<div class="section-header">
-			<Award class="icon text-yellow-500" size={20} />
+			<Award class="icon sage-icon" size={20} />
 			<h2 class="section-title">Editor's Picks</h2>
 		</div>
 		<div class="picks-grid">
@@ -142,7 +142,9 @@
 
 <style lang="postcss">
 	.sidebar {
-		@apply flex flex-col gap-8 rounded-2xl bg-white p-6 shadow-sm dark:bg-gray-800;
+		@apply flex flex-col gap-8 rounded-2xl p-6 shadow-sm;
+		background-color: #40534C;
+		border: 1px solid rgba(103, 125, 106, 0.3);
 	}
 
 	.section {
@@ -154,7 +156,8 @@
 	}
 
 	.section-title {
-		@apply text-xl font-bold text-gray-900 dark:text-white;
+		@apply text-xl font-bold;
+		color: #E0CEAD;
 	}
 
 	.posts-grid {
@@ -162,7 +165,11 @@
 	}
 
 	.post-card {
-		@apply flex gap-4 rounded-lg p-2 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700;
+		@apply flex gap-4 rounded-lg p-2 transition-all duration-300;
+	}
+
+	.post-card:hover {
+		background-color: rgba(103, 125, 106, 0.2);
 	}
 
 	.post-image-wrapper {
@@ -182,11 +189,13 @@
 	}
 
 	.post-title {
-		@apply mb-1 line-clamp-2 text-sm font-medium text-gray-900 dark:text-white;
+		@apply mb-1 line-clamp-2 text-sm font-medium;
+		color: #E0CEAD;
 	}
 
 	.post-meta {
-		@apply flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400;
+		@apply flex items-center gap-2 text-xs;
+		color: rgba(214, 189, 152, 0.7);
 	}
 
 	.categories-grid {
@@ -194,7 +203,12 @@
 	}
 
 	.category-card {
-		@apply flex items-center justify-between rounded-lg border p-3 transition-all duration-300 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600;
+		@apply flex items-center justify-between rounded-lg p-3 transition-all duration-300;
+		border: 1px solid rgba(103, 125, 106, 0.3);
+	}
+
+	.category-card:hover {
+		border-color: rgba(143, 169, 152, 0.5);
 	}
 
 	.category-info {
@@ -202,15 +216,45 @@
 	}
 
 	.category-name {
-		@apply text-sm font-medium text-gray-900 dark:text-white;
+		@apply text-sm font-medium;
+		color: #E0CEAD;
 	}
 
 	.category-count {
-		@apply text-xs text-gray-500 dark:text-gray-400;
+		@apply text-xs;
+		color: rgba(214, 189, 152, 0.7);
 	}
 
 	.category-indicator {
 		@apply h-2 w-2 rounded-full;
+	}
+
+	.sage-icon {
+		color: #8FA998;
+	}
+
+	.category-indicator.sage-1 {
+		background-color: #677D6A;
+	}
+
+	.category-indicator.sage-2 {
+		background-color: #8FA998;
+	}
+
+	.category-indicator.sage-3 {
+		background-color: #B5C9BD;
+	}
+
+	.category-indicator.sage-4 {
+		background-color: #D6BD98;
+	}
+
+	.category-indicator.sage-5 {
+		background-color: #E0CEAD;
+	}
+
+	.category-indicator.sage-6 {
+		background-color: #677D6A;
 	}
 
 	.picks-grid {
@@ -218,7 +262,11 @@
 	}
 
 	.pick-card {
-		@apply flex gap-4 rounded-lg p-2 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700;
+		@apply flex gap-4 rounded-lg p-2 transition-all duration-300;
+	}
+
+	.pick-card:hover {
+		background-color: rgba(103, 125, 106, 0.2);
 	}
 
 	.pick-image-wrapper {
@@ -238,11 +286,13 @@
 	}
 
 	.pick-title {
-		@apply mb-1 line-clamp-2 text-sm font-medium text-gray-900 dark:text-white;
+		@apply mb-1 line-clamp-2 text-sm font-medium;
+		color: #E0CEAD;
 	}
 
 	.pick-meta {
-		@apply flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400;
+		@apply flex items-center gap-2 text-xs;
+		color: rgba(214, 189, 152, 0.7);
 	}
 
 	.author {
