@@ -1,10 +1,10 @@
 <div class="categoryList">
-	<a href="/blog?cat=thai" class="categoryItem style">Thai</a>
-	<a href="/blog?cat=japanese" class="categoryItem fashion">Japanese</a>
-	<a href="/blog?cat=italian" class="categoryItem food">Italian</a>
-	<a href="/blog?cat=indian" class="categoryItem travel">Indian</a>
-	<a href="/blog?cat=spanish" class="categoryItem culture">Spanish</a>
-	<a href="/blog?cat=chinese" class="categoryItem coding">Chinese</a>
+	<a href="/category/thai" class="categoryItem style">Thai</a>
+	<a href="/category/japanese" class="categoryItem fashion">Japanese</a>
+	<a href="/category/italian" class="categoryItem food">Italian</a>
+	<a href="/category/indian" class="categoryItem travel">Indian</a>
+	<a href="/category/spanish" class="categoryItem culture">Spanish</a>
+	<a href="/category/chinese" class="categoryItem coding">Chinese</a>
 </div>
 
 <style lang="postcss">

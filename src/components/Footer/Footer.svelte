@@ -65,13 +65,13 @@
 						<span class="link-arrow">→</span>
 						<span>Recipes</span>
 					</a>
-					<a href="/contact" class="footer-link">
+					<a href="/write" class="footer-link">
 						<span class="link-arrow">→</span>
-						<span>Contact</span>
+						<span>Share Recipe</span>
 					</a>
-					<a href="/about" class="footer-link">
+					<a href="/category" class="footer-link">
 						<span class="link-arrow">→</span>
-						<span>About Us</span>
+						<span>Categories</span>
 					</a>
 				</div>
 			</div>
