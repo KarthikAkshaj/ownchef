@@ -4,6 +4,7 @@
 
 	export let recipe: {
 		title: string;
+		slug?: string;
 		description: string;
 		image: string;
 		cookTime: number;
@@ -25,24 +26,6 @@
 <article
 	class="recipe-card"
 	class:dark={$theme === 'dark'}
-	on:mousemove={(e) => {
-		const { currentTarget: card } = e;
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-
-		const centerX = rect.width / 2;
-		const centerY = rect.height / 2;
-
-		const rotateX = (y - centerY) / 20;
-		const rotateY = (centerX - x) / 20;
-
-		card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-	}}
-	on:mouseleave={(e) => {
-		e.currentTarget.style.transform =
-			'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-	}}
 >
 	<!-- Image Section -->
 	<div class="image-wrapper">
@@ -89,10 +72,10 @@
 		</div>
 
 		<!-- Action Button -->
-		<button class="view-recipe" aria-label={`View recipe for ${recipe.title}`}>
+		<a href="/recipes/{recipe.slug || '#'}" class="view-recipe" aria-label={`View recipe for ${recipe.title}`}>
 			<span>View Recipe</span>
-			<div class="button-shine" aria-hidden="true" />
-		</button>
+			<div class="button-shine" aria-hidden="true"></div>
+		</a>
 	</div>
 </article>
 
@@ -216,8 +199,9 @@
 	.view-recipe {
 		@apply relative mt-2 w-full overflow-hidden rounded-lg px-6 py-2.5;
 		@apply text-sm font-semibold tracking-wide;
+		@apply flex items-center justify-center;
 		background: linear-gradient(to right, #677D6A, #8FA998);
-		@apply text-white transition-all duration-300;
+		@apply text-white transition-all duration-300 no-underline;
 	}
 
 	.view-recipe:hover {

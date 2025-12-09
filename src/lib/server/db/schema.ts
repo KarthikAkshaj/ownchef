@@ -76,6 +76,7 @@ export const recipe = pgTable('recipe', {
 	totalTime: integer('total_time').notNull(), // computed: prep + cook
 	servings: integer('servings').notNull(),
 	difficulty: varchar('difficulty', { length: 20 }).notNull(), // 'Easy', 'Medium', 'Hard'
+	dietaryType: varchar('dietary_type', { length: 20 }).default('non-vegetarian'), // 'vegetarian', 'vegan', 'non-vegetarian'
 
 	// Media
 	featuredImage: text('featured_image'), // Main recipe image

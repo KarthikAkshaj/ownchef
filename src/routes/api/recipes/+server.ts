@@ -26,6 +26,7 @@ interface CreateRecipeRequest {
     cookTime: number;
     servings: number;
     difficulty: 'Easy' | 'Medium' | 'Hard';
+    dietaryType?: 'vegetarian' | 'vegan' | 'non-vegetarian';
     categoryId?: number;
     cuisineId?: number;
     featuredImage?: string;
@@ -335,6 +336,7 @@ async function createRecipeWithRelations(
                     totalTime: totalTime,
                     servings: validatedData.servings,
                     difficulty: validatedData.difficulty,
+                    dietaryType: validatedData.dietaryType || 'non-vegetarian',
                     featuredImage: validatedData.featuredImage?.trim() || null,
                     videoUrl: validatedData.videoUrl?.trim() || null,
                     authorId: authorId,

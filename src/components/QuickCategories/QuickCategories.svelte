@@ -10,7 +10,8 @@
 			description: 'Ready in 30 minutes or less',
 			icon: Clock,
 			gradient: 'sage-gradient-1',
-			count: 245
+			count: 245,
+			type: 'filter' // Use /filter route
 		},
 		{
 			id: 'vegetarian',
@@ -18,7 +19,8 @@
 			description: 'Plant-based delights',
 			icon: Leaf,
 			gradient: 'sage-gradient-2',
-			count: 189
+			count: 189,
+			type: 'filter' // Use /filter route
 		},
 		{
 			id: 'breakfast',
@@ -26,7 +28,8 @@
 			description: 'Start your day right',
 			icon: Coffee,
 			gradient: 'sage-gradient-3',
-			count: 167
+			count: 167,
+			type: 'category' // Use /category route
 		},
 		{
 			id: 'desserts',
@@ -34,23 +37,26 @@
 			description: 'Sweet treats & bakes',
 			icon: Cake,
 			gradient: 'sage-gradient-4',
-			count: 203
-		},
-		{
-			id: 'healthy',
-			title: 'Healthy',
-			description: 'Nutritious & delicious',
-			icon: Heart,
-			gradient: 'sage-gradient-5',
-			count: 178
+			count: 203,
+			type: 'category' // Use /category route
 		},
 		{
 			id: 'party',
 			title: 'Party Food',
 			description: 'Crowd-pleasing favorites',
 			icon: Users,
+			gradient: 'sage-gradient-5',
+			count: 178,
+			type: 'filter' // Use /filter route
+		},
+		{
+			id: 'appetizers',
+			title: 'Appetizers',
+			description: 'Starters & snacks',
+			icon: Heart,
 			gradient: 'sage-gradient-6',
-			count: 156
+			count: 156,
+			type: 'category' // Use /category route
 		}
 	];
 </script>
@@ -63,7 +69,7 @@
 
 	<div class="categories-grid">
 		{#each categories as category}
-			<a href="/category/{category.id}" class="category-card" class:dark={$theme === 'dark'}>
+			<a href="/{category.type}/{category.id}" class="category-card" class:dark={$theme === 'dark'}>
 				<div class="card-content {category.gradient}">
 					<div class="icon-wrapper">
 						<svelte:component this={category.icon} size={24} class="text-white" />

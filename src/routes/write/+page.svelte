@@ -29,7 +29,9 @@
 		Info,
 		ArrowLeft,
 		CheckCircle,
-		AlertTriangle
+		AlertTriangle,
+		ChevronDown,
+		Search
 	} from 'lucide-svelte';
 
 	// ========================================
@@ -44,6 +46,7 @@
 		prepTime: number;
 		servings: number;
 		difficulty: 'Easy' | 'Medium' | 'Hard';
+		dietaryType: 'vegetarian' | 'vegan' | 'non-vegetarian';
 		categoryId: number | null;
 		cuisineId: number | null;
 		ingredients: Ingredient[];
@@ -92,6 +95,7 @@
 		prepTime: 15,
 		servings: 4,
 		difficulty: 'Medium',
+		dietaryType: 'non-vegetarian',
 		categoryId: null,
 		cuisineId: null,
 		ingredients: [{ id: '1', name: '', amount: '', unit: '', notes: '' }],
@@ -112,9 +116,29 @@
 	let showSuccess = false;
 	let newTag = '';
 
+	// Searchable dropdown state
+	let categorySearchOpen = false;
+	let cuisineSearchOpen = false;
+	let categorySearch = '';
+	let cuisineSearch = '';
+
 	// Data
 	let categories: Category[] = [];
 	let cuisines: Cuisine[] = [];
+
+	// Filtered lists for searchable dropdowns - sorted alphabetically
+	$: filteredCategories = categories
+		.filter((cat) => cat.name.toLowerCase().includes(categorySearch.toLowerCase()))
+		.sort((a, b) => a.name.localeCompare(b.name));
+	$: filteredCuisines = cuisines
+		.filter((cui) => cui.name.toLowerCase().includes(cuisineSearch.toLowerCase()))
+		.sort((a, b) => a.name.localeCompare(b.name));
+
+	// Get selected names for display
+	$: selectedCategoryName =
+		categories.find((c) => c.id === recipe.categoryId)?.name || 'Select a category';
+	$: selectedCuisineName =
+		cuisines.find((c) => c.id === recipe.cuisineId)?.name || 'Select a cuisine';
 
 	// Form sections
 	const steps = [
@@ -171,6 +195,22 @@
 		} catch (error) {
 			console.error('Failed to fetch cuisines:', error);
 		}
+	}
+
+	// ========================================
+	// SEARCHABLE DROPDOWN HELPERS
+	// ========================================
+
+	function selectCategory(id: number) {
+		recipe.categoryId = id;
+		categorySearchOpen = false;
+		categorySearch = '';
+	}
+
+	function selectCuisine(id: number) {
+		recipe.cuisineId = id;
+		cuisineSearchOpen = false;
+		cuisineSearch = '';
 	}
 
 	// ========================================
@@ -338,22 +378,54 @@
 
 		switch (step) {
 			case 1:
+				// Basic info - only validate if trying to move forward
 				if (!recipe.title.trim()) errors.title = 'Title is required';
 				if (!recipe.description.trim()) errors.description = 'Description is required';
-				if (recipe.cookTime < 1) errors.cookTime = 'Cook time must be at least 1 minute';
-				if (recipe.prepTime < 1) errors.prepTime = 'Prep time must be at least 1 minute';
-				if (recipe.servings < 1) errors.servings = 'Servings must be at least 1';
 				break;
 			case 2:
+				// Ingredients - at least one ingredient with a name
 				const validIngredients = recipe.ingredients.filter((ing) => ing.name.trim());
 				if (validIngredients.length === 0)
 					errors.ingredients = 'At least one ingredient is required';
 				break;
 			case 3:
+				// Instructions - at least one instruction with content
 				const validInstructions = recipe.instructions.filter((inst) => inst.content.trim());
 				if (validInstructions.length === 0)
 					errors.instructions = 'At least one instruction is required';
 				break;
+		}
+
+		return Object.keys(errors).length === 0;
+	}
+
+	function validateForPublish(): boolean {
+		errors = {};
+
+		// Title validation
+		if (!recipe.title.trim()) {
+			errors.title = 'Title is required';
+		} else if (recipe.title.trim().length < 3) {
+			errors.title = 'Title must be at least 3 characters';
+		}
+
+		// Description validation
+		if (!recipe.description.trim()) {
+			errors.description = 'Description is required';
+		} else if (recipe.description.trim().length < 10) {
+			errors.description = 'Description must be at least 10 characters';
+		}
+
+		// At least one ingredient
+		const validIngredients = recipe.ingredients.filter((ing) => ing.name.trim());
+		if (validIngredients.length === 0) {
+			errors.ingredients = 'At least one ingredient is required';
+		}
+
+		// At least one instruction
+		const validInstructions = recipe.instructions.filter((inst) => inst.content.trim());
+		if (validInstructions.length === 0) {
+			errors.instructions = 'At least one instruction is required';
 		}
 
 		return Object.keys(errors).length === 0;
@@ -364,21 +436,64 @@
 	// ========================================
 
 	async function saveRecipe(publish: boolean = false) {
-		if (!validateStep(currentStep)) return;
+		// Use stricter validation when publishing
+		if (publish && !validateForPublish()) {
+			// If validation fails, show errors and scroll to top
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+			return;
+		} else if (!publish && !validateStep(currentStep)) {
+			return;
+		}
 
 		isSubmitting = true;
 		recipe.isPublished = publish;
 
 		try {
 			// Clean up empty items
-			recipe.ingredients = recipe.ingredients.filter((ing) => ing.name.trim());
-			recipe.instructions = recipe.instructions.filter((inst) => inst.content.trim());
-			recipe.tips = recipe.tips.filter((tip) => tip.trim());
+			const validIngredients = recipe.ingredients.filter((ing) => ing.name.trim());
+			const validInstructions = recipe.instructions.filter((inst) => inst.content.trim());
+			const validTips = recipe.tips.filter((tip) => tip.trim());
+
+			// Transform data to match API format
+			const recipeData = {
+				title: recipe.title,
+				description: recipe.description,
+				content: recipe.content,
+				prepTime: recipe.prepTime,
+				cookTime: recipe.cookTime,
+				servings: recipe.servings,
+				difficulty: recipe.difficulty,
+				dietaryType: recipe.dietaryType,
+				categoryId: recipe.categoryId,
+				cuisineId: recipe.cuisineId,
+				featuredImage: recipe.featuredImage,
+				isPublished: recipe.isPublished,
+				// Transform ingredients to grouped format
+				ingredients: [
+					{
+						groupName: '', // Default group with no name
+						items: validIngredients.map(ing => ({
+							name: ing.name,
+							amount: ing.amount,
+							unit: ing.unit,
+							notes: ing.notes || undefined
+						}))
+					}
+				],
+				// Rename instructions to steps
+				steps: validInstructions.map(inst => ({
+					title: inst.title || undefined,
+					content: inst.content,
+					estimatedTime: inst.timer || undefined
+				})),
+				// Add tips if any
+				tips: validTips.length > 0 ? validTips.map(tip => ({ content: tip })) : undefined
+			};
 
 			const response = await fetch('/api/recipes', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(recipe)
+				body: JSON.stringify(recipeData)
 			});
 
 			const result = await response.json();
@@ -405,18 +520,24 @@
 	function goToStep(step: number) {
 		if (step < currentStep || validateStep(currentStep)) {
 			currentStep = step;
+			// Scroll to top of the page
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 
 	function nextStep() {
 		if (validateStep(currentStep) && currentStep < 4) {
 			currentStep++;
+			// Scroll to top of the page
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 
 	function prevStep() {
 		if (currentStep > 1) {
 			currentStep--;
+			// Scroll to top of the page
+			window.scrollTo({ top: 0, behavior: 'smooth' });
 		}
 	}
 </script>
@@ -622,25 +743,94 @@
 							</select>
 						</div>
 
-						<!-- Category and Cuisine -->
+						<div class="form-group">
+							<label for="dietaryType" class="form-label">Dietary Type</label>
+							<select id="dietaryType" bind:value={recipe.dietaryType} class="form-select">
+								<option value="non-vegetarian">Non-Vegetarian</option>
+								<option value="vegetarian">Vegetarian</option>
+								<option value="vegan">Vegan</option>
+							</select>
+						</div>
+
+						<!-- Category and Cuisine - Searchable Dropdowns -->
 						<div class="form-group">
 							<label for="category" class="form-label">Category</label>
-							<select id="category" bind:value={recipe.categoryId} class="form-select">
-								<option value={null}>Select a category</option>
-								{#each categories as category}
-									<option value={category.id}>{category.name}</option>
-								{/each}
-							</select>
+							<div class="searchable-dropdown">
+								<div class="searchable-dropdown-trigger">
+									<input
+										type="text"
+										bind:value={categorySearch}
+										on:focus={() => (categorySearchOpen = true)}
+										on:blur={() => setTimeout(() => (categorySearchOpen = false), 200)}
+										placeholder={selectedCategoryName}
+										class="searchable-dropdown-input-main"
+									/>
+								</div>
+
+								{#if categorySearchOpen}
+									<div class="searchable-dropdown-menu" transition:scale={{ duration: 200 }}>
+										<div class="searchable-dropdown-list">
+											{#if filteredCategories.length > 0}
+												{#each filteredCategories as category}
+													<button
+														type="button"
+														class="searchable-dropdown-item"
+														class:selected={recipe.categoryId === category.id}
+														on:click={() => selectCategory(category.id)}
+													>
+														{category.name}
+														{#if recipe.categoryId === category.id}
+															<CheckCircle size={16} />
+														{/if}
+													</button>
+												{/each}
+											{:else}
+												<div class="searchable-dropdown-empty">No categories found</div>
+											{/if}
+										</div>
+									</div>
+								{/if}
+							</div>
 						</div>
 
 						<div class="form-group">
 							<label for="cuisine" class="form-label">Cuisine</label>
-							<select id="cuisine" bind:value={recipe.cuisineId} class="form-select">
-								<option value={null}>Select a cuisine</option>
-								{#each cuisines as cuisine}
-									<option value={cuisine.id}>{cuisine.name}</option>
-								{/each}
-							</select>
+							<div class="searchable-dropdown">
+								<div class="searchable-dropdown-trigger">
+									<input
+										type="text"
+										bind:value={cuisineSearch}
+										on:focus={() => (cuisineSearchOpen = true)}
+										on:blur={() => setTimeout(() => (cuisineSearchOpen = false), 200)}
+										placeholder={selectedCuisineName}
+										class="searchable-dropdown-input-main"
+									/>
+								</div>
+
+								{#if cuisineSearchOpen}
+									<div class="searchable-dropdown-menu" transition:scale={{ duration: 200 }}>
+										<div class="searchable-dropdown-list">
+											{#if filteredCuisines.length > 0}
+												{#each filteredCuisines as cuisine}
+													<button
+														type="button"
+														class="searchable-dropdown-item"
+														class:selected={recipe.cuisineId === cuisine.id}
+														on:click={() => selectCuisine(cuisine.id)}
+													>
+														{cuisine.name}
+														{#if recipe.cuisineId === cuisine.id}
+															<CheckCircle size={16} />
+														{/if}
+													</button>
+												{/each}
+											{:else}
+												<div class="searchable-dropdown-empty">No cuisines found</div>
+											{/if}
+										</div>
+									</div>
+								{/if}
+							</div>
 						</div>
 					</div>
 				</section>
@@ -937,24 +1127,22 @@
 <style lang="postcss">
 	.write-container {
 		@apply min-h-screen;
-		background: linear-gradient(135deg, #EBE0CC 0%, #E0CEAD 50%, #D6BD98 100%);
+		background: linear-gradient(to bottom, #1A3636 0%, #1A3636 15%, #40534C 50%, #677D6A 100%);
 	}
 
 	.write-container:global(.dark) {
-		background: linear-gradient(135deg, #1A3636 0%, #40534C 50%, #677D6A 100%);
+		background: linear-gradient(to bottom, #1A3636 0%, #1A3636 15%, #40534C 50%, #677D6A 100%);
 	}
 
 	/* Header Styles */
 	.write-header {
-		@apply sticky top-0 z-40 border-b backdrop-blur-sm;
-		background: rgba(255, 255, 255, 0.85);
-		border-color: rgba(143, 169, 152, 0.3);
-		box-shadow: 0 2px 8px rgba(26, 54, 54, 0.05);
+		@apply sticky top-0 z-40 backdrop-blur-sm;
+		background: #1A3636;
+		box-shadow: 0 2px 8px rgba(26, 54, 54, 0.15);
 	}
 
 	.write-container:global(.dark) .write-header {
-		background: rgba(26, 54, 54, 0.85);
-		border-color: rgba(143, 169, 152, 0.2);
+		background: #1A3636;
 	}
 
 	.header-content {
@@ -973,7 +1161,7 @@
 
 	.header-title h1 {
 		@apply text-xl font-bold;
-		color: #1A3636;
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .header-title h1 {
@@ -1019,9 +1207,9 @@
 
 	.step-item {
 		@apply flex w-full items-center gap-3 rounded-lg p-3 text-left transition-all;
-		background: rgba(255, 255, 255, 0.8);
-		border: 1px solid rgba(143, 169, 152, 0.2);
-		color: #677D6A;
+		background: rgba(26, 54, 54, 0.6);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		color: #D6BD98;
 	}
 
 	.step-item:hover {
@@ -1082,10 +1270,10 @@
 	/* Form Container */
 	.form-container {
 		@apply rounded-xl p-8;
-		background: rgba(255, 255, 255, 0.9);
+		background: rgba(26, 54, 54, 0.7);
 		backdrop-filter: blur(12px);
-		border: 1px solid rgba(143, 169, 152, 0.2);
-		box-shadow: 0 8px 32px rgba(26, 54, 54, 0.1);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		box-shadow: 0 8px 32px rgba(26, 54, 54, 0.2);
 	}
 
 	.write-container:global(.dark) .form-container {
@@ -1099,7 +1287,7 @@
 
 	.section-header h2 {
 		@apply text-2xl font-bold;
-		color: #1A3636;
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .section-header h2 {
@@ -1107,7 +1295,7 @@
 	}
 
 	.section-header p {
-		color: #677D6A;
+		color: #D6BD98;
 	}
 
 	.write-container:global(.dark) .section-header p {
@@ -1129,7 +1317,7 @@
 
 	.form-label {
 		@apply block text-sm font-medium;
-		color: #40534C;
+		color: #E0CEAD;
 	}
 
 	.write-container:global(.dark) .form-label {
@@ -1138,9 +1326,9 @@
 
 	.form-input {
 		@apply w-full rounded-lg px-4 py-3 transition-all outline-none;
-		background: rgba(255, 255, 255, 0.7);
-		border: 1px solid rgba(143, 169, 152, 0.3);
-		color: #1A3636;
+		background: rgba(235, 224, 204, 0.15);
+		border: 1px solid rgba(143, 169, 152, 0.4);
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .form-input {
@@ -1161,9 +1349,9 @@
 
 	.form-textarea {
 		@apply w-full resize-none rounded-lg px-4 py-3 transition-all outline-none;
-		background: rgba(255, 255, 255, 0.7);
-		border: 1px solid rgba(143, 169, 152, 0.3);
-		color: #1A3636;
+		background: rgba(235, 224, 204, 0.15);
+		border: 1px solid rgba(143, 169, 152, 0.4);
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .form-textarea {
@@ -1179,9 +1367,9 @@
 
 	.form-select {
 		@apply w-full rounded-lg px-4 py-3 transition-all outline-none;
-		background: rgba(255, 255, 255, 0.7);
-		border: 1px solid rgba(143, 169, 152, 0.3);
-		color: #1A3636;
+		background: rgba(235, 224, 204, 0.15);
+		border: 1px solid rgba(143, 169, 152, 0.4);
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .form-select {
@@ -1202,8 +1390,8 @@
 	/* Image Upload */
 	.image-upload-area {
 		@apply relative rounded-lg border-2 border-dashed p-8 text-center transition-all;
-		border-color: rgba(143, 169, 152, 0.3);
-		background: rgba(255, 255, 255, 0.5);
+		border-color: rgba(143, 169, 152, 0.4);
+		background: rgba(235, 224, 204, 0.1);
 	}
 
 	.write-container:global(.dark) .image-upload-area {
@@ -1224,7 +1412,7 @@
 
 	.upload-placeholder {
 		@apply space-y-2;
-		color: #677D6A;
+		color: #D6BD98;
 	}
 
 	.write-container:global(.dark) .upload-placeholder {
@@ -1259,8 +1447,8 @@
 
 	.ingredient-item {
 		@apply rounded-lg p-4 transition-all;
-		background: rgba(255, 255, 255, 0.6);
-		border: 1px solid rgba(143, 169, 152, 0.2);
+		background: rgba(64, 83, 76, 0.4);
+		border: 1px solid rgba(143, 169, 152, 0.3);
 	}
 
 	.write-container:global(.dark) .ingredient-item {
@@ -1281,9 +1469,9 @@
 	.ingredient-name,
 	.ingredient-notes {
 		@apply rounded-md px-3 py-2 text-sm outline-none transition-all;
-		background: rgba(255, 255, 255, 0.8);
-		border: 1px solid rgba(143, 169, 152, 0.25);
-		color: #1A3636;
+		background: rgba(235, 224, 204, 0.12);
+		border: 1px solid rgba(143, 169, 152, 0.35);
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .ingredient-amount,
@@ -1309,8 +1497,8 @@
 
 	.add-ingredient {
 		@apply flex items-center gap-2 rounded-lg border-2 border-dashed px-4 py-3 transition-all;
-		border-color: rgba(143, 169, 152, 0.3);
-		color: #677D6A;
+		border-color: rgba(143, 169, 152, 0.4);
+		color: #D6BD98;
 	}
 
 	.write-container:global(.dark) .add-ingredient {
@@ -1331,8 +1519,8 @@
 
 	.instruction-item {
 		@apply rounded-lg p-6 transition-all;
-		background: rgba(255, 255, 255, 0.6);
-		border: 1px solid rgba(143, 169, 152, 0.2);
+		background: rgba(64, 83, 76, 0.4);
+		border: 1px solid rgba(143, 169, 152, 0.3);
 	}
 
 	.write-container:global(.dark) .instruction-item {
@@ -1356,9 +1544,9 @@
 
 	.instruction-title {
 		@apply flex-1 rounded-md px-3 py-2 outline-none transition-all;
-		background: rgba(255, 255, 255, 0.8);
-		border: 1px solid rgba(143, 169, 152, 0.25);
-		color: #1A3636;
+		background: rgba(235, 224, 204, 0.12);
+		border: 1px solid rgba(143, 169, 152, 0.35);
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .instruction-title {
@@ -1378,9 +1566,9 @@
 
 	.instruction-content {
 		@apply mb-4 w-full resize-none rounded-md px-3 py-2 outline-none transition-all;
-		background: rgba(255, 255, 255, 0.8);
-		border: 1px solid rgba(143, 169, 152, 0.25);
-		color: #1A3636;
+		background: rgba(235, 224, 204, 0.12);
+		border: 1px solid rgba(143, 169, 152, 0.35);
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .instruction-content {
@@ -1439,8 +1627,8 @@
 
 	.add-instruction {
 		@apply flex items-center gap-2 rounded-lg border-2 border-dashed px-4 py-3 transition-all;
-		border-color: rgba(143, 169, 152, 0.3);
-		color: #677D6A;
+		border-color: rgba(143, 169, 152, 0.4);
+		color: #D6BD98;
 	}
 
 	.write-container:global(.dark) .add-instruction {
@@ -1532,8 +1720,8 @@
 
 	.add-tip {
 		@apply flex items-center gap-2 rounded-lg border-2 border-dashed px-4 py-2 transition-all;
-		border-color: rgba(143, 169, 152, 0.3);
-		color: #677D6A;
+		border-color: rgba(143, 169, 152, 0.4);
+		color: #D6BD98;
 	}
 
 	.write-container:global(.dark) .add-tip {
@@ -1592,7 +1780,7 @@
 
 	.progress-indicator {
 		@apply text-sm font-medium;
-		color: #677D6A;
+		color: #D6BD98;
 	}
 
 	.write-container:global(.dark) .progress-indicator {
@@ -1605,8 +1793,8 @@
 
 	.save-draft-btn {
 		@apply flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-all disabled:opacity-50;
-		background: rgba(143, 169, 152, 0.15);
-		color: #677D6A;
+		background: rgba(143, 169, 152, 0.25);
+		color: #EBE0CC;
 	}
 
 	.write-container:global(.dark) .save-draft-btn {
@@ -1714,5 +1902,90 @@
 		.form-navigation {
 			@apply flex-col gap-4;
 		}
+	}
+
+	/* ========== Searchable Dropdown Styles ========== */
+	.searchable-dropdown {
+		@apply relative;
+	}
+
+	.searchable-dropdown-trigger {
+		@apply relative flex w-full items-center rounded-lg transition-all;
+		background: rgba(235, 224, 204, 0.15);
+		border: 1px solid rgba(143, 169, 152, 0.4);
+	}
+
+	.write-container:global(.dark) .searchable-dropdown-trigger {
+		background: rgba(26, 54, 54, 0.6);
+		border-color: rgba(143, 169, 152, 0.2);
+	}
+
+	.searchable-dropdown-trigger:hover {
+		border-color: #8FA998;
+	}
+
+	.searchable-dropdown-input-main {
+		@apply w-full rounded-lg px-4 py-3 outline-none transition-all;
+		background: transparent;
+		color: #EBE0CC;
+		border: none;
+	}
+
+	.searchable-dropdown-input-main::placeholder {
+		color: rgba(214, 189, 152, 0.7);
+	}
+
+	.searchable-dropdown-menu {
+		@apply absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-lg border backdrop-blur-xl;
+		background: rgba(26, 54, 54, 0.95);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		box-shadow: 0 8px 32px rgba(26, 54, 54, 0.3);
+		max-height: 300px;
+	}
+
+	.searchable-dropdown-list {
+		@apply overflow-y-auto;
+		/* Show exactly 3 items at a time: 3 items * (py-2.5 top + py-2.5 bottom = 20px per item + 2px border) ≈ 126px */
+		max-height: 126px;
+	}
+
+	.searchable-dropdown-item {
+		@apply flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors;
+		color: #D6BD98;
+		min-height: 42px;
+	}
+
+	.searchable-dropdown-item:hover {
+		background: rgba(103, 125, 106, 0.3);
+		color: #EBE0CC;
+	}
+
+	.searchable-dropdown-item.selected {
+		background: rgba(143, 169, 152, 0.25);
+		color: #8FA998;
+		font-weight: 500;
+	}
+
+	.searchable-dropdown-empty {
+		@apply px-4 py-6 text-center text-sm;
+		color: rgba(214, 189, 152, 0.6);
+	}
+
+	/* Scrollbar styling for dropdown list */
+	.searchable-dropdown-list::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.searchable-dropdown-list::-webkit-scrollbar-track {
+		background: rgba(26, 54, 54, 0.3);
+	}
+
+	.searchable-dropdown-list::-webkit-scrollbar-thumb {
+		background: rgba(143, 169, 152, 0.4);
+		border-radius: 4px;
+	}
+
+	.searchable-dropdown-list::-webkit-scrollbar-thumb:hover {
+		background: rgba(143, 169, 152, 0.6);
 	}
 </style>

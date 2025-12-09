@@ -4,10 +4,12 @@
 	import Card from '../Card/Card.svelte';
 	import Pagination from '../Pagination/Pagination.svelte';
 
+	export let posts = [];
 	export let page = 1;
 	export let hasMore = true;
 
-	const recipes = [
+	// Fallback fake data for homepage/testing
+	const fallbackRecipes = [
 		{
 			title: 'Homemade Margherita Pizza',
 			description: 'Classic Italian pizza with fresh basil, mozzarella, and tomato sauce',
@@ -89,6 +91,9 @@
 		}
 	];
 
+	// Use real posts if provided, otherwise fallback to fake data
+	$: recipes = posts.length > 0 ? posts : fallbackRecipes;
+
 	let isLoading = true;
 
 	onMount(() => {
@@ -144,7 +149,8 @@
 	}
 
 	.subtitle {
-		@apply text-lg text-gray-600 dark:text-gray-400;
+		@apply text-lg;
+		color: rgba(235, 224, 204, 0.9);
 	}
 
 	.recipe-grid {

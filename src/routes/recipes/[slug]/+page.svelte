@@ -3,6 +3,8 @@
 	import { page } from '$app/stores';
 	import { theme } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
+
+	export let data;
 	import {
 		Clock,
 		Users,
@@ -33,8 +35,53 @@
 		document.body.style.overflow = ''; // Restore scrolling
 	}
 
-	// This would come from your API in a real implementation
-	const recipe = {
+	// Use real data from server or fallback to fake data for demo
+	$: recipeData = data?.recipe ? {
+		...data.recipe,
+		// Map database fields to component expectations
+		images: data.recipe.featuredImage ? [data.recipe.featuredImage] : ['/images/recipes/placeholder.jpg'],
+		cuisine: data.recipe.cuisine?.name || 'Unknown',
+		category: data.recipe.category?.name || 'Unknown',
+		rating: data.recipe.averageRating ? data.recipe.averageRating / 100 : 0,
+		reviewsCount: data.recipe.ratingsCount || 0,
+		isFavorited: false,
+		isLiked: false,
+		isSaved: false,
+		author: {
+			id: data.recipe.author?.id || '',
+			name: data.recipe.author?.username || 'Unknown Chef',
+			avatar: data.recipe.author?.profileImage || '/images/users/default-avatar.jpg',
+			recipesCount: 0,
+			followersCount: 0
+		},
+		// Map ingredients from database format
+		ingredients: data.ingredients?.reduce((groups, ing) => {
+			const groupName = ing.groupName || 'Ingredients';
+			let group = groups.find(g => g.group === groupName);
+			if (!group) {
+				group = { group: groupName, items: [] };
+				groups.push(group);
+			}
+			const ingredientText = `${ing.amount || ''} ${ing.unit || ''} ${ing.name}${ing.preparation ? ', ' + ing.preparation : ''}`.trim();
+			group.items.push(ingredientText);
+			return groups;
+		}, []) || [],
+		// Map instructions from database format
+		steps: data.instructions?.map(inst => ({
+			title: inst.title || `Step ${inst.stepNumber}`,
+			content: inst.content
+		})) || [],
+		// Add placeholder nutrition data (you can add a nutrition table later)
+		nutrition: {
+			calories: 0,
+			protein: 0,
+			carbs: 0,
+			fat: 0,
+			fiber: 0,
+			sugar: 0
+		},
+		tips: data.tips?.map(tip => tip.content) || []
+	} : {
 		id: 'classic-butter-chicken',
 		title: 'Classic Butter Chicken (Murgh Makhani)',
 		description:
@@ -258,8 +305,10 @@
 		}
 	];
 
+	$: recipe = recipeData;
+
 	let showAllReviews = false;
-	let currentServings = recipe.servings;
+	$: currentServings = recipe.servings;
 	let servingsScaleFactor = 1;
 
 	// Parse an ingredient string to separate quantity, unit, and ingredient name
