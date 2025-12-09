@@ -511,7 +511,8 @@
 	}
 
 	.profile-cover {
-		@apply relative h-48 w-full overflow-hidden bg-gradient-to-r from-orange-400 via-red-500 to-orange-500 sm:h-64;
+		@apply relative h-48 w-full overflow-hidden sm:h-64;
+		background: linear-gradient(135deg, #677D6A, #8FA998, #D6BD98);
 	}
 
 	.cover-overlay {
@@ -535,7 +536,8 @@
 	}
 
 	.verified-badge {
-		@apply absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white;
+		@apply absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full text-white;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
 	}
 
 	.badge-icon {
@@ -604,7 +606,13 @@
 	}
 
 	.follow-button {
-		@apply bg-gradient-to-r from-orange-500 to-red-500 text-white hover:shadow-lg hover:shadow-orange-500/20;
+		@apply text-white hover:shadow-lg;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.2);
+	}
+
+	.follow-button:hover {
+		box-shadow: 0 8px 20px rgba(143, 169, 152, 0.3);
 	}
 
 	.follow-button.following {
@@ -660,7 +668,14 @@
 	}
 
 	.nav-tab.active {
-		@apply border-b-2 border-orange-500 text-orange-500 dark:border-orange-400 dark:text-orange-400;
+		@apply border-b-2 text-gray-900 dark:text-white;
+		border-color: #8FA998;
+		color: #40534C;
+	}
+
+	.dark .nav-tab.active {
+		color: #D6BD98;
+		border-color: #8FA998;
 	}
 
 	.tab-icon {
@@ -701,7 +716,13 @@
 	}
 
 	.filter-select {
-		@apply rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+		@apply rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white;
+		border-color: rgba(143, 169, 152, 0.3);
+	}
+
+	.filter-select:focus {
+		border-color: #8FA998;
+		box-shadow: 0 0 0 3px rgba(143, 169, 152, 0.15);
 	}
 
 	.recipes-grid {
@@ -730,7 +751,15 @@
 	}
 
 	.empty-action {
-		@apply rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 font-medium text-white transition-all hover:shadow-lg hover:shadow-orange-500/20;
+		@apply rounded-full px-6 py-2 font-medium transition-all;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.empty-action:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 20px rgba(143, 169, 152, 0.4);
 	}
 
 	/* Media Queries */

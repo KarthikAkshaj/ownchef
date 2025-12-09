@@ -687,10 +687,8 @@
 <style lang="postcss">
 	/* Global Styles */
 	.signup-page {
-		@apply fixed inset-0 overflow-hidden;
+		@apply relative min-h-screen overflow-x-hidden;
 		background: linear-gradient(135deg, #E0CEAD 0%, #EBE0CC 50%, #B5C9BD 100%);
-		min-height: 100vh;
-		min-width: 100vw;
 	}
 
 	.signup-page.dark {

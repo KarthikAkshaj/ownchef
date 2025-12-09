@@ -768,11 +768,11 @@
 		width: 100vw;
 		height: 100vh;
 		overflow: auto;
-		background: #0a0a0a;
+		background: linear-gradient(135deg, #E0CEAD 0%, #EBE0CC 50%, #B5C9BD 100%);
 	}
 
 	.setup-page.dark {
-		background: #000000;
+		background: linear-gradient(135deg, #1A3636 0%, #40534C 50%, #677D6A 100%);
 	}
 
 	/* Subtle Background */
@@ -781,11 +781,11 @@
 		inset: 0;
 		background: linear-gradient(
 			135deg,
-			rgba(99, 102, 241, 0.1) 0%,
-			rgba(168, 85, 247, 0.1) 25%,
-			rgba(236, 72, 153, 0.1) 50%,
-			rgba(251, 146, 60, 0.1) 75%,
-			rgba(34, 197, 94, 0.1) 100%
+			rgba(143, 169, 152, 0.1) 0%,
+			rgba(103, 125, 106, 0.1) 25%,
+			rgba(64, 83, 76, 0.1) 50%,
+			rgba(143, 169, 152, 0.1) 75%,
+			rgba(103, 125, 106, 0.1) 100%
 		);
 		animation: gradientShift 20s ease infinite;
 	}
@@ -795,12 +795,12 @@
 		inset: 0;
 		background-image: radial-gradient(
 				circle at 25% 25%,
-				rgba(99, 102, 241, 0.05) 0%,
+				rgba(143, 169, 152, 0.05) 0%,
 				transparent 50%
 			),
-			radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.05) 0%, transparent 50%),
-			radial-gradient(circle at 75% 25%, rgba(34, 197, 94, 0.05) 0%, transparent 50%),
-			radial-gradient(circle at 25% 75%, rgba(251, 146, 60, 0.05) 0%, transparent 50%);
+			radial-gradient(circle at 75% 75%, rgba(103, 125, 106, 0.05) 0%, transparent 50%),
+			radial-gradient(circle at 75% 25%, rgba(64, 83, 76, 0.05) 0%, transparent 50%),
+			radial-gradient(circle at 25% 75%, rgba(143, 169, 152, 0.05) 0%, transparent 50%);
 	}
 
 	@keyframes gradientShift {
@@ -828,14 +828,19 @@
 	.setup-form {
 		width: 100%;
 		max-width: 540px;
-		background: rgba(255, 255, 255, 0.08);
+		background: rgba(255, 255, 255, 0.85);
 		backdrop-filter: blur(24px);
-		border: 1px solid rgba(255, 255, 255, 0.12);
+		border: 1px solid rgba(143, 169, 152, 0.3);
 		border-radius: 24px;
 		padding: 2.5rem;
 		box-shadow:
-			0 25px 50px -12px rgba(0, 0, 0, 0.4),
-			0 0 0 1px rgba(255, 255, 255, 0.05);
+			0 25px 50px -12px rgba(26, 54, 54, 0.2),
+			0 0 0 1px rgba(143, 169, 152, 0.1);
+	}
+
+	.setup-page.dark .setup-form {
+		background: rgba(26, 54, 54, 0.85);
+		border-color: rgba(143, 169, 152, 0.2);
 	}
 
 	/* Modern Header */
@@ -858,15 +863,15 @@
 		justify-content: center;
 		width: 48px;
 		height: 48px;
-		background: linear-gradient(135deg, #f97316, #ea580c);
+		background: linear-gradient(135deg, #677D6A, #8FA998);
 		border-radius: 12px;
-		box-shadow: 0 8px 16px rgba(249, 115, 22, 0.3);
+		box-shadow: 0 8px 16px rgba(103, 125, 106, 0.3);
 	}
 
 	.coffee-icon {
 		width: 24px;
 		height: 24px;
-		color: white;
+		color: #EBE0CC;
 	}
 
 	.brand-text {
@@ -878,13 +883,17 @@
 	.brand-own {
 		font-size: 1.75rem;
 		font-weight: 700;
-		color: white;
+		color: #1A3636;
+	}
+
+	.setup-page.dark .brand-own {
+		color: #EBE0CC;
 	}
 
 	.brand-chef {
 		font-size: 1.25rem;
 		font-weight: 900;
-		background: linear-gradient(135deg, #f97316, #ea580c);
+		background: linear-gradient(135deg, #677D6A, #8FA998);
 		background-clip: text;
 		-webkit-background-clip: text;
 		color: transparent;
@@ -897,15 +906,23 @@
 	.form-title {
 		font-size: 2rem;
 		font-weight: 700;
-		color: white;
+		color: #1A3636;
 		margin-bottom: 0.5rem;
 		line-height: 1.2;
 	}
 
+	.setup-page.dark .form-title {
+		color: #EBE0CC;
+	}
+
 	.form-subtitle {
 		font-size: 1rem;
-		color: rgba(255, 255, 255, 0.7);
+		color: #677D6A;
 		line-height: 1.5;
+	}
+
+	.setup-page.dark .form-subtitle {
+		color: #D6BD98;
 	}
 
 	/* Modern Progress */
@@ -924,7 +941,7 @@
 
 	.progress-bar {
 		height: 100%;
-		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+		background: linear-gradient(90deg, #677D6A, #8FA998);
 		border-radius: 2px;
 		transition: width 0.3s ease;
 	}
@@ -948,15 +965,15 @@
 	}
 
 	.step-dot.active {
-		background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+		background: linear-gradient(135deg, #677D6A, #8FA998);
 		border-color: transparent;
 		transform: scale(1.1);
 	}
 
 	.step-dot.current {
-		background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-		border-color: rgba(59, 130, 246, 0.5);
-		box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		border-color: rgba(103, 125, 106, 0.5);
+		box-shadow: 0 0 20px rgba(143, 169, 152, 0.4);
 	}
 
 	.step-number {
@@ -1026,20 +1043,28 @@
 		gap: 0.75rem;
 		font-size: 1.5rem;
 		font-weight: 700;
-		color: white;
+		color: #1A3636;
 		margin-bottom: 0.5rem;
+	}
+
+	.setup-page.dark .step-title {
+		color: #EBE0CC;
 	}
 
 	.step-icon {
 		width: 24px;
 		height: 24px;
-		color: #3b82f6;
+		color: #677D6A;
 	}
 
 	.step-description {
-		color: rgba(255, 255, 255, 0.7);
+		color: #677D6A;
 		font-size: 0.95rem;
 		line-height: 1.5;
+	}
+
+	.setup-page.dark .step-description {
+		color: #D6BD98;
 	}
 
 	/* Enhanced Form Fields */
@@ -1066,18 +1091,26 @@
 		gap: 0.5rem;
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.9);
+		color: #40534C;
 		margin-bottom: 0.25rem;
+	}
+
+	.setup-page.dark .field-label {
+		color: #D6BD98;
 	}
 
 	.label-icon {
 		width: 16px;
 		height: 16px;
-		color: rgba(255, 255, 255, 0.5);
+		color: #677D6A;
+	}
+
+	.setup-page.dark .label-icon {
+		color: #8FA998;
 	}
 
 	.required-indicator {
-		color: #f87171;
+		color: #B5695D;
 		font-weight: 700;
 	}
 
@@ -1089,26 +1122,44 @@
 	.field-input,
 	.field-textarea {
 		width: 100%;
-		background: rgba(255, 255, 255, 0.06);
-		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.5);
+		border: 1px solid rgba(143, 169, 152, 0.3);
 		border-radius: 12px;
 		padding: 0.875rem 1rem;
-		color: white;
+		color: #1A3636;
 		font-size: 0.95rem;
 		transition: all 0.2s ease;
 		outline: none;
 	}
 
+	.setup-page.dark .field-input,
+	.setup-page.dark .field-textarea {
+		background: rgba(26, 54, 54, 0.5);
+		color: #EBE0CC;
+		border-color: rgba(143, 169, 152, 0.2);
+	}
+
 	.field-input::placeholder,
 	.field-textarea::placeholder {
-		color: rgba(255, 255, 255, 0.5);
+		color: rgba(64, 83, 76, 0.5);
+	}
+
+	.setup-page.dark .field-input::placeholder,
+	.setup-page.dark .field-textarea::placeholder {
+		color: rgba(214, 189, 152, 0.5);
 	}
 
 	.field-input:focus,
 	.field-textarea:focus {
-		background: rgba(255, 255, 255, 0.08);
-		border-color: #3b82f6;
-		box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+		background: rgba(255, 255, 255, 0.7);
+		border-color: #8FA998;
+		box-shadow: 0 0 0 3px rgba(143, 169, 152, 0.15);
+	}
+
+	.setup-page.dark .field-input:focus,
+	.setup-page.dark .field-textarea:focus {
+		background: rgba(26, 54, 54, 0.7);
+		border-color: #8FA998;
 	}
 
 	.field-textarea {
@@ -1122,7 +1173,7 @@
 		left: 0;
 		right: 0;
 		height: 2px;
-		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+		background: linear-gradient(90deg, #677D6A, #8FA998);
 		border-radius: 1px;
 		transform: scaleX(0);
 		transition: transform 0.2s ease;
@@ -1271,47 +1322,58 @@
 	}
 
 	.btn-primary {
-		background: linear-gradient(135deg, #3b82f6, #2563eb);
-		color: white;
-		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
 	}
 
 	.btn-primary:hover:not(:disabled) {
 		transform: translateY(-2px);
-		box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+		box-shadow: 0 8px 20px rgba(143, 169, 152, 0.4);
 	}
 
 	.btn-secondary {
-		background: rgba(255, 255, 255, 0.06);
-		color: rgba(255, 255, 255, 0.9);
-		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(143, 169, 152, 0.15);
+		color: #40534C;
+		border: 1px solid rgba(143, 169, 152, 0.3);
+	}
+
+	.setup-page.dark .btn-secondary {
+		background: rgba(143, 169, 152, 0.2);
+		color: #D6BD98;
+		border-color: rgba(143, 169, 152, 0.3);
 	}
 
 	.btn-secondary:hover:not(:disabled) {
-		background: rgba(255, 255, 255, 0.1);
+		background: rgba(143, 169, 152, 0.25);
 		transform: translateY(-2px);
 	}
 
 	.btn-outline {
 		background: transparent;
-		color: rgba(255, 255, 255, 0.8);
-		border: 1px solid rgba(255, 255, 255, 0.2);
+		color: #677D6A;
+		border: 1px solid rgba(143, 169, 152, 0.4);
+	}
+
+	.setup-page.dark .btn-outline {
+		color: #D6BD98;
+		border-color: rgba(143, 169, 152, 0.3);
 	}
 
 	.btn-outline:hover:not(:disabled) {
-		background: rgba(255, 255, 255, 0.06);
-		border-color: rgba(255, 255, 255, 0.3);
+		background: rgba(143, 169, 152, 0.1);
+		border-color: rgba(143, 169, 152, 0.5);
 	}
 
 	.btn-success {
-		background: linear-gradient(135deg, #10b981, #059669);
-		color: white;
-		box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+		background: linear-gradient(135deg, #8FA998, #677D6A);
+		color: #1A3636;
+		box-shadow: 0 4px 12px rgba(143, 169, 152, 0.3);
 	}
 
 	.btn-success:hover:not(:disabled) {
 		transform: translateY(-2px);
-		box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+		box-shadow: 0 8px 20px rgba(143, 169, 152, 0.4);
 	}
 
 	.btn-icon {
@@ -1352,20 +1414,20 @@
 		position: absolute;
 		inset: 0;
 		border: 3px solid transparent;
-		border-top-color: #10b981;
+		border-top-color: #8FA998;
 		border-radius: 50%;
 		animation: successRing 2s ease-in-out infinite;
 	}
 
 	.success-ring.ring-2 {
 		animation-delay: 1s;
-		border-top-color: #3b82f6;
+		border-top-color: #677D6A;
 	}
 
 	.success-icon {
 		width: 64px;
 		height: 64px;
-		color: #10b981;
+		color: #8FA998;
 		z-index: 2;
 		animation: successPulse 2s ease-in-out infinite;
 	}
@@ -1457,14 +1519,22 @@
 	.success-title {
 		font-size: 2rem;
 		font-weight: 700;
-		color: white;
+		color: #1A3636;
 		margin: 0;
+	}
+
+	.setup-page.dark .success-title {
+		color: #EBE0CC;
 	}
 
 	.success-subtitle {
 		font-size: 1.125rem;
-		color: rgba(255, 255, 255, 0.7);
+		color: #677D6A;
 		margin: 0;
+	}
+
+	.setup-page.dark .success-subtitle {
+		color: #D6BD98;
 	}
 
 	.success-progress {
@@ -1481,15 +1551,19 @@
 
 	.success-progress .progress-fill {
 		height: 100%;
-		background: linear-gradient(90deg, #10b981, #3b82f6);
+		background: linear-gradient(90deg, #8FA998, #677D6A);
 		border-radius: 3px;
 		transition: width 0.1s ease;
 	}
 
 	.progress-text {
 		font-size: 0.875rem;
-		color: rgba(255, 255, 255, 0.6);
+		color: #677D6A;
 		margin: 0;
+	}
+
+	.setup-page.dark .progress-text {
+		color: #D6BD98;
 	}
 
 	/* Responsive Design */

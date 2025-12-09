@@ -52,7 +52,8 @@
 
 	function handleSearch() {
 		if (searchQuery.trim()) {
-			console.log('Searching for:', searchQuery);
+			// Navigate to search page with query parameter
+			window.location.href = `/search?q=${encodeURIComponent(searchQuery.trim())}`;
 		}
 	}
 
@@ -218,6 +219,7 @@
 					bind:value={searchQuery}
 					placeholder="Search recipes..."
 					class="mobile-search-input"
+					on:keydown={(e) => e.key === 'Enter' && handleSearch()}
 				/>
 			</div>
 			{#each categories as category (category.id)}
@@ -255,16 +257,39 @@
 
 <style lang="postcss">
 	nav {
-		@apply shadow-sm backdrop-blur-md;
-		background: rgba(64, 83, 76, 0.95);
-		border: 1px solid rgba(103, 125, 106, 0.2);
+		@apply backdrop-blur-xl;
+		background: rgba(64, 83, 76, 0.3);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		box-shadow:
+			0 8px 32px rgba(26, 54, 54, 0.15),
+			0 2px 8px rgba(26, 54, 54, 0.1),
+			inset 0 1px 0 rgba(255, 255, 255, 0.1);
 		left: 50%;
 		transform: translateX(-50%);
 	}
 
+	nav::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		background: linear-gradient(
+			135deg,
+			rgba(143, 169, 152, 0.1) 0%,
+			rgba(103, 125, 106, 0.05) 50%,
+			rgba(64, 83, 76, 0.1) 100%
+		);
+		pointer-events: none;
+	}
+
 	nav.scrolled {
-		@apply shadow-xl;
-		background: rgba(64, 83, 76, 0.98);
+		@apply backdrop-blur-2xl;
+		background: rgba(64, 83, 76, 0.5);
+		box-shadow:
+			0 12px 40px rgba(26, 54, 54, 0.25),
+			0 4px 12px rgba(26, 54, 54, 0.15),
+			inset 0 1px 0 rgba(255, 255, 255, 0.15);
+		border-color: rgba(143, 169, 152, 0.4);
 	}
 
 	.logo {
@@ -319,14 +344,14 @@
 		color: #8FA998;
 	}
 
-	.nav-link.active {
-		color: #8FA998;
-	}
-
 	.dropdown-menu {
-		@apply absolute left-0 top-full z-[101] mt-1 w-48 rounded-lg border py-1 shadow-lg;
-		background-color: #40534C;
-		border-color: #677D6A;
+		@apply absolute left-0 top-full z-[101] mt-1 w-48 rounded-lg border py-1 backdrop-blur-xl;
+		background: rgba(64, 83, 76, 0.85);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		box-shadow:
+			0 8px 32px rgba(26, 54, 54, 0.2),
+			0 2px 8px rgba(26, 54, 54, 0.15),
+			inset 0 1px 0 rgba(255, 255, 255, 0.1);
 		margin-top: 2px;
 	}
 
@@ -369,15 +394,24 @@
 	}
 
 	.search-input {
-		@apply h-8 w-full rounded-full pl-4 pr-10 text-sm outline-none transition-all duration-300;
-		background-color: #1A3636;
+		@apply h-8 w-full rounded-full pl-4 pr-10 text-sm outline-none transition-all duration-300 backdrop-blur-md;
+		background: rgba(26, 54, 54, 0.8);
+		border: 1px solid rgba(143, 169, 152, 0.2);
 		color: #D6BD98;
 		opacity: 0;
 		pointer-events: none;
+		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 	}
 
 	.search-input::placeholder {
 		color: rgba(214, 189, 152, 0.5);
+	}
+
+	.search-input:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow:
+			inset 0 2px 4px rgba(0, 0, 0, 0.1),
+			0 0 0 3px rgba(143, 169, 152, 0.15);
 	}
 
 	.search-container.open .search-input {
@@ -428,8 +462,12 @@
 	}
 
 	.mobile-menu {
-		@apply px-4 pb-3 pt-2 shadow-lg lg:hidden;
-		background-color: #40534C;
+		@apply px-4 pb-3 pt-2 backdrop-blur-xl lg:hidden;
+		background: rgba(64, 83, 76, 0.9);
+		border-top: 1px solid rgba(143, 169, 152, 0.2);
+		box-shadow:
+			0 8px 32px rgba(26, 54, 54, 0.2),
+			inset 0 1px 0 rgba(255, 255, 255, 0.05);
 	}
 
 	.mobile-search {
@@ -437,13 +475,23 @@
 	}
 
 	.mobile-search-input {
-		@apply w-full rounded-full px-4 py-2;
-		background-color: #1A3636;
+		@apply w-full rounded-full px-4 py-2 backdrop-blur-md;
+		background: rgba(26, 54, 54, 0.8);
+		border: 1px solid rgba(143, 169, 152, 0.2);
 		color: #D6BD98;
+		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 	}
 
 	.mobile-search-input::placeholder {
 		color: rgba(214, 189, 152, 0.5);
+	}
+
+	.mobile-search-input:focus {
+		border-color: rgba(143, 169, 152, 0.5);
+		box-shadow:
+			inset 0 2px 4px rgba(0, 0, 0, 0.1),
+			0 0 0 3px rgba(143, 169, 152, 0.15);
+		outline: none;
 	}
 
 	.mobile-nav-item {

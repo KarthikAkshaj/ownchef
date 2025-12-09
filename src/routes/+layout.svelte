@@ -7,7 +7,7 @@
 </script>
 
 <Navbar />
-<main class="min-h-screen bg-[#1A3636] pt-20">
+<main class="min-h-screen pt-20">
 	<slot />
 </main>
 <Footer />
