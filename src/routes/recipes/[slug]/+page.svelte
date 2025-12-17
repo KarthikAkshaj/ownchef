@@ -417,16 +417,6 @@
 <div class="recipe-detail-container" class:dark={$theme === 'dark'}>
 	<!-- Recipe Header -->
 	<header class="recipe-header">
-		<div class="breadcrumb">
-			<a href="/" class="breadcrumb-link">Home</a>
-			<span class="breadcrumb-separator">/</span>
-			<a href="/recipes" class="breadcrumb-link">Recipes</a>
-			<span class="breadcrumb-separator">/</span>
-			<a href="/recipes/category/{recipe.cuisine.toLowerCase()}" class="breadcrumb-link"
-				>{recipe.cuisine}</a
-			>
-		</div>
-
 		<h1 class="recipe-title">{recipe.title}</h1>
 
 		<div class="recipe-meta">
@@ -851,20 +841,15 @@
 
 <style lang="postcss">
 	.recipe-detail-container {
-		@apply mx-auto max-w-7xl px-4 pb-16 pt-8;
-	}
-
-	/* Breadcrumb Styles */
-	.breadcrumb {
-		@apply mb-4 flex text-sm text-gray-500 dark:text-gray-400;
-	}
-
-	.breadcrumb-link {
-		@apply hover:text-orange-500 dark:hover:text-orange-400;
-	}
-
-	.breadcrumb-separator {
-		@apply mx-2;
+		@apply mx-auto max-w-7xl px-4 pb-16 min-h-screen;
+		background: linear-gradient(
+			to bottom,
+			#2A4A47 0%,
+			#1A3636 100%
+		);
+		border-radius: 24px 24px 0 0;
+		box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+		margin-top: 16px;
 	}
 
 	/* Recipe Header Styles */
@@ -873,11 +858,14 @@
 	}
 
 	.recipe-title {
-		@apply mb-4 text-4xl font-bold leading-tight text-gray-900 dark:text-white;
+		@apply mb-4 text-4xl font-bold leading-tight;
+		color: #EBE0CC;
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
 
 	.recipe-meta {
-		@apply mb-6 flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-300;
+		@apply mb-6 flex flex-wrap items-center gap-6;
+		color: #D6BD98;
 	}
 
 	.recipe-rating {
@@ -888,7 +876,7 @@
 		@apply flex;
 	}
 
-	.star {
+	:global(.star) {
 		@apply text-yellow-400;
 	}
 
@@ -897,7 +885,7 @@
 	}
 
 	.rating-count {
-		@apply text-gray-500 dark:text-gray-400;
+		color: rgba(214, 189, 152, 0.8);
 	}
 
 	.recipe-time,
@@ -906,10 +894,10 @@
 		@apply flex items-center gap-1.5;
 	}
 
-	.time-icon,
-	.difficulty-icon,
-	.servings-icon {
-		@apply text-orange-500;
+	:global(.time-icon),
+	:global(.difficulty-icon),
+	:global(.servings-icon) {
+		color: #8FA998;
 	}
 
 	.author-info {
@@ -918,6 +906,7 @@
 
 	.author-avatar {
 		@apply h-12 w-12 rounded-full object-cover;
+		border: 2px solid #8FA998;
 	}
 
 	.author-details {
@@ -925,11 +914,17 @@
 	}
 
 	.author-name {
-		@apply font-medium text-gray-900 hover:text-orange-500 dark:text-white dark:hover:text-orange-400;
+		@apply font-medium transition-colors;
+		color: #EBE0CC;
+	}
+
+	.author-name:hover {
+		color: #8FA998;
 	}
 
 	.author-stats {
-		@apply text-sm text-gray-500 dark:text-gray-400;
+		@apply text-sm;
+		color: rgba(214, 189, 152, 0.8);
 	}
 
 	.stat-separator {
@@ -937,7 +932,14 @@
 	}
 
 	.follow-button {
-		@apply ml-auto rounded-full bg-orange-500 px-5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-orange-600;
+		@apply ml-auto rounded-full px-5 py-1.5 text-sm font-medium transition-all;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.follow-button:hover {
+		box-shadow: 0 6px 16px rgba(103, 125, 106, 0.4);
 	}
 
 	/* Recipe Content Grid Styles */
@@ -951,7 +953,9 @@
 	}
 
 	.main-image-container {
-		@apply relative mb-2 overflow-hidden rounded-xl;
+		@apply relative mb-2 overflow-hidden;
+		border-radius: 20px;
+		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 	}
 
 	.main-image {
@@ -983,7 +987,9 @@
 	}
 
 	.thumbnail {
-		@apply overflow-hidden rounded-lg border-2 border-transparent transition-all hover:border-orange-500;
+		@apply overflow-hidden border-2 border-transparent transition-all hover:border-orange-500;
+		border-radius: 12px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	}
 
 	.thumbnail.active {
@@ -1000,33 +1006,52 @@
 	}
 
 	.action-button {
-		@apply flex flex-1 flex-col items-center gap-1 rounded-md px-2 py-3 text-sm text-gray-600 transition-all hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800;
+		@apply flex flex-1 flex-col items-center gap-1 px-2 py-3 text-sm transition-all;
+		background: rgba(26, 54, 54, 0.6);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		color: #D6BD98;
+		border-radius: 12px;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	}
+
+	.action-button:hover {
+		background: rgba(26, 54, 54, 0.8);
+		border-color: #8FA998;
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 	}
 
 	.action-button.active {
-		@apply text-orange-500;
+		color: #8FA998;
+		border-color: #8FA998;
 	}
 
-	.action-icon {
-		@apply transition-transform duration-300 group-hover:scale-110;
+	.action-button :global(.action-icon) {
+		@apply transition-transform duration-300;
 	}
 
-	.action-button:hover .action-icon {
+	.action-button:hover :global(.action-icon) {
 		@apply scale-110;
 	}
 
 	.action-button.print {
-		@apply border border-dashed border-gray-200 dark:border-gray-700;
+		border-style: dashed;
 	}
 
 	/* Recipe Description Styles */
 	.recipe-description {
-		@apply mb-6 text-gray-700 dark:text-gray-300;
+		@apply mb-6;
+		color: rgba(235, 224, 204, 0.95);
+		line-height: 1.6;
 	}
 
 	/* Servings Adjuster Styles */
 	.servings-adjuster {
-		@apply mb-6 flex items-center gap-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800;
+		@apply mb-6 flex items-center gap-4 p-4;
+		background: rgba(26, 54, 54, 0.6);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 16px;
+		box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
 	}
 
 	.servings-controls {
@@ -1034,24 +1059,43 @@
 	}
 
 	.adjust-button {
-		@apply flex h-8 w-8 items-center justify-center rounded-full bg-white text-xl font-bold text-gray-600 transition-colors hover:bg-gray-100 disabled:text-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+		@apply flex h-8 w-8 items-center justify-center rounded-full text-xl font-bold transition-colors;
+		background: rgba(143, 169, 152, 0.2);
+		color: #D6BD98;
+	}
+
+	.adjust-button:hover {
+		background: rgba(143, 169, 152, 0.3);
+	}
+
+	.adjust-button:disabled {
+		opacity: 0.4;
 	}
 
 	.servings-input {
 		@apply w-10 appearance-none border-none bg-transparent p-0 text-center text-lg font-medium focus:outline-none focus:ring-0;
+		color: #EBE0CC;
 	}
 
 	.scaling-badge {
-		@apply ml-auto rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-600 dark:bg-orange-500/20 dark:text-orange-400;
+		@apply ml-auto rounded-full px-2 py-1 text-xs font-medium;
+		background: rgba(143, 169, 152, 0.3);
+		color: #8FA998;
 	}
 
 	/* Ingredients Styles */
 	.recipe-ingredients {
-		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+		@apply mb-6 p-6;
+		background: rgba(26, 54, 54, 0.6);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 20px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
 
 	.section-title {
-		@apply mb-4 text-xl font-bold text-gray-900 dark:text-white;
+		@apply mb-4 text-xl font-bold;
+		color: #EBE0CC;
 	}
 
 	.ingredient-group {
@@ -1059,7 +1103,8 @@
 	}
 
 	.ingredient-group-title {
-		@apply mb-2 font-medium text-gray-700 dark:text-gray-300;
+		@apply mb-2 font-medium;
+		color: #D6BD98;
 	}
 
 	.ingredients-list {
@@ -1067,7 +1112,7 @@
 	}
 
 	.ingredient-item {
-		@apply text-gray-600 dark:text-gray-300;
+		color: rgba(235, 224, 204, 0.9);
 	}
 
 	.ingredient-checkbox {
@@ -1075,11 +1120,19 @@
 	}
 
 	.ingredient-checkbox input[type='checkbox'] {
-		@apply h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500/20 dark:border-gray-600 dark:bg-gray-700;
+		@apply h-4 w-4 rounded;
+		border: 1px solid rgba(143, 169, 152, 0.5);
+		background: rgba(26, 54, 54, 0.5);
+	}
+
+	.ingredient-checkbox input[type='checkbox']:checked {
+		background: #8FA998;
+		border-color: #8FA998;
 	}
 
 	.scaled-quantity {
-		@apply font-medium text-orange-500;
+		@apply font-medium;
+		color: #8FA998;
 	}
 
 	.ingredient-unit {
@@ -1087,25 +1140,46 @@
 	}
 
 	.ingredient-name {
-		@apply text-gray-700 dark:text-gray-300;
+		color: rgba(235, 224, 204, 0.9);
 	}
 
 	.show-more-button,
 	.show-less-button {
-		@apply mt-2 text-sm font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+		@apply mt-2 text-sm font-medium transition-colors;
+		color: #8FA998;
+	}
+
+	.show-more-button:hover,
+	.show-less-button:hover {
+		color: #D6BD98;
 	}
 
 	.shopping-list-button-container {
-		@apply mt-4 border-t border-gray-100 pt-4 dark:border-gray-700;
+		@apply mt-4 pt-4;
+		border-top: 1px solid rgba(143, 169, 152, 0.3);
 	}
 
 	.shopping-list-button {
-		@apply flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-2 font-medium text-white transition-colors hover:bg-orange-600;
+		@apply flex w-full items-center justify-center gap-2 px-4 py-2 font-medium transition-all;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		border-radius: 14px;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.shopping-list-button:hover {
+		box-shadow: 0 6px 16px rgba(103, 125, 106, 0.4);
+		transform: translateY(-2px);
 	}
 
 	/* Nutrition Info Styles */
 	.nutrition-info {
-		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+		@apply mb-6 p-6;
+		background: rgba(26, 54, 54, 0.6);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 20px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
 
 	.nutrition-grid {
@@ -1113,28 +1187,46 @@
 	}
 
 	.nutrition-item {
-		@apply flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-700;
+		@apply flex flex-col items-center p-3 text-center;
+		background: rgba(143, 169, 152, 0.2);
+		border-radius: 12px;
+		transition: all 0.3s ease;
+	}
+
+	.nutrition-item:hover {
+		background: rgba(143, 169, 152, 0.3);
+		transform: scale(1.05);
 	}
 
 	.nutrition-value {
-		@apply text-lg font-semibold text-gray-900 dark:text-white;
+		@apply text-lg font-semibold;
+		color: #EBE0CC;
 	}
 
 	.nutrition-label {
-		@apply text-sm text-gray-500 dark:text-gray-400;
+		@apply text-sm;
+		color: #D6BD98;
 	}
 
 	.nutrition-disclaimer {
-		@apply mt-4 flex items-start gap-2 rounded-lg bg-gray-50 p-3 text-sm text-gray-500 dark:bg-gray-700 dark:text-gray-400;
+		@apply mt-4 flex items-start gap-2 rounded-lg p-3 text-sm;
+		background: rgba(143, 169, 152, 0.2);
+		color: rgba(214, 189, 152, 0.9);
 	}
 
-	.disclaimer-icon {
-		@apply mt-0.5 flex-shrink-0 text-orange-500;
+	.nutrition-disclaimer :global(.disclaimer-icon) {
+		@apply mt-0.5 flex-shrink-0;
+		color: #8FA998;
 	}
 
 	/* Instructions Styles */
 	.recipe-instructions {
-		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+		@apply mb-6 p-6;
+		background: rgba(26, 54, 54, 0.6);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 20px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
 
 	.instructions-list {
@@ -1150,28 +1242,48 @@
 	}
 
 	.step-number {
-		@apply flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 font-bold text-white;
+		@apply flex h-8 w-8 items-center justify-center rounded-full font-bold;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
 	}
 
 	.step-title {
-		@apply text-lg font-medium text-gray-900 dark:text-white;
+		@apply text-lg font-medium;
+		color: #EBE0CC;
 	}
 
 	.step-content {
-		@apply ml-12 text-gray-600 dark:text-gray-300;
+		@apply ml-12;
+		color: rgba(235, 224, 204, 0.9);
+		line-height: 1.6;
 	}
 
 	.cook-mode-button-container {
-		@apply mt-8 border-t border-gray-100 pt-6 dark:border-gray-700;
+		@apply mt-8 pt-6;
+		border-top: 1px solid rgba(143, 169, 152, 0.3);
 	}
 
 	.cook-mode-button {
-		@apply flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 px-4 py-3 font-medium text-white transition-all hover:shadow-lg hover:shadow-orange-500/20;
+		@apply flex w-full items-center justify-center gap-2 px-4 py-3 font-medium transition-all;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		border-radius: 14px;
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.3);
+	}
+
+	.cook-mode-button:hover {
+		box-shadow: 0 6px 16px rgba(103, 125, 106, 0.4);
+		transform: translateY(-2px);
 	}
 
 	/* Tips Styles */
 	.recipe-tips {
-		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+		@apply mb-6 p-6;
+		background: rgba(26, 54, 54, 0.6);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 20px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
 
 	.tips-list {
@@ -1179,16 +1291,24 @@
 	}
 
 	.tip-item {
-		@apply flex gap-3 text-gray-600 dark:text-gray-300;
+		@apply flex gap-3;
+		color: rgba(235, 224, 204, 0.9);
 	}
 
 	.tip-number {
-		@apply flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300;
+		@apply flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full font-medium;
+		background: rgba(143, 169, 152, 0.3);
+		color: #D6BD98;
 	}
 
 	/* Tags Styles */
 	.recipe-tags {
-		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+		@apply mb-6 p-6;
+		background: rgba(26, 54, 54, 0.6);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 20px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
 
 	.tags-container {
@@ -1196,12 +1316,25 @@
 	}
 
 	.tag {
-		@apply rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+		@apply rounded-full px-3 py-1 text-sm transition-all;
+		background: rgba(143, 169, 152, 0.2);
+		color: #D6BD98;
+		border: 1px solid rgba(143, 169, 152, 0.3);
+	}
+
+	.tag:hover {
+		background: rgba(143, 169, 152, 0.3);
+		border-color: #8FA998;
 	}
 
 	/* Reviews Styles */
 	.recipe-reviews {
-		@apply mb-6 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800;
+		@apply mb-6 p-6;
+		background: rgba(26, 54, 54, 0.6);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 20px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	}
 
 	.reviews-header {
@@ -1217,7 +1350,8 @@
 	}
 
 	.rating-large {
-		@apply text-3xl font-bold text-gray-900 dark:text-white;
+		@apply text-3xl font-bold;
+		color: #EBE0CC;
 	}
 
 	.stars-large {
@@ -1225,11 +1359,23 @@
 	}
 
 	.rating-count-large {
-		@apply text-sm text-gray-500 dark:text-gray-400;
+		@apply text-sm;
+		color: #D6BD98;
 	}
 
 	.write-review-button {
-		@apply rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600;
+		@apply px-4 py-2 text-sm font-medium transition-all;
+		background: rgba(143, 169, 152, 0.2);
+		color: #D6BD98;
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 12px;
+	}
+
+	.write-review-button:hover {
+		background: rgba(143, 169, 152, 0.3);
+		border-color: #8FA998;
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 	}
 
 	.reviews-list {
@@ -1237,7 +1383,8 @@
 	}
 
 	.review-item {
-		@apply border-b border-gray-100 pb-6 dark:border-gray-700;
+		@apply pb-6;
+		border-bottom: 1px solid rgba(143, 169, 152, 0.2);
 	}
 
 	.review-header {
@@ -1250,6 +1397,7 @@
 
 	.reviewer-avatar {
 		@apply h-10 w-10 rounded-full object-cover;
+		border: 2px solid #8FA998;
 	}
 
 	.reviewer-details {
@@ -1257,11 +1405,13 @@
 	}
 
 	.reviewer-name {
-		@apply font-medium text-gray-900 dark:text-white;
+		@apply font-medium;
+		color: #EBE0CC;
 	}
 
 	.review-date {
-		@apply text-sm text-gray-500 dark:text-gray-400;
+		@apply text-sm;
+		color: #D6BD98;
 	}
 
 	.review-rating {
@@ -1269,7 +1419,8 @@
 	}
 
 	.review-content {
-		@apply text-gray-600 dark:text-gray-300;
+		color: rgba(235, 224, 204, 0.9);
+		line-height: 1.6;
 	}
 
 	.review-actions {
@@ -1277,19 +1428,41 @@
 	}
 
 	.review-helpful-button {
-		@apply flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+		@apply flex items-center gap-2 rounded-full px-3 py-1 text-xs transition-all;
+		background: rgba(143, 169, 152, 0.2);
+		color: #D6BD98;
+		border: 1px solid rgba(143, 169, 152, 0.3);
 	}
 
-	.helpful-icon {
-		@apply text-gray-500 dark:text-gray-400;
+	.review-helpful-button:hover {
+		background: rgba(143, 169, 152, 0.3);
+		border-color: #8FA998;
+	}
+
+	.review-helpful-button :global(.helpful-icon) {
+		color: #8FA998;
 	}
 
 	.show-all-reviews-button {
-		@apply mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700;
+		@apply mt-4 flex w-full items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-all;
+		background: rgba(143, 169, 152, 0.2);
+		color: #D6BD98;
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 12px;
+	}
+
+	.show-all-reviews-button:hover {
+		background: rgba(143, 169, 152, 0.3);
+		border-color: #8FA998;
 	}
 
 	.show-less-reviews-button {
-		@apply mt-4 text-sm font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-500;
+		@apply mt-4 text-sm font-medium transition-colors;
+		color: #8FA998;
+	}
+
+	.show-less-reviews-button:hover {
+		color: #D6BD98;
 	}
 
 	/* Related Recipes Styles */
@@ -1302,7 +1475,17 @@
 	}
 
 	.related-recipe-card {
-		@apply overflow-hidden rounded-lg bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:bg-gray-800;
+		@apply overflow-hidden transition-all hover:-translate-y-1;
+		background: rgba(26, 54, 54, 0.6);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		border-radius: 16px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	}
+
+	.related-recipe-card:hover {
+		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+		border-color: #8FA998;
 	}
 
 	.related-recipe-image-container {
@@ -1318,7 +1501,8 @@
 	}
 
 	.related-recipe-title {
-		@apply p-4 text-center text-lg font-medium text-gray-900 dark:text-white;
+		@apply p-4 text-center text-lg font-medium;
+		color: #EBE0CC;
 	}
 
 	/* Media Queries */
