@@ -35,6 +35,14 @@
 	} from 'lucide-svelte';
 
 	// ========================================
+	// PAGE DATA
+	// ========================================
+
+	export let data;
+	let editMode = false;
+	let editingRecipeId: number | null = null;
+
+	// ========================================
 	// STATE MANAGEMENT
 	// ========================================
 
@@ -171,6 +179,65 @@
 
 	onMount(async () => {
 		await Promise.all([fetchCategories(), fetchCuisines()]);
+
+		// Initialize form with existing recipe data if in edit mode
+		if (data.editMode && data.existingRecipe) {
+			editMode = true;
+			editingRecipeId = data.existingRecipe.id;
+
+			// Pre-populate all fields
+			recipe.title = data.existingRecipe.title || '';
+			recipe.description = data.existingRecipe.description || '';
+			recipe.content = data.existingRecipe.content || '';
+			recipe.prepTime = data.existingRecipe.prepTime || 15;
+			recipe.cookTime = data.existingRecipe.cookTime || 30;
+			recipe.servings = data.existingRecipe.servings || 4;
+			recipe.difficulty = data.existingRecipe.difficulty || 'Medium';
+			recipe.dietaryType = data.existingRecipe.dietaryType || 'non-vegetarian';
+			recipe.categoryId = data.existingRecipe.categoryId || null;
+			recipe.cuisineId = data.existingRecipe.cuisineId || null;
+			recipe.featuredImage = data.existingRecipe.featuredImage || null;
+			recipe.isPublished = data.existingRecipe.isPublished || false;
+
+			// Pre-populate ingredients
+			if (data.existingRecipe.ingredients && data.existingRecipe.ingredients.length > 0) {
+				const allIngredients: Ingredient[] = [];
+				data.existingRecipe.ingredients.forEach((group: any) => {
+					group.items.forEach((item: any) => {
+						allIngredients.push({
+							id: Math.random().toString(36).substring(2, 9),
+							name: item.name || '',
+							amount: item.amount || '',
+							unit: item.unit || '',
+							notes: item.notes || ''
+						});
+					});
+				});
+				recipe.ingredients = allIngredients.length > 0 ? allIngredients : [{ id: '1', name: '', amount: '', unit: '', notes: '' }];
+			}
+
+			// Pre-populate instructions
+			if (data.existingRecipe.steps && data.existingRecipe.steps.length > 0) {
+				recipe.instructions = data.existingRecipe.steps.map((step: any, index: number) => ({
+					id: Math.random().toString(36).substring(2, 9),
+					stepNumber: index + 1,
+					title: step.title || '',
+					content: step.content || '',
+					image: step.image || undefined,
+					timer: step.estimatedTime || undefined
+				}));
+			}
+
+			// Pre-populate tips
+			if (data.existingRecipe.tips && data.existingRecipe.tips.length > 0) {
+				recipe.tips = data.existingRecipe.tips.map((tip: any) => tip.content || '');
+			}
+
+			// Pre-populate tags
+			if (data.existingRecipe.tags && data.existingRecipe.tags.length > 0) {
+				recipe.tags = [...data.existingRecipe.tags];
+			}
+		}
 	});
 
 	async function fetchCategories() {
@@ -490,8 +557,12 @@
 				tips: validTips.length > 0 ? validTips.map(tip => ({ content: tip })) : undefined
 			};
 
-			const response = await fetch('/api/recipes', {
-				method: 'POST',
+			// Determine API endpoint and method based on edit mode
+			const apiUrl = editMode ? `/api/recipes?id=${editingRecipeId}` : '/api/recipes';
+			const apiMethod = editMode ? 'PATCH' : 'POST';
+
+			const response = await fetch(apiUrl, {
+				method: apiMethod,
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(recipeData)
 			});
@@ -504,7 +575,7 @@
 					goto(`/recipes/${result.data.slug}`);
 				}, 2000);
 			} else {
-				errors.submit = result.error || 'Failed to save recipe';
+				errors.submit = result.error || `Failed to ${editMode ? 'update' : 'save'} recipe`;
 			}
 		} catch (error) {
 			errors.submit = 'Network error. Please try again.';
@@ -567,8 +638,8 @@
 			</button>
 
 			<div class="header-title">
-				<h1>Create New Recipe</h1>
-				<p>Share your culinary creation with the world</p>
+				<h1>{editMode ? 'Edit Recipe' : 'Create New Recipe'}</h1>
+				<p>{editMode ? 'Update your recipe details' : 'Share your culinary creation with the world'}</p>
 			</div>
 
 			<div class="header-actions">
@@ -1092,7 +1163,7 @@
 								{:else}
 									<Save size={18} />
 								{/if}
-								Save Draft
+								{editMode ? 'Save Changes' : 'Save Draft'}
 							</button>
 
 							<button
@@ -1106,7 +1177,7 @@
 								{:else}
 									<ChefHat size={18} />
 								{/if}
-								Publish Recipe
+								{editMode ? 'Update Recipe' : 'Publish Recipe'}
 							</button>
 						</div>
 					{/if}

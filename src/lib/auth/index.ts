@@ -1,5 +1,5 @@
 // src/lib/auth/index.ts - FIXED VERSION
-import { goto } from '$app/navigation';
+import { goto, invalidateAll } from '$app/navigation';
 import { page } from '$app/stores';
 import { get } from 'svelte/store';
 
@@ -70,10 +70,13 @@ export async function signOut() {
 		await fetch('/api/auth', {
 			method: 'DELETE'
 		});
+		// Invalidate all data to force SvelteKit to reload layout data
+		await invalidateAll();
 		goto('/login');
 	} catch (error) {
 		console.error('Sign out error:', error);
-		// Still redirect even if API call fails
+		// Still invalidate and redirect even if API call fails
+		await invalidateAll();
 		goto('/login');
 	}
 }

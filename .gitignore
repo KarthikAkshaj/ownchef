@@ -26,3 +26,6 @@ vite.config.ts.timestamp-*
 #custom
 codebase.md
 IMPROVEMENTS.md
+.claude/
+extract-code.sh
+project_code.txt

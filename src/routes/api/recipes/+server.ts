@@ -836,3 +836,464 @@ export const GET: RequestHandler = async ({ url }) => {
         return createErrorResponse('Failed to fetch recipes', 500, requestId);
     }
 };
+
+/**
+ * PATCH /api/recipes?id={recipeId}
+ * Updates an existing recipe with authorization check
+ */
+export const PATCH: RequestHandler = async ({ request, locals, url }) => {
+    const requestId = generateRequestId();
+
+    try {
+        // Check authentication
+        if (!locals.user || !locals.user.id) {
+            return createErrorResponse('Authentication required', 401, requestId);
+        }
+
+        // Get recipe ID from query parameter
+        const recipeId = url.searchParams.get('id');
+        if (!recipeId || isNaN(parseInt(recipeId))) {
+            return createErrorResponse('Valid recipe ID is required', 400, requestId);
+        }
+
+        const id = parseInt(recipeId);
+        console.log(`[${requestId}] Recipe update request for ID ${id} by: ${locals.user.username}`);
+
+        // Fetch existing recipe to verify ownership
+        const [existingRecipe] = await db
+            .select({
+                id: table.recipe.id,
+                authorId: table.recipe.authorId,
+                slug: table.recipe.slug
+            })
+            .from(table.recipe)
+            .where(eq(table.recipe.id, id))
+            .limit(1);
+
+        if (!existingRecipe) {
+            return createErrorResponse('Recipe not found', 404, requestId);
+        }
+
+        // CRITICAL: Authorization check - verify user owns this recipe
+        if (existingRecipe.authorId !== locals.user.id) {
+            console.warn(`[${requestId}] Unauthorized update attempt by ${locals.user.username} on recipe ${id}`);
+            return createErrorResponse('Forbidden: You can only edit your own recipes', 403, requestId);
+        }
+
+        // Parse request body
+        let requestData;
+        try {
+            requestData = await request.json();
+        } catch (e) {
+            return createErrorResponse('Invalid JSON in request body', 400, requestId);
+        }
+
+        // Validate recipe data
+        const validation = validateRecipeData(requestData);
+        if (!validation.valid) {
+            console.log(`[${requestId}] Validation failed:`, validation.errors);
+            return createErrorResponse(
+                `Validation failed: ${validation.errors.join(', ')}`,
+                400,
+                requestId
+            );
+        }
+
+        // Validate foreign key references
+        await validateReferences(requestData.categoryId, requestData.cuisineId);
+
+        // Generate new slug if title changed
+        let finalSlug = existingRecipe.slug;
+        if (requestData.title.trim() !== existingRecipe.slug) {
+            const baseSlug = generateSlug(requestData.title);
+            finalSlug = await ensureUniqueSlug(baseSlug, id);
+        }
+
+        // Update recipe in transaction
+        const updatedRecipe = await db.transaction(async (tx) => {
+            console.log(`[${requestId}] Starting recipe update transaction`);
+
+            // Update main recipe record
+            const totalTime = requestData.prepTime + requestData.cookTime;
+            await tx
+                .update(table.recipe)
+                .set({
+                    title: requestData.title.trim(),
+                    slug: finalSlug,
+                    description: requestData.description.trim(),
+                    content: requestData.content?.trim() || null,
+                    prepTime: requestData.prepTime,
+                    cookTime: requestData.cookTime,
+                    totalTime: totalTime,
+                    servings: requestData.servings,
+                    difficulty: requestData.difficulty,
+                    dietaryType: requestData.dietaryType || 'non-vegetarian',
+                    featuredImage: requestData.featuredImage?.trim() || null,
+                    videoUrl: requestData.videoUrl?.trim() || null,
+                    categoryId: requestData.categoryId || null,
+                    cuisineId: requestData.cuisineId || null,
+                    isPublished: requestData.isPublished || false,
+                    isDraft: !(requestData.isPublished || false),
+                    publishedAt: requestData.isPublished && !existingRecipe.publishedAt
+                        ? new Date()
+                        : existingRecipe.publishedAt,
+                    updatedAt: new Date()
+                })
+                .where(eq(table.recipe.id, id));
+
+            console.log(`[${requestId}] Updated recipe: ${requestData.title} (ID: ${id})`);
+
+            // Delete existing ingredients and re-insert
+            await tx.delete(table.recipeIngredient).where(eq(table.recipeIngredient.recipeId, id));
+
+            let ingredientCount = 0;
+            for (let groupIndex = 0; groupIndex < requestData.ingredients.length; groupIndex++) {
+                const group = requestData.ingredients[groupIndex];
+                for (let itemIndex = 0; itemIndex < group.items.length; itemIndex++) {
+                    const item = group.items[itemIndex];
+                    if (item.name.trim()) {
+                        await tx.insert(table.recipeIngredient).values({
+                            recipeId: id,
+                            groupName: group.groupName?.trim() || null,
+                            groupOrder: groupIndex,
+                            name: item.name.trim(),
+                            amount: item.amount?.trim() || null,
+                            unit: item.unit?.trim() || null,
+                            preparation: item.preparation?.trim() || null,
+                            notes: item.notes?.trim() || null,
+                            itemOrder: itemIndex
+                        });
+                        ingredientCount++;
+                    }
+                }
+            }
+            console.log(`[${requestId}] Updated ${ingredientCount} ingredients`);
+
+            // Delete existing instructions and re-insert
+            await tx.delete(table.recipeInstruction).where(eq(table.recipeInstruction.recipeId, id));
+
+            let stepCount = 0;
+            for (let index = 0; index < requestData.steps.length; index++) {
+                const step = requestData.steps[index];
+                if (step.content.trim()) {
+                    await tx.insert(table.recipeInstruction).values({
+                        recipeId: id,
+                        stepNumber: index + 1,
+                        title: step.title?.trim() || null,
+                        content: step.content.trim(),
+                        image: step.image?.trim() || null,
+                        videoUrl: step.videoUrl?.trim() || null,
+                        estimatedTime: step.estimatedTime || null,
+                        temperature: step.temperature?.trim() || null,
+                        tips: step.tips?.trim() || null
+                    });
+                    stepCount++;
+                }
+            }
+            console.log(`[${requestId}] Updated ${stepCount} instruction steps`);
+
+            // Delete existing additional images and re-insert
+            await tx.delete(table.recipeImage).where(eq(table.recipeImage.recipeId, id));
+
+            if (requestData.images && requestData.images.length > 0) {
+                const imageInserts = requestData.images
+                    .filter(url => url.trim())
+                    .map((url, index) => ({
+                        recipeId: id,
+                        url: url.trim(),
+                        sortOrder: index,
+                        isFeatured: false
+                    }));
+
+                if (imageInserts.length > 0) {
+                    await tx.insert(table.recipeImage).values(imageInserts);
+                    console.log(`[${requestId}] Updated ${imageInserts.length} recipe images`);
+                }
+            }
+
+            // Update tags (delete old, decrement counts, insert new)
+            const existingTags = await tx
+                .select({ tagId: table.recipeTag.tagId })
+                .from(table.recipeTag)
+                .where(eq(table.recipeTag.recipeId, id));
+
+            await tx.delete(table.recipeTag).where(eq(table.recipeTag.recipeId, id));
+
+            // Decrement usage count for old tags
+            for (const { tagId } of existingTags) {
+                await tx
+                    .update(table.tag)
+                    .set({ usageCount: sql`${table.tag.usageCount} - 1` })
+                    .where(eq(table.tag.id, tagId));
+            }
+
+            // Insert new tags
+            let tagCount = 0;
+            if (requestData.tags && requestData.tags.length > 0) {
+                const uniqueTags = [...new Set(requestData.tags.filter(tag => tag.trim()))];
+
+                for (const tagName of uniqueTags) {
+                    let tagId: number;
+
+                    const [existingTag] = await tx
+                        .select({ id: table.tag.id })
+                        .from(table.tag)
+                        .where(eq(table.tag.name, tagName.trim()))
+                        .limit(1);
+
+                    if (existingTag) {
+                        tagId = existingTag.id;
+                        await tx
+                            .update(table.tag)
+                            .set({ usageCount: sql`${table.tag.usageCount} + 1` })
+                            .where(eq(table.tag.id, tagId));
+                    } else {
+                        const tagSlug = generateSlug(tagName);
+                        const [newTag] = await tx
+                            .insert(table.tag)
+                            .values({
+                                name: tagName.trim(),
+                                slug: tagSlug,
+                                usageCount: 1
+                            })
+                            .returning({ id: table.tag.id });
+                        tagId = newTag.id;
+                    }
+
+                    await tx.insert(table.recipeTag).values({
+                        recipeId: id,
+                        tagId
+                    });
+                    tagCount++;
+                }
+                console.log(`[${requestId}] Updated ${tagCount} tags`);
+            }
+
+            // Delete existing tips and re-insert
+            await tx.delete(table.recipeTip).where(eq(table.recipeTip.recipeId, id));
+
+            let tipCount = 0;
+            if (requestData.tips && requestData.tips.length > 0) {
+                const tipInserts = requestData.tips
+                    .filter(tip => tip.content.trim())
+                    .map((tip, index) => ({
+                        recipeId: id,
+                        content: tip.content.trim(),
+                        category: tip.category || null,
+                        sortOrder: index
+                    }));
+
+                if (tipInserts.length > 0) {
+                    await tx.insert(table.recipeTip).values(tipInserts);
+                    tipCount = tipInserts.length;
+                    console.log(`[${requestId}] Updated ${tipCount} recipe tips`);
+                }
+            }
+
+            // Get updated recipe with relations
+            const [recipeWithRelations] = await tx
+                .select({
+                    id: table.recipe.id,
+                    title: table.recipe.title,
+                    slug: table.recipe.slug,
+                    description: table.recipe.description,
+                    prepTime: table.recipe.prepTime,
+                    cookTime: table.recipe.cookTime,
+                    totalTime: table.recipe.totalTime,
+                    servings: table.recipe.servings,
+                    difficulty: table.recipe.difficulty,
+                    featuredImage: table.recipe.featuredImage,
+                    isPublished: table.recipe.isPublished,
+                    views: table.recipe.views,
+                    likesCount: table.recipe.likesCount,
+                    ratingsCount: table.recipe.ratingsCount,
+                    averageRating: table.recipe.averageRating,
+                    createdAt: table.recipe.createdAt,
+                    // Author info
+                    authorId: table.user.id,
+                    authorUsername: table.user.username,
+                    authorFirstName: table.user.firstName,
+                    authorLastName: table.user.lastName,
+                    // Category info
+                    categoryId: table.category.id,
+                    categoryName: table.category.name,
+                    categorySlug: table.category.slug,
+                    // Cuisine info
+                    cuisineId: table.cuisine.id,
+                    cuisineName: table.cuisine.name,
+                    cuisineSlug: table.cuisine.slug
+                })
+                .from(table.recipe)
+                .leftJoin(table.user, eq(table.recipe.authorId, table.user.id))
+                .leftJoin(table.category, eq(table.recipe.categoryId, table.category.id))
+                .leftJoin(table.cuisine, eq(table.recipe.cuisineId, table.cuisine.id))
+                .where(eq(table.recipe.id, id))
+                .limit(1);
+
+            console.log(`[${requestId}] Recipe update completed successfully`);
+
+            return recipeWithRelations;
+        });
+
+        // Build response
+        const response: RecipeResponse = {
+            id: updatedRecipe.id,
+            title: updatedRecipe.title,
+            slug: updatedRecipe.slug,
+            description: updatedRecipe.description,
+            prepTime: updatedRecipe.prepTime,
+            cookTime: updatedRecipe.cookTime,
+            totalTime: updatedRecipe.totalTime,
+            servings: updatedRecipe.servings,
+            difficulty: updatedRecipe.difficulty,
+            featuredImage: updatedRecipe.featuredImage,
+            isPublished: updatedRecipe.isPublished,
+            createdAt: updatedRecipe.createdAt,
+            author: {
+                id: updatedRecipe.authorId,
+                username: updatedRecipe.authorUsername,
+                firstName: updatedRecipe.authorFirstName,
+                lastName: updatedRecipe.authorLastName
+            },
+            category: updatedRecipe.categoryId ? {
+                id: updatedRecipe.categoryId,
+                name: updatedRecipe.categoryName!,
+                slug: updatedRecipe.categorySlug!
+            } : null,
+            cuisine: updatedRecipe.cuisineId ? {
+                id: updatedRecipe.cuisineId,
+                name: updatedRecipe.cuisineName!,
+                slug: updatedRecipe.cuisineSlug!
+            } : null,
+            stats: {
+                views: updatedRecipe.views,
+                likes: updatedRecipe.likesCount,
+                ratings: updatedRecipe.ratingsCount,
+                averageRating: updatedRecipe.averageRating || 0
+            },
+            urls: {
+                view: `/recipes/${updatedRecipe.slug}`,
+                edit: `/recipes/${updatedRecipe.slug}/edit`,
+                api: `/api/recipes/${updatedRecipe.id}`
+            }
+        };
+
+        const message = requestData.isPublished
+            ? 'Recipe updated and published successfully!'
+            : 'Recipe updated and saved as draft!';
+
+        return json(
+            createSuccessResponse(response, message, requestId),
+            { status: 200 }
+        );
+
+    } catch (error) {
+        console.error(`[${requestId}] Recipe update failed:`, error);
+
+        if (error instanceof Error) {
+            if (error.message.includes('does not exist')) {
+                return createErrorResponse(error.message, 400, requestId);
+            }
+        }
+
+        return createErrorResponse(
+            'Failed to update recipe. Please try again later.',
+            500,
+            requestId
+        );
+    }
+};
+
+/**
+ * DELETE /api/recipes?id={recipeId}
+ * Deletes a recipe with authorization check
+ */
+export const DELETE: RequestHandler = async ({ locals, url }) => {
+    const requestId = generateRequestId();
+
+    try {
+        // Check authentication
+        if (!locals.user || !locals.user.id) {
+            return createErrorResponse('Authentication required', 401, requestId);
+        }
+
+        // Get recipe ID from query parameter
+        const recipeId = url.searchParams.get('id');
+        if (!recipeId || isNaN(parseInt(recipeId))) {
+            return createErrorResponse('Valid recipe ID is required', 400, requestId);
+        }
+
+        const id = parseInt(recipeId);
+        console.log(`[${requestId}] Recipe delete request for ID ${id} by: ${locals.user.username}`);
+
+        // Fetch existing recipe to verify ownership
+        const [existingRecipe] = await db
+            .select({
+                id: table.recipe.id,
+                authorId: table.recipe.authorId,
+                title: table.recipe.title,
+                slug: table.recipe.slug
+            })
+            .from(table.recipe)
+            .where(eq(table.recipe.id, id))
+            .limit(1);
+
+        if (!existingRecipe) {
+            return createErrorResponse('Recipe not found', 404, requestId);
+        }
+
+        // CRITICAL: Authorization check - verify user owns this recipe
+        if (existingRecipe.authorId !== locals.user.id) {
+            console.warn(`[${requestId}] Unauthorized delete attempt by ${locals.user.username} on recipe ${id}`);
+            return createErrorResponse('Forbidden: You can only delete your own recipes', 403, requestId);
+        }
+
+        // Delete recipe in transaction (cascade deletes will handle related records)
+        await db.transaction(async (tx) => {
+            console.log(`[${requestId}] Starting recipe deletion transaction`);
+
+            // Get associated tags to decrement their usage count
+            const recipeTags = await tx
+                .select({ tagId: table.recipeTag.tagId })
+                .from(table.recipeTag)
+                .where(eq(table.recipeTag.recipeId, id));
+
+            // Delete recipe (cascades will delete related records automatically)
+            await tx.delete(table.recipe).where(eq(table.recipe.id, id));
+
+            // Decrement tag usage counts
+            for (const { tagId } of recipeTags) {
+                await tx
+                    .update(table.tag)
+                    .set({ usageCount: sql`GREATEST(0, ${table.tag.usageCount} - 1)` })
+                    .where(eq(table.tag.id, tagId));
+            }
+
+            console.log(`[${requestId}] Recipe deleted successfully: ${existingRecipe.title}`);
+        });
+
+        return json(
+            createSuccessResponse(
+                {
+                    deletedRecipe: {
+                        id: existingRecipe.id,
+                        title: existingRecipe.title,
+                        slug: existingRecipe.slug
+                    }
+                },
+                'Recipe deleted successfully',
+                requestId
+            ),
+            { status: 200 }
+        );
+
+    } catch (error) {
+        console.error(`[${requestId}] Recipe deletion failed:`, error);
+
+        return createErrorResponse(
+            'Failed to delete recipe. Please try again later.',
+            500,
+            requestId
+        );
+    }
+};

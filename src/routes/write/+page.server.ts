@@ -47,13 +47,25 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	try {
+		// Check if we're in edit mode
+		const editId = url.searchParams.get('edit');
+		let existingRecipe = null;
+
+		if (editId) {
+			// Fetch the recipe to edit
+			const recipeId = parseInt(editId);
+			if (!isNaN(recipeId)) {
+				existingRecipe = await fetchRecipeForEdit(recipeId, locals.user.id);
+			}
+		}
+
 		// Fetch categories and cuisines in parallel for better performance
 		const [categoriesResult, cuisinesResult] = await Promise.all([
 			fetchActiveCategories(),
 			fetchActiveCuisines()
 		]);
 
-		const pageData: WritePageData = {
+		const pageData = {
 			categories: categoriesResult,
 			cuisines: cuisinesResult,
 			user: {
@@ -61,7 +73,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				username: locals.user.username,
 				firstName: locals.user.firstName,
 				lastName: locals.user.lastName
-			}
+			},
+			editMode: !!existingRecipe,
+			existingRecipe: existingRecipe
 		};
 
 		return pageData;
@@ -79,6 +93,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				firstName: locals.user.firstName,
 				lastName: locals.user.lastName
 			} : null,
+			editMode: false,
+			existingRecipe: null,
 			error: 'Failed to load some data. Please refresh the page.'
 		};
 	}
@@ -87,6 +103,138 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 // ========================================
 // HELPER FUNCTIONS
 // ========================================
+
+async function fetchRecipeForEdit(recipeId: number, userId: string) {
+	try {
+		// Fetch recipe with all related data
+		const [recipeData] = await db
+			.select({
+				id: table.recipe.id,
+				title: table.recipe.title,
+				slug: table.recipe.slug,
+				description: table.recipe.description,
+				prepTime: table.recipe.prepTime,
+				cookTime: table.recipe.cookTime,
+				servings: table.recipe.servings,
+				difficulty: table.recipe.difficulty,
+				dietaryType: table.recipe.dietaryType,
+				featuredImage: table.recipe.featuredImage,
+				videoUrl: table.recipe.videoUrl,
+				categoryId: table.recipe.categoryId,
+				cuisineId: table.recipe.cuisineId,
+				authorId: table.recipe.authorId,
+				isPublished: table.recipe.isPublished
+			})
+			.from(table.recipe)
+			.where(eq(table.recipe.id, recipeId))
+			.limit(1);
+
+		if (!recipeData) {
+			console.error('[WRITE PAGE] Recipe not found:', recipeId);
+			return null;
+		}
+
+		// Check authorization - user must own this recipe
+		if (recipeData.authorId !== userId) {
+			console.warn('[WRITE PAGE] Unauthorized edit attempt by user', userId, 'on recipe', recipeId);
+			return null;
+		}
+
+		// Fetch ingredients
+		const ingredients = await db
+			.select()
+			.from(table.recipeIngredient)
+			.where(eq(table.recipeIngredient.recipeId, recipeId))
+			.orderBy(table.recipeIngredient.groupOrder, table.recipeIngredient.itemOrder);
+
+		// Fetch instructions
+		const instructions = await db
+			.select()
+			.from(table.recipeInstruction)
+			.where(eq(table.recipeInstruction.recipeId, recipeId))
+			.orderBy(table.recipeInstruction.stepNumber);
+
+		// Fetch tips
+		const tips = await db
+			.select()
+			.from(table.recipeTip)
+			.where(eq(table.recipeTip.recipeId, recipeId))
+			.orderBy(table.recipeTip.sortOrder);
+
+		// Fetch tags
+		const recipeTags = await db
+			.select({
+				tagName: table.tag.name
+			})
+			.from(table.recipeTag)
+			.leftJoin(table.tag, eq(table.recipeTag.tagId, table.tag.id))
+			.where(eq(table.recipeTag.recipeId, recipeId));
+
+		// Fetch additional images
+		const images = await db
+			.select()
+			.from(table.recipeImage)
+			.where(eq(table.recipeImage.recipeId, recipeId))
+			.orderBy(table.recipeImage.sortOrder);
+
+		// Group ingredients by groupName
+		const groupedIngredients = ingredients.reduce((acc, ing) => {
+			const groupName = ing.groupName || '';
+			if (!acc[groupName]) {
+				acc[groupName] = [];
+			}
+			acc[groupName].push({
+				name: ing.name,
+				amount: ing.amount,
+				unit: ing.unit,
+				preparation: ing.preparation,
+				notes: ing.notes
+			});
+			return acc;
+		}, {} as Record<string, any[]>);
+
+		const ingredientGroups = Object.entries(groupedIngredients).map(([groupName, items]) => ({
+			groupName: groupName || null,
+			items
+		}));
+
+		return {
+			id: recipeData.id,
+			title: recipeData.title,
+			slug: recipeData.slug,
+			description: recipeData.description,
+			prepTime: recipeData.prepTime,
+			cookTime: recipeData.cookTime,
+			servings: recipeData.servings,
+			difficulty: recipeData.difficulty,
+			dietaryType: recipeData.dietaryType,
+			featuredImage: recipeData.featuredImage,
+			videoUrl: recipeData.videoUrl,
+			categoryId: recipeData.categoryId,
+			cuisineId: recipeData.cuisineId,
+			isPublished: recipeData.isPublished,
+			ingredients: ingredientGroups,
+			steps: instructions.map(inst => ({
+				title: inst.title,
+				content: inst.content,
+				image: inst.image,
+				videoUrl: inst.videoUrl,
+				estimatedTime: inst.estimatedTime,
+				temperature: inst.temperature,
+				tips: inst.tips
+			})),
+			tips: tips.map(tip => ({
+				content: tip.content,
+				category: tip.category
+			})),
+			tags: recipeTags.map(rt => rt.tagName).filter(Boolean),
+			images: images.map(img => img.url)
+		};
+	} catch (error) {
+		console.error('[WRITE PAGE] Error fetching recipe for edit:', error);
+		return null;
+	}
+}
 
 async function fetchActiveCategories(): Promise<CategoryData[]> {
 	try {

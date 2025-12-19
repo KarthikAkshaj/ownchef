@@ -5,7 +5,7 @@ import { db } from '$lib/server/db';
 import { recipe, user, category, cuisine, recipeIngredient, recipeInstruction, recipeTip } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, locals }) => {
 	const { slug } = params;
 
 	// Fetch recipe with all related data
@@ -83,6 +83,9 @@ export const load: PageServerLoad = async ({ params }) => {
 		.where(eq(recipeTip.recipeId, recipeRecord.id))
 		.orderBy(recipeTip.sortOrder);
 
+	// Check if the current user is the author (for edit/delete permissions)
+	const isOwner = locals.user?.id === recipeRecord.authorId;
+
 	// Format the data for the component
 	return {
 		recipe: {
@@ -129,6 +132,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		},
 		ingredients,
 		instructions,
-		tips
+		tips,
+		isOwner // Pass ownership flag to the UI
 	};
 };

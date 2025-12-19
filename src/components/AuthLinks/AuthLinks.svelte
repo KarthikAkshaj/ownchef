@@ -9,8 +9,10 @@
 		<div class="shine"></div>
 	</a>
 {:else}
-	<a href="/write" class="auth-link"> Add Recipe </a>
-	<button class="auth-link" on:click={signOut}> Logout </button>
+	<div class="auth-links-container">
+		<a href="/write" class="add-recipe-btn">Add Recipe</a>
+		<button class="logout-btn" on:click={signOut}>Logout</button>
+	</div>
 {/if}
 
 <style lang="postcss">
@@ -61,16 +63,33 @@
 		}
 	}
 
-	.auth-link {
-		@apply rounded-md px-3 py-2 text-sm font-medium text-white transition-colors duration-200;
-		background-color: #677D6A;
+	.auth-links-container {
+		@apply flex items-center gap-3;
 	}
 
-	.auth-link:hover {
-		background-color: #8FA998;
+	.add-recipe-btn {
+		@apply flex items-center justify-center rounded-full px-5 py-2;
+		@apply text-sm font-semibold text-white;
+		@apply transition-all duration-300;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		box-shadow: 0 2px 8px 0 rgba(103, 125, 106, 0.3);
 	}
 
-	button.auth-link {
-		@apply cursor-pointer border-0;
+	.add-recipe-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px 0 rgba(103, 125, 106, 0.4);
+	}
+
+	.logout-btn {
+		@apply flex items-center justify-center rounded-full px-5 py-2;
+		@apply text-sm font-medium text-[#677D6A] bg-transparent;
+		@apply border-2 border-[#677D6A];
+		@apply transition-all duration-300 cursor-pointer;
+	}
+
+	.logout-btn:hover {
+		@apply bg-[#677D6A] text-white;
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px 0 rgba(103, 125, 106, 0.3);
 	}
 </style>

@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { theme } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let data;
 	import {
@@ -18,12 +19,16 @@
 		Star,
 		ThumbsUp,
 		ChevronDown,
-		AlertCircle
+		AlertCircle,
+		Edit,
+		Trash2
 	} from 'lucide-svelte';
 	import Comments from '../../../components/Comments/Comments.svelte';
 	import CookingMode from '../../../components/CookingMode/CookingMode.svelte';
 
 	let isCookingModeActive = false;
+	let showDeleteModal = false;
+	let isDeleting = false;
 
 	function enterCookingMode() {
 		isCookingModeActive = true;
@@ -33,6 +38,44 @@
 	function exitCookingMode() {
 		isCookingModeActive = false;
 		document.body.style.overflow = ''; // Restore scrolling
+	}
+
+	function handleEdit() {
+		// Navigate to edit page (we'll reuse the write page with edit mode)
+		goto(`/write?edit=${recipe.id}`);
+	}
+
+	function confirmDelete() {
+		showDeleteModal = true;
+	}
+
+	function cancelDelete() {
+		showDeleteModal = false;
+	}
+
+	async function handleDelete() {
+		isDeleting = true;
+		try {
+			const response = await fetch(`/api/recipes?id=${recipe.id}`, {
+				method: 'DELETE'
+			});
+
+			const result = await response.json();
+
+			if (response.ok && result.success) {
+				// Redirect to home or profile page after successful deletion
+				goto('/');
+			} else {
+				alert(result.error || 'Failed to delete recipe. Please try again.');
+				isDeleting = false;
+				showDeleteModal = false;
+			}
+		} catch (error) {
+			console.error('Delete error:', error);
+			alert('An error occurred while deleting the recipe.');
+			isDeleting = false;
+			showDeleteModal = false;
+		}
 	}
 
 	// Use real data from server or fallback to fake data for demo
@@ -453,14 +496,28 @@
 		<div class="author-info">
 			<img src={recipe.author.avatar} alt={recipe.author.name} class="author-avatar" />
 			<div class="author-details">
-				<a href="/profile/{recipe.author.id}" class="author-name">{recipe.author.name}</a>
+				<a href="/profile/{recipe.author.username}" class="author-name">{recipe.author.name}</a>
 				<div class="author-stats">
 					<span>{recipe.author.recipesCount} recipes</span>
 					<span class="stat-separator">•</span>
 					<span>{recipe.author.followersCount.toLocaleString()} followers</span>
 				</div>
 			</div>
-			<button class="follow-button">Follow</button>
+			{#if data.isOwner}
+				<!-- Edit/Delete buttons for recipe owner -->
+				<div class="owner-actions">
+					<button class="edit-button" on:click={handleEdit}>
+						<Edit size={16} />
+						<span>Edit</span>
+					</button>
+					<button class="delete-button" on:click={confirmDelete}>
+						<Trash2 size={16} />
+						<span>Delete</span>
+					</button>
+				</div>
+			{:else}
+				<button class="follow-button">Follow</button>
+			{/if}
 		</div>
 	</header>
 
@@ -834,6 +891,27 @@
 			{/each}
 		</div>
 	</div>
+	<!-- Delete Confirmation Modal -->
+	{#if showDeleteModal}
+		<div class="modal-overlay" on:click={cancelDelete}>
+			<div class="modal-content" on:click|stopPropagation>
+				<h2 class="modal-title">Delete Recipe?</h2>
+				<p class="modal-message">
+					Are you sure you want to delete "<strong>{recipe.title}</strong>"? This action cannot be
+					undone.
+				</p>
+				<div class="modal-actions">
+					<button class="modal-cancel-btn" on:click={cancelDelete} disabled={isDeleting}>
+						Cancel
+					</button>
+					<button class="modal-delete-btn" on:click={handleDelete} disabled={isDeleting}>
+						{isDeleting ? 'Deleting...' : 'Delete Recipe'}
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
 	{#if isCookingModeActive}
 		<CookingMode steps={recipe.steps} title={recipe.title} onClose={exitCookingMode} />
 	{/if}
@@ -1505,6 +1583,103 @@
 		color: #EBE0CC;
 	}
 
+	/* Owner Actions (Edit/Delete Buttons) */
+	.owner-actions {
+		@apply ml-auto flex items-center gap-2;
+	}
+
+	.edit-button {
+		@apply flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-all;
+		background: linear-gradient(135deg, #677D6A, #8FA998);
+		color: #EBE0CC;
+		box-shadow: 0 2px 8px rgba(103, 125, 106, 0.3);
+	}
+
+	.edit-button:hover {
+		box-shadow: 0 4px 12px rgba(103, 125, 106, 0.4);
+		transform: translateY(-1px);
+	}
+
+	.delete-button {
+		@apply flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition-all;
+		background: rgba(220, 38, 38, 0.1);
+		color: #dc2626;
+		border: 1px solid rgba(220, 38, 38, 0.3);
+	}
+
+	.delete-button:hover {
+		background: rgba(220, 38, 38, 0.2);
+		border-color: #dc2626;
+		transform: translateY(-1px);
+	}
+
+	/* Delete Confirmation Modal */
+	.modal-overlay {
+		@apply fixed inset-0 z-50 flex items-center justify-center;
+		background: rgba(0, 0, 0, 0.7);
+		backdrop-filter: blur(4px);
+	}
+
+	.modal-content {
+		@apply relative mx-4 max-w-md rounded-2xl p-6;
+		background: linear-gradient(to bottom, #2A4A47, #1A3636);
+		border: 1px solid rgba(143, 169, 152, 0.3);
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+	}
+
+	.modal-title {
+		@apply mb-3 text-xl font-bold;
+		color: #EBE0CC;
+	}
+
+	.modal-message {
+		@apply mb-6 leading-relaxed;
+		color: rgba(235, 224, 204, 0.9);
+	}
+
+	.modal-message strong {
+		color: #8FA998;
+		font-weight: 600;
+	}
+
+	.modal-actions {
+		@apply flex gap-3;
+	}
+
+	.modal-cancel-btn {
+		@apply flex-1 rounded-full px-4 py-2 text-sm font-medium transition-all;
+		background: rgba(143, 169, 152, 0.2);
+		color: #D6BD98;
+		border: 1px solid rgba(143, 169, 152, 0.3);
+	}
+
+	.modal-cancel-btn:hover:not(:disabled) {
+		background: rgba(143, 169, 152, 0.3);
+		border-color: #8FA998;
+	}
+
+	.modal-cancel-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.modal-delete-btn {
+		@apply flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-all;
+		background: linear-gradient(135deg, #dc2626, #b91c1c);
+		color: white;
+		box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+	}
+
+	.modal-delete-btn:hover:not(:disabled) {
+		box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+		transform: translateY(-1px);
+	}
+
+	.modal-delete-btn:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
 	/* Media Queries */
 	@media (max-width: 768px) {
 		.recipe-content {
@@ -1523,8 +1698,13 @@
 			@apply flex-wrap;
 		}
 
-		.follow-button {
+		.follow-button,
+		.owner-actions {
 			@apply ml-0 mt-4 w-full;
+		}
+
+		.owner-actions {
+			@apply justify-end;
 		}
 	}
 </style>
