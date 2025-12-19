@@ -1,123 +1,132 @@
+// src/routes/recipes/[slug]/+page.server.ts
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import * as table from '$lib/server/db/schema';
-import { eq, and } from 'drizzle-orm';
-import { error } from '@sveltejs/kit';
+import { recipe, user, category, cuisine, recipeIngredient, recipeInstruction, recipeTip } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { slug } = params;
 
-	console.log('[Recipe Page] Loading recipe:', slug);
-
 	// Fetch recipe with all related data
-	const [recipe] = await db
+	const recipeData = await db
 		.select({
-			id: table.recipe.id,
-			title: table.recipe.title,
-			slug: table.recipe.slug,
-			description: table.recipe.description,
-			content: table.recipe.content,
-			prepTime: table.recipe.prepTime,
-			cookTime: table.recipe.cookTime,
-			totalTime: table.recipe.totalTime,
-			servings: table.recipe.servings,
-			difficulty: table.recipe.difficulty,
-			dietaryType: table.recipe.dietaryType,
-			featuredImage: table.recipe.featuredImage,
-			videoUrl: table.recipe.videoUrl,
-			views: table.recipe.views,
-			likesCount: table.recipe.likesCount,
-			ratingsCount: table.recipe.ratingsCount,
-			averageRating: table.recipe.averageRating,
-			isPublished: table.recipe.isPublished,
-			createdAt: table.recipe.createdAt,
-			// Author info
-			author: {
-				id: table.user.id,
-				username: table.user.username,
-				firstName: table.user.firstName,
-				lastName: table.user.lastName,
-				profileImage: table.user.profileImage
-			},
-			// Category info
-			category: {
-				id: table.category.id,
-				name: table.category.name,
-				slug: table.category.slug
-			},
-			// Cuisine info
-			cuisine: {
-				id: table.cuisine.id,
-				name: table.cuisine.name,
-				slug: table.cuisine.slug
-			}
+			id: recipe.id,
+			title: recipe.title,
+			slug: recipe.slug,
+			description: recipe.description,
+			prepTime: recipe.prepTime,
+			cookTime: recipe.cookTime,
+			totalTime: recipe.totalTime,
+			servings: recipe.servings,
+			difficulty: recipe.difficulty,
+			dietaryType: recipe.dietaryType,
+			featuredImage: recipe.featuredImage,
+			videoUrl: recipe.videoUrl,
+			averageRating: recipe.averageRating,
+			likesCount: recipe.likesCount,
+			ratingsCount: recipe.ratingsCount,
+			views: recipe.views,
+			// Nutrition fields
+			nutritionCalories: recipe.nutritionCalories,
+			nutritionProtein: recipe.nutritionProtein,
+			nutritionCarbs: recipe.nutritionCarbs,
+			nutritionFat: recipe.nutritionFat,
+			nutritionFiber: recipe.nutritionFiber,
+			nutritionSugar: recipe.nutritionSugar,
+			// Author fields
+			authorId: user.id,
+			authorUsername: user.username,
+			authorFirstName: user.firstName,
+			authorLastName: user.lastName,
+			authorProfileImage: user.profileImage,
+			// Category
+			categoryId: category.id,
+			categoryName: category.name,
+			categorySlug: category.slug,
+			// Cuisine
+			cuisineId: cuisine.id,
+			cuisineName: cuisine.name,
+			cuisineSlug: cuisine.slug
 		})
-		.from(table.recipe)
-		.leftJoin(table.user, eq(table.recipe.authorId, table.user.id))
-		.leftJoin(table.category, eq(table.recipe.categoryId, table.category.id))
-		.leftJoin(table.cuisine, eq(table.recipe.cuisineId, table.cuisine.id))
-		.where(
-			and(
-				eq(table.recipe.slug, slug),
-				eq(table.recipe.isPublished, true)
-			)
-		)
+		.from(recipe)
+		.leftJoin(user, eq(recipe.authorId, user.id))
+		.leftJoin(category, eq(recipe.categoryId, category.id))
+		.leftJoin(cuisine, eq(recipe.cuisineId, cuisine.id))
+		.where(eq(recipe.slug, slug))
 		.limit(1);
 
-	if (!recipe) {
+	if (!recipeData || recipeData.length === 0) {
 		throw error(404, 'Recipe not found');
 	}
 
+	const recipeRecord = recipeData[0];
+
 	// Fetch ingredients
 	const ingredients = await db
-		.select({
-			id: table.recipeIngredient.id,
-			groupName: table.recipeIngredient.groupName,
-			groupOrder: table.recipeIngredient.groupOrder,
-			name: table.recipeIngredient.name,
-			amount: table.recipeIngredient.amount,
-			unit: table.recipeIngredient.unit,
-			preparation: table.recipeIngredient.preparation,
-			notes: table.recipeIngredient.notes,
-			itemOrder: table.recipeIngredient.itemOrder
-		})
-		.from(table.recipeIngredient)
-		.where(eq(table.recipeIngredient.recipeId, recipe.id))
-		.orderBy(table.recipeIngredient.groupOrder, table.recipeIngredient.itemOrder);
+		.select()
+		.from(recipeIngredient)
+		.where(eq(recipeIngredient.recipeId, recipeRecord.id))
+		.orderBy(recipeIngredient.groupOrder, recipeIngredient.itemOrder);
 
 	// Fetch instructions
 	const instructions = await db
-		.select({
-			id: table.recipeInstruction.id,
-			stepNumber: table.recipeInstruction.stepNumber,
-			title: table.recipeInstruction.title,
-			content: table.recipeInstruction.content,
-			image: table.recipeInstruction.image,
-			videoUrl: table.recipeInstruction.videoUrl,
-			estimatedTime: table.recipeInstruction.estimatedTime,
-			temperature: table.recipeInstruction.temperature,
-			tips: table.recipeInstruction.tips
-		})
-		.from(table.recipeInstruction)
-		.where(eq(table.recipeInstruction.recipeId, recipe.id))
-		.orderBy(table.recipeInstruction.stepNumber);
+		.select()
+		.from(recipeInstruction)
+		.where(eq(recipeInstruction.recipeId, recipeRecord.id))
+		.orderBy(recipeInstruction.stepNumber);
 
 	// Fetch tips
 	const tips = await db
-		.select({
-			id: table.recipeTip.id,
-			content: table.recipeTip.content,
-			category: table.recipeTip.category,
-			sortOrder: table.recipeTip.sortOrder
-		})
-		.from(table.recipeTip)
-		.where(eq(table.recipeTip.recipeId, recipe.id))
-		.orderBy(table.recipeTip.sortOrder);
+		.select()
+		.from(recipeTip)
+		.where(eq(recipeTip.recipeId, recipeRecord.id))
+		.orderBy(recipeTip.sortOrder);
 
-	console.log(`[Recipe Page] Found recipe: ${recipe.title} with ${ingredients.length} ingredients and ${instructions.length} steps`);
-
+	// Format the data for the component
 	return {
-		recipe,
+		recipe: {
+			id: recipeRecord.id,
+			title: recipeRecord.title,
+			slug: recipeRecord.slug,
+			description: recipeRecord.description,
+			prepTime: recipeRecord.prepTime,
+			cookTime: recipeRecord.cookTime,
+			totalTime: recipeRecord.totalTime,
+			servings: recipeRecord.servings,
+			difficulty: recipeRecord.difficulty,
+			dietaryType: recipeRecord.dietaryType,
+			featuredImage: recipeRecord.featuredImage,
+			videoUrl: recipeRecord.videoUrl,
+			averageRating: recipeRecord.averageRating,
+			likesCount: recipeRecord.likesCount,
+			ratingsCount: recipeRecord.ratingsCount,
+			views: recipeRecord.views,
+			// Nutrition
+			nutritionCalories: recipeRecord.nutritionCalories,
+			nutritionProtein: recipeRecord.nutritionProtein,
+			nutritionCarbs: recipeRecord.nutritionCarbs,
+			nutritionFat: recipeRecord.nutritionFat,
+			nutritionFiber: recipeRecord.nutritionFiber,
+			nutritionSugar: recipeRecord.nutritionSugar,
+			author: {
+				id: recipeRecord.authorId,
+				username: recipeRecord.authorUsername,
+				firstName: recipeRecord.authorFirstName,
+				lastName: recipeRecord.authorLastName,
+				profileImage: recipeRecord.authorProfileImage
+			},
+			category: recipeRecord.categoryId ? {
+				id: recipeRecord.categoryId,
+				name: recipeRecord.categoryName,
+				slug: recipeRecord.categorySlug
+			} : null,
+			cuisine: recipeRecord.cuisineId ? {
+				id: recipeRecord.cuisineId,
+				name: recipeRecord.cuisineName,
+				slug: recipeRecord.cuisineSlug
+			} : null
+		},
 		ingredients,
 		instructions,
 		tips

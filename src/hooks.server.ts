@@ -2,9 +2,10 @@
 import type { Handle } from '@sveltejs/kit';
 import { sessionCookieName, validateSessionToken } from '$lib/server/auth';
 
+// Username/password and OAuth authentication
 export const handle: Handle = async ({ event, resolve }) => {
     const token = event.cookies.get(sessionCookieName);
-    
+
     if (!token) {
         event.locals.user = null;
         event.locals.session = null;
@@ -12,7 +13,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     }
 
     const { session, user } = await validateSessionToken(token);
-    
+
     if (session && user) {
         event.locals.session = session;
         event.locals.user = user;

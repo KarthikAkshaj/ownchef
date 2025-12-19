@@ -71,14 +71,14 @@
 			title: inst.title || `Step ${inst.stepNumber}`,
 			content: inst.content
 		})) || [],
-		// Add placeholder nutrition data (you can add a nutrition table later)
+		// Nutrition data from database
 		nutrition: {
-			calories: 0,
-			protein: 0,
-			carbs: 0,
-			fat: 0,
-			fiber: 0,
-			sugar: 0
+			calories: data.recipe.nutritionCalories || 0,
+			protein: data.recipe.nutritionProtein || 0,
+			carbs: data.recipe.nutritionCarbs || 0,
+			fat: data.recipe.nutritionFat || 0,
+			fiber: data.recipe.nutritionFiber || 0,
+			sugar: data.recipe.nutritionSugar || 0
 		},
 		tips: data.tips?.map(tip => tip.content) || []
 	} : {

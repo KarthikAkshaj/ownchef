@@ -19,128 +19,13 @@
 		List
 	} from 'lucide-svelte';
 	import Card from '../../../components/Card/Card.svelte';
+	import type { PageData } from './$types';
 
-	// This would be fetched from your API in a real implementation
-	const profile = {
-		id: 'chef-Yuki',
-		username: 'chef_Yuki',
-		name: 'Chef Yuki Sakai',
-		avatar: '/images/users/chef-yuki.jpg',
-		bio: 'Professional chef with over 10 years of experience in japanese and fusion cuisine. Passionate about sharing authentic family recipes and teaching cooking techniques.',
-		location: 'Tokyo, Japan',
-		joined: '2022-03-15',
-		website: 'https://yukiskitchen.com',
-		social: {
-			instagram: 'chef_yuki',
-			youtube: 'YukisKitchenTV',
-			tiktok: 'chefyuki_official'
-		},
-		stats: {
-			followers: 12400,
-			following: 345,
-			recipes: 87,
-			likes: 4523
-		},
-		isFollowing: false,
-		isOwnProfile: false,
-		verified: true
-	};
+	// Get data from server
+	export let data: PageData;
 
-	const recipes = [
-		{
-			id: 'butter-chicken',
-			title: 'Classic Butter Chicken',
-			description:
-				'A rich and creamy tomato-based curry with tender chicken pieces marinated in yogurt and spices.',
-			image: '/images/recipes/butter-chicken.jpg',
-			cookTime: 45,
-			category: 'Indian',
-			difficulty: 'Medium',
-			author: {
-				name: profile.name,
-				avatar: profile.avatar
-			},
-			rating: 4.8
-		},
-		{
-			id: 'palak-paneer',
-			title: 'Palak Paneer',
-			description:
-				'Creamy spinach curry with soft paneer cheese cubes, flavored with garlic, ginger, and aromatic spices.',
-			image: '/images/recipes/palak-paneer.jpg',
-			cookTime: 35,
-			category: 'Indian',
-			difficulty: 'Easy',
-			author: {
-				name: profile.name,
-				avatar: profile.avatar
-			},
-			rating: 4.7
-		},
-		{
-			id: 'chicken-biryani',
-			title: 'Chicken Biryani',
-			description:
-				'Fragrant basmati rice cooked with tender chicken pieces, saffron, and a blend of traditional spices.',
-			image: '/images/recipes/biriyani.jpg',
-			cookTime: 60,
-			category: 'Indian',
-			difficulty: 'Medium',
-			author: {
-				name: profile.name,
-				avatar: profile.avatar
-			},
-			rating: 4.9
-		},
-		{
-			id: 'masala-dosa',
-			title: 'Masala Dosa',
-			description:
-				'Crispy rice and lentil crepes filled with spiced potato filling, served with coconut chutney and sambar.',
-			image: '/images/recipes/masala-dosa.jpg',
-			cookTime: 50,
-			category: 'Indian',
-			difficulty: 'Hard',
-			author: {
-				name: profile.name,
-				avatar: profile.avatar
-			},
-			rating: 4.6
-		},
-		{
-			id: 'gulab-jamun',
-			title: 'Gulab Jamun',
-			description:
-				'Soft, spongy milk solids dumplings soaked in rose and cardamom flavored sugar syrup.',
-			image: '/images/recipes/gulab-jamun.jpg',
-			cookTime: 40,
-			category: 'Indian',
-			difficulty: 'Medium',
-			author: {
-				name: profile.name,
-				avatar: profile.avatar
-			},
-			rating: 4.7
-		},
-		{
-			id: 'vegetable-samosas',
-			title: 'Vegetable Samosas',
-			description:
-				'Crispy pastry triangles filled with spiced potatoes and peas, deep-fried to golden perfection.',
-			image: '/images/recipes/samosa.jpg',
-			cookTime: 55,
-			category: 'Indian',
-			difficulty: 'Medium',
-			author: {
-				name: profile.name,
-				avatar: profile.avatar
-			},
-			rating: 4.5
-		}
-	];
-
-	const savedRecipes = recipes.slice(0, 2);
-	const likedRecipes = recipes.slice(2, 4);
+	// Destructure data from server
+	const { profile, recipes, savedRecipes, likedRecipes } = data;
 
 	let activeTab = 'recipes';
 	let viewMode = 'grid';

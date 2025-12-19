@@ -20,7 +20,6 @@
 	} from 'lucide-svelte';
 	import { fade, fly, scale, blur } from 'svelte/transition';
 	import { quintOut, backOut, elasticOut } from 'svelte/easing';
-	import { signIn } from '$lib/auth';
 
 	// ========================================
 	// STATE MANAGEMENT
@@ -167,9 +166,8 @@
 		if (isSubmitting) return;
 
 		try {
-			// For demo purposes - you can implement real OAuth later
-			error = 'Social login coming soon! Use username/password for now.';
-			// Real implementation: window.location.href = '/api/auth/google';
+			// Redirect to our manual Google OAuth flow
+			window.location.href = '/api/auth/google';
 		} catch (err) {
 			console.error('Google login error:', err);
 			error = 'Google login temporarily unavailable';

@@ -9,14 +9,14 @@ export const user = pgTable('user', {
 	id: text('id').primaryKey(),
 	age: integer('age'),
 	username: text('username').notNull().unique(),
-	passwordHash: text('password_hash').notNull(),
+	passwordHash: text('password_hash'), // Nullable - OAuth users don't have passwords
 	email: text('email').unique(),
 	firstName: text('first_name'),
 	lastName: text('last_name'),
 	bio: text('bio'),
 	profileImage: text('profile_image'),
-	location: text('location'),          
-	website: text('website'),            
+	location: text('location'),
+	website: text('website'),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
 	updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
 });
@@ -100,6 +100,14 @@ export const recipe = pgTable('recipe', {
 	likesCount: integer('likes_count').default(0).notNull(),
 	ratingsCount: integer('ratings_count').default(0).notNull(),
 	averageRating: integer('average_rating').default(0), // Store as integer (x100) for precision
+
+	// Nutrition Information (per serving, optional)
+	nutritionCalories: integer('nutrition_calories'), // kcal
+	nutritionProtein: integer('nutrition_protein'), // grams
+	nutritionCarbs: integer('nutrition_carbs'), // grams
+	nutritionFat: integer('nutrition_fat'), // grams
+	nutritionFiber: integer('nutrition_fiber'), // grams
+	nutritionSugar: integer('nutrition_sugar'), // grams
 
 	// Timestamps
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
