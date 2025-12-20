@@ -138,7 +138,7 @@
 
 				<div class="profile-actions">
 					{#if profile.isOwnProfile}
-						<a href="/settings/profile" class="edit-profile-button">
+						<a href="/profile/edit" class="edit-profile-button">
 							<Settings size={14} class="button-icon" />
 							Edit Profile
 						</a>

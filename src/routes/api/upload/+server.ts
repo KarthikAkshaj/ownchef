@@ -1,9 +1,7 @@
 // src/routes/api/upload/+server.ts
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { uploadToR2, deleteFromR2, extractKeyFromUrl } from '$lib/server/storage';
 
 // ========================================
 // TYPES & INTERFACES
@@ -44,18 +42,7 @@ const UPLOAD_CONFIG = {
     ],
 
     // Allowed file extensions
-    allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
-
-    // Upload directory (relative to static/)
-    uploadDir: 'uploads',
-
-    // Subdirectories for organization
-    subDirs: {
-        recipes: 'recipes',
-        profiles: 'profiles',
-        categories: 'categories',
-        temp: 'temp'
-    }
+    allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp', '.gif']
 };
 
 // ========================================
@@ -81,14 +68,6 @@ function createErrorResponse(error: string, statusCode: number = 500): Response 
     return json(response, { status: statusCode });
 }
 
-function generateUniqueFilename(originalName: string): string {
-    const timestamp = Date.now();
-    const randomSuffix = Math.random().toString(36).substring(2, 8);
-    const ext = path.extname(originalName).toLowerCase();
-    const nameWithoutExt = path.basename(originalName, ext).replace(/[^a-zA-Z0-9]/g, '_');
-
-    return `${nameWithoutExt}_${timestamp}_${randomSuffix}${ext}`;
-}
 
 function validateFile(file: File): { valid: boolean; error?: string } {
     // Check file size
@@ -108,7 +87,7 @@ function validateFile(file: File): { valid: boolean; error?: string } {
     }
 
     // Check file extension
-    const ext = path.extname(file.name).toLowerCase();
+    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
     if (!UPLOAD_CONFIG.allowedExtensions.includes(ext)) {
         return {
             valid: false,
@@ -125,18 +104,6 @@ function validateFile(file: File): { valid: boolean; error?: string } {
     }
 
     return { valid: true };
-}
-
-async function ensureUploadDirectory(uploadPath: string): Promise<void> {
-    try {
-        if (!existsSync(uploadPath)) {
-            await mkdir(uploadPath, { recursive: true });
-            console.log(`[UPLOAD] Created directory: ${uploadPath}`);
-        }
-    } catch (error) {
-        console.error('[UPLOAD] Error creating directory:', error);
-        throw new Error('Failed to create upload directory');
-    }
 }
 
 // ========================================
@@ -180,35 +147,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             return createErrorResponse(validation.error!, 400);
         }
 
-        // Determine upload subdirectory
-        const subDir = UPLOAD_CONFIG.subDirs[type as keyof typeof UPLOAD_CONFIG.subDirs] || UPLOAD_CONFIG.subDirs.temp;
+        // Upload to Cloudflare R2
+        const uploadResult = await uploadToR2(file, type);
 
-        // Generate unique filename
-        const uniqueFilename = generateUniqueFilename(file.name);
-
-        // Construct file paths
-        const uploadDir = path.join('static', UPLOAD_CONFIG.uploadDir, subDir);
-        const filePath = path.join(uploadDir, uniqueFilename);
-        const publicUrl = `/${UPLOAD_CONFIG.uploadDir}/${subDir}/${uniqueFilename}`;
-
-        // Ensure upload directory exists
-        await ensureUploadDirectory(uploadDir);
-
-        // Convert file to buffer and save
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-        await writeFile(filePath, buffer);
-
-        console.log(`[UPLOAD] File saved successfully: ${filePath}`);
+        console.log(`[UPLOAD] File uploaded to R2 successfully: ${uploadResult.url}`);
 
         // Prepare response data
         const uploadResponse: UploadResponse = {
-            url: publicUrl,
-            filename: uniqueFilename,
+            url: uploadResult.url,
+            filename: uploadResult.filename,
             originalName: file.name,
-            size: file.size,
-            mimeType: file.type,
+            size: uploadResult.size,
+            mimeType: uploadResult.mimeType,
             uploadedAt: new Date().toISOString()
         };
 
@@ -248,7 +198,8 @@ export const GET: RequestHandler = async () => {
             maxFileSizeMB: UPLOAD_CONFIG.maxFileSize / (1024 * 1024),
             allowedMimeTypes: UPLOAD_CONFIG.allowedMimeTypes,
             allowedExtensions: UPLOAD_CONFIG.allowedExtensions,
-            supportedTypes: Object.keys(UPLOAD_CONFIG.subDirs)
+            supportedTypes: ['recipes', 'profiles', 'categories', 'temp'],
+            storage: 'cloudflare-r2'
         };
 
         return json(createSuccessResponse(config, 'Upload configuration retrieved'));
@@ -278,12 +229,18 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
             return createErrorResponse('File URL is required', 400);
         }
 
-        // TODO: Add file ownership validation
-        // TODO: Add admin check
-        // TODO: Implement file deletion logic
+        // Extract R2 key from URL
+        const key = extractKeyFromUrl(url);
+        if (!key) {
+            return createErrorResponse('Invalid file URL', 400);
+        }
 
-        // For now, just return success (implement later when needed)
-        return json(createSuccessResponse({ deleted: true }, 'File deletion not implemented yet'));
+        // Delete from R2
+        await deleteFromR2(key);
+
+        console.log(`[UPLOAD] File deleted successfully: ${key}`);
+
+        return json(createSuccessResponse({ deleted: true, key }, 'File deleted successfully'));
 
     } catch (error) {
         console.error('[API] Error deleting file:', error);

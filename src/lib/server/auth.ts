@@ -51,6 +51,8 @@ export async function validateSessionToken(token: string) {
 				bio: table.user.bio,
 				profileImage: table.user.profileImage,
 				age: table.user.age,
+				location: table.user.location,
+				website: table.user.website,
 				createdAt: table.user.createdAt,
 				updatedAt: table.user.updatedAt
 			},

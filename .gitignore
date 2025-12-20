@@ -29,3 +29,6 @@ IMPROVEMENTS.md
 .claude/
 extract-code.sh
 project_code.txt
+
+# User uploads (should use cloud storage in production)
+static/uploads/

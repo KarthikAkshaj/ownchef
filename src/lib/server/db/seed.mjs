@@ -1,5 +1,5 @@
 // src/lib/server/db/seed.mjs
-import { db } from './index.ts';
+import { db, closeConnection } from './seed-db.mjs';
 import * as table from './schema.ts';
 import { hash } from '@node-rs/argon2';
 
@@ -87,10 +87,12 @@ async function seed() {
 		console.error('  ✗ Failed to create test user:', error);
 	}
 
-	// Seed test recipes
+	// Seed test recipes with ingredients, instructions, and tips
 	console.log('\n🍳 Seeding test recipes...');
-	const recipes = [
-		{
+
+	// Recipe 1: Classic Butter Chicken
+	try {
+		const [butterChicken] = await db.insert(table.recipe).values({
 			title: 'Classic Butter Chicken',
 			slug: 'classic-butter-chicken',
 			description: 'A rich and creamy tomato-based curry with tender chicken pieces marinated in yogurt and spices.',
@@ -106,11 +108,50 @@ async function seed() {
 			featuredImage: '/images/recipes/butter-chicken.jpg',
 			isPublished: true,
 			isDraft: false,
-			averageRating: 480, // 4.8 * 100
+			averageRating: 480,
 			likesCount: 124,
 			ratingsCount: 43
-		},
-		{
+		}).returning({ id: table.recipe.id }).onConflictDoNothing();
+
+		if (butterChicken) {
+			// Ingredients for Butter Chicken
+			await db.insert(table.recipeIngredient).values([
+				{ recipeId: butterChicken.id, groupName: 'For Marinade', groupOrder: 0, name: 'chicken thighs', amount: '500', unit: 'g', preparation: 'cut into pieces', itemOrder: 0 },
+				{ recipeId: butterChicken.id, groupName: 'For Marinade', groupOrder: 0, name: 'yogurt', amount: '1/2', unit: 'cup', itemOrder: 1 },
+				{ recipeId: butterChicken.id, groupName: 'For Marinade', groupOrder: 0, name: 'lemon juice', amount: '2', unit: 'tbsp', itemOrder: 2 },
+				{ recipeId: butterChicken.id, groupName: 'For Marinade', groupOrder: 0, name: 'ginger-garlic paste', amount: '1', unit: 'tbsp', itemOrder: 3 },
+				{ recipeId: butterChicken.id, groupName: 'For Curry', groupOrder: 1, name: 'butter', amount: '4', unit: 'tbsp', itemOrder: 0 },
+				{ recipeId: butterChicken.id, groupName: 'For Curry', groupOrder: 1, name: 'onions', amount: '2', unit: 'medium', preparation: 'finely chopped', itemOrder: 1 },
+				{ recipeId: butterChicken.id, groupName: 'For Curry', groupOrder: 1, name: 'tomato puree', amount: '2', unit: 'cups', itemOrder: 2 },
+				{ recipeId: butterChicken.id, groupName: 'For Curry', groupOrder: 1, name: 'heavy cream', amount: '1/2', unit: 'cup', itemOrder: 3 },
+				{ recipeId: butterChicken.id, groupName: 'For Curry', groupOrder: 1, name: 'garam masala', amount: '1', unit: 'tsp', itemOrder: 4 }
+			]);
+
+			// Instructions for Butter Chicken
+			await db.insert(table.recipeInstruction).values([
+				{ recipeId: butterChicken.id, stepNumber: 1, title: 'Marinate the Chicken', content: 'Mix chicken with yogurt, lemon juice, and ginger-garlic paste. Refrigerate for at least 2 hours or overnight.' },
+				{ recipeId: butterChicken.id, stepNumber: 2, title: 'Cook the Chicken', content: 'Grill or pan-fry the marinated chicken until cooked through and slightly charred.' },
+				{ recipeId: butterChicken.id, stepNumber: 3, title: 'Prepare the Curry', content: 'In a large pan, melt butter and sauté onions until golden. Add tomato puree and cook for 10 minutes.' },
+				{ recipeId: butterChicken.id, stepNumber: 4, title: 'Combine and Simmer', content: 'Add the cooked chicken, cream, and garam masala. Simmer for 10 minutes until the sauce thickens.' },
+				{ recipeId: butterChicken.id, stepNumber: 5, title: 'Serve', content: 'Garnish with fresh cilantro and serve hot with naan or rice.' }
+			]);
+
+			// Tips for Butter Chicken
+			await db.insert(table.recipeTip).values([
+				{ recipeId: butterChicken.id, content: 'Marinate the chicken overnight for maximum flavor', category: 'chef_tip', sortOrder: 0 },
+				{ recipeId: butterChicken.id, content: 'Use Kashmiri chili powder for authentic color without too much heat', category: 'substitution', sortOrder: 1 },
+				{ recipeId: butterChicken.id, content: 'Store leftovers in an airtight container for up to 3 days', category: 'storage', sortOrder: 2 }
+			]);
+
+			console.log('  ✓ Classic Butter Chicken (with ingredients, instructions, and tips)');
+		}
+	} catch (error) {
+		console.error('  ✗ Failed to create Butter Chicken:', error);
+	}
+
+	// Recipe 2: Palak Paneer
+	try {
+		const [palakPaneer] = await db.insert(table.recipe).values({
 			title: 'Palak Paneer',
 			slug: 'palak-paneer',
 			description: 'Creamy spinach curry with soft paneer cheese cubes, flavored with garlic, ginger, and aromatic spices.',
@@ -126,11 +167,49 @@ async function seed() {
 			featuredImage: '/images/recipes/palak-paneer.jpg',
 			isPublished: true,
 			isDraft: false,
-			averageRating: 470, // 4.7 * 100
+			averageRating: 470,
 			likesCount: 98,
 			ratingsCount: 35
-		},
-		{
+		}).returning({ id: table.recipe.id }).onConflictDoNothing();
+
+		if (palakPaneer) {
+			// Ingredients for Palak Paneer
+			await db.insert(table.recipeIngredient).values([
+				{ recipeId: palakPaneer.id, groupName: 'Main Ingredients', groupOrder: 0, name: 'spinach', amount: '500', unit: 'g', preparation: 'washed and chopped', itemOrder: 0 },
+				{ recipeId: palakPaneer.id, groupName: 'Main Ingredients', groupOrder: 0, name: 'paneer', amount: '250', unit: 'g', preparation: 'cubed', itemOrder: 1 },
+				{ recipeId: palakPaneer.id, groupName: 'Main Ingredients', groupOrder: 0, name: 'onions', amount: '2', unit: 'medium', preparation: 'finely chopped', itemOrder: 2 },
+				{ recipeId: palakPaneer.id, groupName: 'Main Ingredients', groupOrder: 0, name: 'tomatoes', amount: '2', unit: 'medium', preparation: 'chopped', itemOrder: 3 },
+				{ recipeId: palakPaneer.id, groupName: 'Spices', groupOrder: 1, name: 'ginger-garlic paste', amount: '1', unit: 'tbsp', itemOrder: 0 },
+				{ recipeId: palakPaneer.id, groupName: 'Spices', groupOrder: 1, name: 'cumin seeds', amount: '1', unit: 'tsp', itemOrder: 1 },
+				{ recipeId: palakPaneer.id, groupName: 'Spices', groupOrder: 1, name: 'garam masala', amount: '1', unit: 'tsp', itemOrder: 2 },
+				{ recipeId: palakPaneer.id, groupName: 'Spices', groupOrder: 1, name: 'heavy cream', amount: '1/4', unit: 'cup', itemOrder: 3 }
+			]);
+
+			// Instructions for Palak Paneer
+			await db.insert(table.recipeInstruction).values([
+				{ recipeId: palakPaneer.id, stepNumber: 1, title: 'Blanch the Spinach', content: 'Boil spinach in salted water for 2 minutes. Drain and plunge into ice water. Blend into a smooth puree.' },
+				{ recipeId: palakPaneer.id, stepNumber: 2, title: 'Prepare the Base', content: 'Heat oil and add cumin seeds. Sauté onions until golden, then add ginger-garlic paste and tomatoes.' },
+				{ recipeId: palakPaneer.id, stepNumber: 3, title: 'Add Spinach Puree', content: 'Add the spinach puree and cook for 5 minutes. Season with salt and garam masala.' },
+				{ recipeId: palakPaneer.id, stepNumber: 4, title: 'Add Paneer', content: 'Gently add paneer cubes and cream. Simmer for 5 minutes until heated through.' },
+				{ recipeId: palakPaneer.id, stepNumber: 5, title: 'Serve', content: 'Garnish with a swirl of cream and serve hot with naan or rice.' }
+			]);
+
+			// Tips for Palak Paneer
+			await db.insert(table.recipeTip).values([
+				{ recipeId: palakPaneer.id, content: 'Blanch spinach quickly to retain bright green color', category: 'chef_tip', sortOrder: 0 },
+				{ recipeId: palakPaneer.id, content: 'You can substitute paneer with tofu for a vegan version', category: 'substitution', sortOrder: 1 },
+				{ recipeId: palakPaneer.id, content: 'Add paneer at the end to prevent it from becoming hard', category: 'timing', sortOrder: 2 }
+			]);
+
+			console.log('  ✓ Palak Paneer (with ingredients, instructions, and tips)');
+		}
+	} catch (error) {
+		console.error('  ✗ Failed to create Palak Paneer:', error);
+	}
+
+	// Recipe 3: Chicken Biryani
+	try {
+		const [chickenBiryani] = await db.insert(table.recipe).values({
 			title: 'Chicken Biryani',
 			slug: 'chicken-biryani',
 			description: 'Fragrant basmati rice cooked with tender chicken pieces, saffron, and a blend of traditional spices.',
@@ -146,19 +225,45 @@ async function seed() {
 			featuredImage: '/images/recipes/biriyani.jpg',
 			isPublished: true,
 			isDraft: false,
-			averageRating: 490, // 4.9 * 100
+			averageRating: 490,
 			likesCount: 156,
 			ratingsCount: 52
-		}
-	];
+		}).returning({ id: table.recipe.id }).onConflictDoNothing();
 
-	for (const recipe of recipes) {
-		try {
-			await db.insert(table.recipe).values(recipe).onConflictDoNothing();
-			console.log(`  ✓ ${recipe.title}`);
-		} catch (error) {
-			console.error(`  ✗ Failed to create ${recipe.title}:`, error);
+		if (chickenBiryani) {
+			// Ingredients for Chicken Biryani
+			await db.insert(table.recipeIngredient).values([
+				{ recipeId: chickenBiryani.id, groupName: 'For Rice', groupOrder: 0, name: 'basmati rice', amount: '2', unit: 'cups', preparation: 'soaked for 30 minutes', itemOrder: 0 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Rice', groupOrder: 0, name: 'whole spices', amount: '1', unit: 'tbsp', notes: 'cinnamon, cardamom, cloves', itemOrder: 1 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Chicken', groupOrder: 1, name: 'chicken', amount: '750', unit: 'g', preparation: 'cut into pieces', itemOrder: 0 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Chicken', groupOrder: 1, name: 'yogurt', amount: '1', unit: 'cup', itemOrder: 1 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Chicken', groupOrder: 1, name: 'onions', amount: '3', unit: 'large', preparation: 'thinly sliced', itemOrder: 2 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Chicken', groupOrder: 1, name: 'ginger-garlic paste', amount: '2', unit: 'tbsp', itemOrder: 3 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Layering', groupOrder: 2, name: 'saffron', amount: '1', unit: 'pinch', preparation: 'soaked in milk', itemOrder: 0 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Layering', groupOrder: 2, name: 'fried onions', amount: '1/2', unit: 'cup', itemOrder: 1 },
+				{ recipeId: chickenBiryani.id, groupName: 'For Layering', groupOrder: 2, name: 'fresh mint', amount: '1/4', unit: 'cup', preparation: 'chopped', itemOrder: 2 }
+			]);
+
+			// Instructions for Chicken Biryani
+			await db.insert(table.recipeInstruction).values([
+				{ recipeId: chickenBiryani.id, stepNumber: 1, title: 'Marinate the Chicken', content: 'Mix chicken with yogurt, ginger-garlic paste, and spices. Marinate for at least 1 hour.' },
+				{ recipeId: chickenBiryani.id, stepNumber: 2, title: 'Cook the Rice', content: 'Boil rice with whole spices until 70% cooked. Drain and set aside.' },
+				{ recipeId: chickenBiryani.id, stepNumber: 3, title: 'Prepare the Chicken', content: 'In a heavy-bottomed pot, layer fried onions, chicken, and partially cooked rice.' },
+				{ recipeId: chickenBiryani.id, stepNumber: 4, title: 'Layer and Dum', content: 'Sprinkle saffron milk, mint, and fried onions. Cover tightly and cook on low heat for 30 minutes.' },
+				{ recipeId: chickenBiryani.id, stepNumber: 5, title: 'Serve', content: 'Gently mix the biryani and serve hot with raita and salad.' }
+			]);
+
+			// Tips for Chicken Biryani
+			await db.insert(table.recipeTip).values([
+				{ recipeId: chickenBiryani.id, content: 'Soak basmati rice for 30 minutes for longer, fluffier grains', category: 'chef_tip', sortOrder: 0 },
+				{ recipeId: chickenBiryani.id, content: 'The dum (steaming) step is crucial - don\'t skip it', category: 'timing', sortOrder: 1 },
+				{ recipeId: chickenBiryani.id, content: 'Use a heavy-bottomed pot with a tight-fitting lid', category: 'chef_tip', sortOrder: 2 }
+			]);
+
+			console.log('  ✓ Chicken Biryani (with ingredients, instructions, and tips)');
 		}
+	} catch (error) {
+		console.error('  ✗ Failed to create Chicken Biryani:', error);
 	}
 
 	console.log('\n✅ Seeding complete!\n');
@@ -166,10 +271,13 @@ async function seed() {
 	console.log('  Username: chef_yuki');
 	console.log('  Password: password123');
 	console.log('  Profile URL: /profile/chef_yuki\n');
+
+	await closeConnection();
 	process.exit(0);
 }
 
-seed().catch((error) => {
+seed().catch(async (error) => {
 	console.error('❌ Seeding failed:', error);
+	await closeConnection();
 	process.exit(1);
 });

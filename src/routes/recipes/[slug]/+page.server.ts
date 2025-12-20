@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { recipe, user, category, cuisine, recipeIngredient, recipeInstruction, recipeTip } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, asc } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const { slug } = params;
@@ -67,24 +67,30 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.select()
 		.from(recipeIngredient)
 		.where(eq(recipeIngredient.recipeId, recipeRecord.id))
-		.orderBy(recipeIngredient.groupOrder, recipeIngredient.itemOrder);
+		.orderBy(asc(recipeIngredient.groupOrder), asc(recipeIngredient.itemOrder));
 
 	// Fetch instructions
 	const instructions = await db
 		.select()
 		.from(recipeInstruction)
 		.where(eq(recipeInstruction.recipeId, recipeRecord.id))
-		.orderBy(recipeInstruction.stepNumber);
+		.orderBy(asc(recipeInstruction.stepNumber));
 
 	// Fetch tips
 	const tips = await db
 		.select()
 		.from(recipeTip)
 		.where(eq(recipeTip.recipeId, recipeRecord.id))
-		.orderBy(recipeTip.sortOrder);
+		.orderBy(asc(recipeTip.sortOrder));
 
 	// Check if the current user is the author (for edit/delete permissions)
 	const isOwner = locals.user?.id === recipeRecord.authorId;
+
+	// Debug logging
+	console.log('[RECIPE_DETAIL] Recipe:', recipeRecord.title);
+	console.log('[RECIPE_DETAIL] Ingredients count:', ingredients.length);
+	console.log('[RECIPE_DETAIL] Instructions count:', instructions.length);
+	console.log('[RECIPE_DETAIL] Tips count:', tips.length);
 
 	// Format the data for the component
 	return {
