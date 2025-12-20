@@ -8,11 +8,7 @@
 		Menu,
 		X,
 		Search,
-		ChevronDown,
-		Facebook,
-		Instagram,
-		Twitter,
-		Youtube
+		ChevronDown
 	} from 'lucide-svelte';
 	import AuthLinks from '../AuthLinks/AuthLinks.svelte';
 
@@ -36,7 +32,9 @@
 		{ id: 'italian', name: 'Italian', path: '/category/italian' },
 		{ id: 'spanish', name: 'Spanish', path: '/category/spanish' },
 		{ id: 'thai', name: 'Thai', path: '/category/thai' },
-		{ id: 'japanese', name: 'Japanese', path: '/category/japanese' }
+		{ id: 'japanese', name: 'Japanese', path: '/category/japanese' },
+		{ id: 'divider', name: '---', path: '' },
+		{ id: 'find-ingredients', name: '🔍 Find by Ingredients', path: '/find-by-ingredients' }
 	];
 
 	function closeMenu() {
@@ -130,16 +128,21 @@
 						}}
 					>
 						{#each categories as category (category.id)}
-							<a
-								href={category.path}
-								class="dropdown-item"
-								class:active={$page.url.pathname === category.path}
-								role="menuitem"
-								tabindex="0"
-								on:click={() => (isDropdownOpen = false)}
-							>
-								{category.name}
-							</a>
+							{#if category.id === 'divider'}
+								<div class="dropdown-divider"></div>
+							{:else}
+								<a
+									href={category.path}
+									class="dropdown-item"
+									class:active={$page.url.pathname === category.path}
+									class:featured={category.id === 'find-ingredients'}
+									role="menuitem"
+									tabindex="0"
+									on:click={() => (isDropdownOpen = false)}
+								>
+									{category.name}
+								</a>
+							{/if}
 						{/each}
 					</div>
 				{/if}
@@ -165,22 +168,6 @@
 						<Search size={20} />
 					{/if}
 				</button>
-			</div>
-
-			<!-- Social Links -->
-			<div class="social-links">
-				<a href="/" class="social-icon facebook" aria-label="Facebook">
-					<Facebook size={18} />
-				</a>
-				<a href="/" class="social-icon instagram" aria-label="Instagram">
-					<Instagram size={18} />
-				</a>
-				<a href="/" class="social-icon twitter" aria-label="Twitter">
-					<Twitter size={18} />
-				</a>
-				<a href="/" class="social-icon youtube" aria-label="YouTube">
-					<Youtube size={18} />
-				</a>
 			</div>
 
 			<!-- Auth Links -->
@@ -232,21 +219,6 @@
 					{category.name}
 				</a>
 			{/each}
-			<!-- Mobile Social Links -->
-			<div class="mobile-social-links">
-				<a href="/" class="social-icon facebook" aria-label="Facebook">
-					<Facebook size={20} />
-				</a>
-				<a href="/" class="social-icon instagram" aria-label="Instagram">
-					<Instagram size={20} />
-				</a>
-				<a href="/" class="social-icon twitter" aria-label="Twitter">
-					<Twitter size={20} />
-				</a>
-				<a href="/" class="social-icon youtube" aria-label="YouTube">
-					<Youtube size={20} />
-				</a>
-			</div>
 			<!-- Mobile Auth Links -->
 			<div class="mobile-auth-wrapper">
 				<AuthLinks />
@@ -383,6 +355,23 @@
 		ring-color: #677D6A;
 	}
 
+	.dropdown-item.featured {
+		@apply font-semibold;
+		background: linear-gradient(135deg, rgba(143, 169, 152, 0.15) 0%, rgba(103, 125, 106, 0.1) 100%);
+		border-left: 3px solid #8FA998;
+		padding-left: 13px;
+	}
+
+	.dropdown-item.featured:hover {
+		background: linear-gradient(135deg, rgba(143, 169, 152, 0.25) 0%, rgba(103, 125, 106, 0.2) 100%);
+	}
+
+	.dropdown-divider {
+		@apply my-1;
+		height: 1px;
+		background: rgba(143, 169, 152, 0.2);
+	}
+
 	.search-container {
 		@apply relative flex items-center;
 		width: 40px;
@@ -426,30 +415,6 @@
 
 	.search-toggle:hover {
 		background-color: #677D6A;
-	}
-
-	.social-links {
-		@apply hidden items-center space-x-6 md:flex;
-	}
-
-	.social-icon {
-		@apply flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300;
-	}
-
-	.facebook {
-		@apply text-[#316FF6] hover:bg-[#316FF6]/10;
-	}
-
-	.instagram {
-		@apply text-[#d62976] hover:bg-[#d62976]/10;
-	}
-
-	.twitter {
-		@apply text-[#1DA1F2] hover:bg-[#1DA1F2]/10;
-	}
-
-	.youtube {
-		@apply text-[#FF0000] hover:bg-[#FF0000]/10;
 	}
 
 	.mobile-menu-button {
@@ -501,11 +466,6 @@
 
 	.mobile-nav-item:hover {
 		background-color: #677D6A;
-	}
-
-	.mobile-social-links {
-		@apply flex justify-center space-x-6 border-t px-3 py-4;
-		border-color: #677D6A;
 	}
 
 	.mobile-auth-wrapper {
