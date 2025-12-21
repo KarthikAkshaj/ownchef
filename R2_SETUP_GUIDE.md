@@ -89,7 +89,6 @@ If you're uploading from a different domain, configure CORS:
 - ✅ 1 million Class A operations/month
 - ✅ 10 million Class B operations/month
 
-This is perfect for a recipe app and will stay free for a long time!
 
 ## Security Best Practices
 1. ✅ Never commit `.env` to Git (already in .gitignore)
